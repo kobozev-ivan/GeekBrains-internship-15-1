@@ -16,16 +16,14 @@ public class Name extends JTabbedPane implements ActionListener {
     private SheetReference keywords = new SheetReference();
     private DefaultListModel<String> nameList = new DefaultListModel<>();
     private DefaultListModel<String> siteList = new DefaultListModel<>();
-//    private DefaultListModel<String> keywordsList = new DefaultListModel<>();
     private DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
     private JComboBox<String> nameOfPerson = new JComboBox<>(comboBoxModel);
-    private HashMap<String, DefaultListModel<String>> hashMap = new HashMap<>();
+    private HashMap<String, DefaultListModel<String>> hashMapListModelKeywords = new HashMap<>();
 
     public Name(){
 
         namesOfIndividuals.list.setModel(nameList);
         namesOfSites.list.setModel(siteList);
-//        keywords.list.setModel(keywordsList);
         nameOfPerson.addActionListener(this);
         keywords.panelButton.add(nameOfPerson, 0);
 
@@ -35,6 +33,8 @@ public class Name extends JTabbedPane implements ActionListener {
                 if (((JTabbedPane)e.getSource()).getSelectedComponent() == keywords){
                     if (namesOfIndividuals.removal.size() != 0){
                         for (int i = 0; i < namesOfIndividuals.removal.size(); i++) {
+                            String key = comboBoxModel.getElementAt(namesOfIndividuals.removal.get(i));
+                            hashMapListModelKeywords.remove((key), hashMapListModelKeywords.get(key));
                             comboBoxModel.removeElementAt(namesOfIndividuals.removal.get(i));
                         }
                         namesOfIndividuals.removal.clear();
@@ -47,12 +47,18 @@ public class Name extends JTabbedPane implements ActionListener {
                         }else if (nameList.getSize() == comboBoxModel.getSize()){
                             for (int i = 0, j = 0; i < nameList.getSize(); i++, j++) {
                                 if (!nameList.getElementAt(i).equals(comboBoxModel.getElementAt(j))){
+                                    String oldKey = comboBoxModel.getElementAt(j);
                                     comboBoxModel.removeElementAt(j);
+                                    String newKey = nameList.getElementAt(i);
                                     comboBoxModel.insertElementAt(nameList.getElementAt(i), j);
+                                    hashMapListModelKeywords.put(newKey, hashMapListModelKeywords.get(oldKey));
+                                    hashMapListModelKeywords.remove(oldKey, hashMapListModelKeywords.get(oldKey));
                                 }
                             }
                         }
                     }
+                    if (comboBoxModel.getSize() == 0) keywords.buttonAdd.setEnabled(false);
+                    else keywords.buttonAdd.setEnabled(true);
                 }
             }
         });
@@ -66,7 +72,8 @@ public class Name extends JTabbedPane implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == nameOfPerson){
             String name = comboBoxModel.getElementAt(nameOfPerson.getSelectedIndex());
-            hashMap.put(name, new DefaultListModel<>());
+            if (!hashMapListModelKeywords.containsKey(name))  hashMapListModelKeywords.put(name, new DefaultListModel<>());
+            keywords.list.setModel(hashMapListModelKeywords.get(name));
         }
     }
 }
