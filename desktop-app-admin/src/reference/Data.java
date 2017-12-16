@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  * Created by Максим on 15.12.2017.
  */
-public class Data extends DefaultListModel{
+public class Data<T> extends DefaultListModel{
 
 //    private String[] names = {"Путин", "Медведев", "Навальный"};
 //
