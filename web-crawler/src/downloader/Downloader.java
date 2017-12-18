@@ -16,7 +16,7 @@ public class Downloader {
             URL site = new URL(url);
             reader = new BufferedReader(new InputStreamReader(site.openStream()));
             while ((addonLine = reader.readLine()) != null) {
-                line += addonLine + "\n";
+                line += addonLine + " ";
             }
             reader.close();
         } catch (IOException e){
