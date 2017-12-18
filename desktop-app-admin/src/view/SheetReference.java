@@ -1,5 +1,7 @@
 package view;
 
+import reference.Data;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,18 +13,20 @@ import java.util.ArrayList;
  */
 public class SheetReference extends JPanel implements ActionListener{
 
-    JList<String> list = new JList<>();
+    Data<String> dataSheet = new Data<>();
+    public JList<String> list = new JList<>(dataSheet);
 
     JLabel labelList = new JLabel("Список");
     JButton buttonAdd = new JButton("Добавить");
     JButton buttonEdit = new JButton("Редактировать");
     JButton buttonDel = new JButton("Удалить");
+    JButton buttonUpDate = new JButton("Обновить");
     JButton buttonSave = new JButton("Сохранить");
     JButton buttonCancel = new JButton("Отмена");
     JPanel panelButton = new JPanel();
     ArrayList<Integer> removal = new ArrayList<>();
 
-    SheetReference(){
+    public SheetReference(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         list.setSelectionForeground(Color.BLUE);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -56,12 +60,14 @@ public class SheetReference extends JPanel implements ActionListener{
         centr.add(panelList);
         centr.add(panelButton);
 
+        down.add(buttonUpDate);
         down.add(buttonSave);
         down.add(buttonCancel);
 
         buttonAdd.addActionListener(this);
         buttonEdit.addActionListener(this);
         buttonDel.addActionListener(this);
+        buttonUpDate.addActionListener(this);
         buttonSave.addActionListener(this);
         buttonCancel.addActionListener(this);
 
@@ -69,15 +75,13 @@ public class SheetReference extends JPanel implements ActionListener{
         add(down);
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object objEvent = e.getSource();
         if (objEvent == buttonAdd){
             String string = JOptionPane.showInputDialog(panelButton, "Добавить в справочник :", "Добавление", JOptionPane.INFORMATION_MESSAGE);
             if (string != null && !string.equals("")){
-                DefaultListModel<String> name = (DefaultListModel<String>) list.getModel();
-                name.addElement(string.trim());
+                dataSheet.toAdd(this, string);
             }
         }
         if (objEvent == buttonEdit){
@@ -85,9 +89,7 @@ public class SheetReference extends JPanel implements ActionListener{
                 int index = list.getSelectedIndex();
                 String string = JOptionPane.showInputDialog(panelButton, "Редактировать " + list.getSelectedValue(), "Редактирование", JOptionPane.WARNING_MESSAGE);
                 if (string != null && !string.equals("")){
-                    DefaultListModel<String> name = (DefaultListModel<String>) list.getModel();
-                    name.remove(list.getSelectedIndex());
-                    name.insertElementAt(string.trim(), index);
+                    dataSheet.toModify(this, index, string);
                 }
             }
         }
@@ -95,10 +97,9 @@ public class SheetReference extends JPanel implements ActionListener{
             if (!list.isSelectionEmpty()){
                 int answer= JOptionPane.showConfirmDialog(panelButton, "Удалить " + list.getSelectedValue(), "Удаление", JOptionPane.OK_CANCEL_OPTION);
                 if (answer == JOptionPane.OK_OPTION){
-                    DefaultListModel<String> name = (DefaultListModel<String>) list.getModel();
                     int index =  list.getSelectedIndex();
-                    name.remove(index);
                     removal.add(index);
+                    dataSheet.toRemove(this, index);
                 }
             }
         }

@@ -1,4 +1,5 @@
-import view.Name;
+import view.*;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,7 @@ public class AdminGI extends JFrame{
     private static final int WIDTH = 600;
     private static final int HEIGHT = 400;
     private static final String TITLE = "Справочник";
-    private Name name = new Name();
+    private Reference reference = new Reference();
     private JButton buttonOut = new JButton("Закрыть");
 
 
@@ -23,7 +24,7 @@ public class AdminGI extends JFrame{
         setResizable(false);
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(buttonOut);
-        add(name, BorderLayout.CENTER);
+        add(reference, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
         pack();
         setVisible(true);
