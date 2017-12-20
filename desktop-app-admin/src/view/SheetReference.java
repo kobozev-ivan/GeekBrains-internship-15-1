@@ -16,17 +16,15 @@ public class SheetReference extends JPanel implements ActionListener{
     Data<String> dataSheet = new Data<>();
     public JList<String> list = new JList<>(dataSheet);
 
-    JLabel labelList = new JLabel("Список");
     JButton buttonAdd = new JButton("Добавить");
     JButton buttonEdit = new JButton("Редактировать");
     JButton buttonDel = new JButton("Удалить");
     JButton buttonUpDate = new JButton("Обновить");
     JButton buttonSave = new JButton("Сохранить");
-    JButton buttonCancel = new JButton("Отмена");
     JPanel panelButton = new JPanel();
     ArrayList<Integer> removal = new ArrayList<>();
 
-    public SheetReference(){
+    SheetReference(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         list.setSelectionForeground(Color.BLUE);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -39,6 +37,7 @@ public class SheetReference extends JPanel implements ActionListener{
 
         panelList.setLayout(new BoxLayout(panelList,BoxLayout.Y_AXIS));
         panelButton.setLayout(new BoxLayout(panelButton,BoxLayout.Y_AXIS));
+        JLabel labelList = new JLabel("Список");
         panelList.add(labelList);
         panelList.add(scrollList);
 
@@ -62,14 +61,12 @@ public class SheetReference extends JPanel implements ActionListener{
 
         down.add(buttonUpDate);
         down.add(buttonSave);
-        down.add(buttonCancel);
 
         buttonAdd.addActionListener(this);
         buttonEdit.addActionListener(this);
         buttonDel.addActionListener(this);
         buttonUpDate.addActionListener(this);
         buttonSave.addActionListener(this);
-        buttonCancel.addActionListener(this);
 
         add(centr);
         add(down);
@@ -102,6 +99,12 @@ public class SheetReference extends JPanel implements ActionListener{
                     dataSheet.toRemove(this, index);
                 }
             }
+        }
+        if (objEvent == buttonUpDate){
+            dataSheet.toUpDate(this);
+        }
+        if (objEvent == buttonSave){
+            dataSheet.toSave(this);
         }
     }
 }

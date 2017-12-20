@@ -13,7 +13,7 @@ public class Data<T> extends DefaultListModel<String> implements Editable{
 
 
     @Override
-    public void toUpDate() {
+    public void toUpDate(SheetReference sheetReference) {
 
     }
 
@@ -37,12 +37,7 @@ public class Data<T> extends DefaultListModel<String> implements Editable{
     }
 
     @Override
-    public void toSave() {
-
-    }
-
-    @Override
-    public void toCancel() {
+    public void toSave(SheetReference sheetReference) {
 
     }
 }
