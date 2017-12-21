@@ -1,5 +1,7 @@
 package view;
 
+import reference.CUW;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -14,6 +16,10 @@ public class Reference extends JTabbedPane{
     private SheetReferenceKeywords keywords = new SheetReferenceKeywords();
 
     public Reference(){
+
+        namesOfIndividuals.setName(CUW.PERSONS);
+        namesOfSites.setName(CUW.SITES);
+        keywords.setName(CUW.KEYWORDS);
 
         addChangeListener(new ChangeListener() {
             @Override

@@ -7,9 +7,7 @@ import view.SheetReference;
  */
 public interface Editable {
 
-    void toUpDate(SheetReference sheetReference);
-    void toAdd(SheetReference sheetReference, String string);
-    void toModify(SheetReference sheetReference, int index, String string);
-    void toRemove(SheetReference sheetReference, int index);
-    void toSave(SheetReference sheetReference);
+    void toAdd(SheetReference sheetReference, String stringInput);
+    void toModify(SheetReference sheetReference, String stringSelect, String stringInput);
+    void toRemove(SheetReference sheetReference, String stringSelect);
 }

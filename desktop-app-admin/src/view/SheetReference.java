@@ -1,6 +1,8 @@
 package view;
 
 import reference.Data;
+import reference.Request;
+import reference.Requestable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,17 +78,17 @@ public class SheetReference extends JPanel implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         Object objEvent = e.getSource();
         if (objEvent == buttonAdd){
-            String string = JOptionPane.showInputDialog(panelButton, "Добавить в справочник :", "Добавление", JOptionPane.INFORMATION_MESSAGE);
-            if (string != null && !string.equals("")){
-                dataSheet.toAdd(this, string);
+            String stringInput = JOptionPane.showInputDialog(panelButton, "Добавить в справочник :", "Добавление", JOptionPane.INFORMATION_MESSAGE);
+            if (stringInput != null && !stringInput.equals("")){
+                dataSheet.toAdd(this, stringInput.trim());
             }
         }
         if (objEvent == buttonEdit){
             if (!list.isSelectionEmpty()){
-                int index = list.getSelectedIndex();
-                String string = JOptionPane.showInputDialog(panelButton, "Редактировать " + list.getSelectedValue(), "Редактирование", JOptionPane.WARNING_MESSAGE);
-                if (string != null && !string.equals("")){
-                    dataSheet.toModify(this, index, string);
+                String stringSelect = list.getSelectedValue();
+                String stringInput = JOptionPane.showInputDialog(panelButton, "Редактировать " + list.getSelectedValue(), "Редактирование", JOptionPane.WARNING_MESSAGE);
+                if (stringInput != null && !stringInput.equals("")){
+                    dataSheet.toModify(this, stringSelect, stringInput.trim());
                 }
             }
         }
@@ -94,9 +96,8 @@ public class SheetReference extends JPanel implements ActionListener{
             if (!list.isSelectionEmpty()){
                 int answer= JOptionPane.showConfirmDialog(panelButton, "Удалить " + list.getSelectedValue(), "Удаление", JOptionPane.OK_CANCEL_OPTION);
                 if (answer == JOptionPane.OK_OPTION){
-                    int index =  list.getSelectedIndex();
-                    removal.add(index);
-                    dataSheet.toRemove(this, index);
+                    removal.add(list.getSelectedIndex());
+                    dataSheet.toRemove(this, list.getSelectedValue());
                 }
             }
         }
