@@ -2,6 +2,7 @@ package dbworker;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class SitesTableWorker extends Thread {
     //делает запрос в БД таблицу Sites
@@ -10,9 +11,11 @@ public class SitesTableWorker extends Thread {
 
     private Statement stmt;
     private Connection connection;
-    private ArrayList<String> siteNameslist = new ArrayList<>();
+    private TreeMap<Integer, String> siteNameslist = new TreeMap<>();
+
 
     public void run(){
+        System.out.println("sitesTableWorker begin");
         try{
             connect();
             querySitesName();
@@ -21,6 +24,7 @@ public class SitesTableWorker extends Thread {
         }finally {
             disconnect();
         }
+        System.out.println("sitesTableWorker end");
     }
 
     private void connect() throws Exception{
@@ -38,18 +42,19 @@ public class SitesTableWorker extends Thread {
     }
 
     public void querySitesName() throws SQLException{
-        ResultSet rs = stmt.executeQuery("SELECT NAME FROM SITES\n" +
+        ResultSet rs = stmt.executeQuery("SELECT * FROM SITES\n" +
                 "   LEFT JOIN PAGES ON PAGES.SITE_ID = SITES.ID\n" +
                 "   WHERE PAGES.ID IS NULL;");
 
         while(rs.next()){
-            System.out.println(rs.getString(1));
-            String str = rs.getString(1);
-            siteNameslist.add(str);
+            System.out.println(rs.getInt(1) + " " + rs.getString(2));
+            Integer id = rs.getInt(1);
+            String siteName = rs.getString(2);
+            siteNameslist.put(id, siteName);
         }
     }
 
-    public ArrayList<String> getNoReferenceSiteNamesList() throws SQLException {
+    public TreeMap<Integer, String> getNoReferenceSiteNamesList() throws SQLException {
         return siteNameslist;
     }
 }
