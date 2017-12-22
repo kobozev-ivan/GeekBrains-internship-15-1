@@ -2,65 +2,145 @@ package parser;
 
 import downloader.Downloader;
 
+import java.io.*;
+import java.net.URL;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.GZIPInputStream;
 
 public class ParseSiteMaps extends Thread {
-    //получает от ParseRobotsTxt ссылки на sitemap-ы конкретных сайтов
+    //получает от Collector ссылки на sitemap-ы конкретных сайтов
     //запускает загрузку страничек по ссылке
-    //сохраняет ссылки на HTML - страицы
+    //в случае, если ссылка на сайтмап имеет расширение
+    //передает в Collector ссылки на HTML - страницы
 
-    private TreeMap<String, Integer> htmls = new TreeMap<>();
-    private TreeMap<String, Integer> sitemaps = new TreeMap<>();
+    private TreeMap<String, Integer> unchSitemapsList = new TreeMap<>();
+    private TreeMap<String, Integer> pagesList = new TreeMap<>();
+    private TreeMap<String, Integer> sitemapGZFiles = new TreeMap<>();
+    private TreeMap<String, Integer> contentSitemapGZFile = new TreeMap<>();
 
-    public static void main(String[] args) {
-        long t = System.currentTimeMillis();
-        new ParseSiteMaps().run();
-        System.out.println("Total time : " + (System.currentTimeMillis() - t) / 1000 + "s");
+    public ParseSiteMaps(TreeMap<String, Integer> unchSitemapsList) {
+        this.unchSitemapsList = unchSitemapsList;
     }
 
     public void run() {
         System.out.println("parseSiteMaps begin");
-        ParseRobotsDotTxt parseRobotsDotTxt = new ParseRobotsDotTxt();
-        parseRobotsDotTxt.start();
-        try {
-            parseRobotsDotTxt.join();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-        sitemaps = parseRobotsDotTxt.getSitemaps();
 
-        Set<Map.Entry<String, Integer>> names = sitemaps.entrySet();
-        for (Map.Entry<String, Integer> smap: names) {
-            String sitemap = smap.getKey();
-            Integer site_id = smap.getValue();
-            System.out.println(smap.getKey() + " " + smap.getValue());
-
-            if(sitemap.contains("sitemap")) {
-                htmls.put(searchHTMLReferenece(sitemap), site_id);
+        Set<Map.Entry<String, Integer>> set = unchSitemapsList.entrySet();
+        for (Map.Entry<String, Integer> item: set) {
+            if (item.getKey().contains(".gz")) {
+                sitemapGZFiles.put(item.getKey(), item.getValue());
             } else {
-                htmls.put(sitemap, site_id);
+                pagesList.put(item.getKey(), item.getValue());
             }
         }
 
-        Set<Map.Entry<String, Integer>> names5 = htmls.entrySet();
-        for (Map.Entry<String, Integer> html: names5) {
-            System.out.println(html.getKey() + " " + html.getValue());
+        if (!(sitemapGZFiles.isEmpty())) {
+            contentSitemapGZFile = openSitemapGZArchiveFile();
+            Set<Map.Entry<String, Integer>> contents = contentSitemapGZFile.entrySet();
+            for (Map.Entry<String, Integer> cont : contents) {
+                String[] splitResult1 = cont.getKey().split(" ");
+                for (int i = 0; i < splitResult1.length; i++) {
+                    pagesList.put(splitResult1[i], cont.getValue());
+                }
+            }
+            sitemapGZFiles.clear();
         }
+
         System.out.println("parseSiteMaps end");
     }
 
-    private String searchHTMLReferenece(String sitemap){
-        String list;
-        String result = new Downloader().download(sitemap);
-        System.out.println(result);
-        list = new StringWorker().handlingString(result);
+    private TreeMap<String, Integer> openSitemapGZArchiveFile(){
+        int count = 0;
+        String result;
+        TreeMap<String, Integer> childGZsitemap = new TreeMap<>();
 
-        return list;
+        Set<Map.Entry<String, Integer>> names = sitemapGZFiles.entrySet();
+        for (Map.Entry<String, Integer> gzsitemap : names) {
+            System.out.println();
+            count++;
+            String gzFileDir = "d:/forSitemaps/siteMap" + count + ".xml.gz";
+
+            downloadUsingStream(gzsitemap.getKey(), gzFileDir);
+            String xmlFileDir = "d:/forSitemaps/sm" + count + ".xml";
+            decompressGzipFile(gzFileDir, xmlFileDir);
+
+            result = openXMLFile(xmlFileDir);
+
+            childGZsitemap.put(result, gzsitemap.getValue());
+        }
+        return childGZsitemap;
     }
 
-    public TreeMap<String, Integer> getHtmls(){
-        return htmls;
+    private void downloadUsingStream(String urlStr, String file) {
+        BufferedInputStream bis = null;
+        FileOutputStream fis = null;
+        try {
+            URL url = new URL(urlStr);
+            bis = new BufferedInputStream(url.openStream());
+            fis = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int count = 0;
+            while ((count = bis.read(buffer, 0, 1024)) != -1) {
+                fis.write(buffer, 0, count);
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            try {
+                fis.close();
+                bis.close();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
     }
+
+    private void decompressGzipFile(String gzipFile, String newFile) {
+        try {
+            FileInputStream fis = new FileInputStream(gzipFile);
+            GZIPInputStream gis = new GZIPInputStream(fis);
+            FileOutputStream fos = new FileOutputStream(newFile);
+            byte[] buffer = new byte[8192];
+            int len;
+            while((len = gis.read(buffer)) != -1){
+                fos.write(buffer, 0, len);
+            }
+            fos.close();
+            gis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private String openXMLFile(String file) {
+        long t = System.currentTimeMillis();
+        String str = "";
+        String hstr = "";
+        try {
+            File f = new File(file);
+            final int length = (int) f.length();
+            if (length != 0) {
+                char[] cbuf = new char[length];
+                InputStreamReader isr = new InputStreamReader(new FileInputStream(f), "UTF-8");
+                final int read = isr.read(cbuf);
+                str = new String(cbuf, 0, read);
+                isr.close();
+            }
+            hstr = new StringWorker().handlingString(str);
+            System.out.println("файл обработан...");
+            System.out.println((System.currentTimeMillis() - t) / 1000 + "s" + (System.currentTimeMillis() - t) % 1000 + "ms");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return hstr;
+    }
+
+    public TreeMap<String, Integer> getPagesList() {
+        return pagesList;
+    }
+
 }
