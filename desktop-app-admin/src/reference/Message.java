@@ -2,6 +2,8 @@ package reference;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import view.SheetReference;
+import view.SheetReferenceKeywords;
 
 /**
  * Created by Максим on 21.12.2017.
@@ -16,13 +18,13 @@ class Message extends JSONObject{
     private static final String NAMES = "namesString";
     private static final String ALL = "*";
 
-    Message(String nameTable){
-        put(TABLE, nameTable);
+    Message(SheetReference sheetReference){
+        toDefineTable(sheetReference);
         put(NAMES, ALL);
     }
 
-    Message(String nameTable, JSONArray addWords, JSONArray changeDelWords, JSONArray changeAddWords, JSONArray delWords){
-        put(TABLE, nameTable);
+    Message(SheetReference sheetReference, JSONArray addWords, JSONArray changeDelWords, JSONArray changeAddWords, JSONArray delWords){
+        toDefineTable(sheetReference);
         if (addWords.isEmpty()) put(ADD, null);
         else put(ADD, addWords);
         if (changeDelWords.isEmpty()) put(CHANGE_DEL, null);
@@ -31,5 +33,14 @@ class Message extends JSONObject{
         else put(CHANGE_ADD, changeAddWords);
         if (delWords.isEmpty())put(DEL, null);
         else put(DEL, delWords);
+    }
+
+    private void toDefineTable(SheetReference sheetReference){
+        String nameTable = sheetReference.getName();
+        put(TABLE, nameTable);
+        if (nameTable.equals(CUW.KEYWORDS)){
+            String selectPerson = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
+            put(nameTable, selectPerson);
+        }
     }
 }

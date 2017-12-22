@@ -3,6 +3,7 @@ package reference;
 import view.SheetReference;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 /**
  * Created by Максим on 15.12.2017.
@@ -10,38 +11,43 @@ import javax.swing.*;
 public class Data<T> extends DefaultListModel<String> implements Editable,Requestable{
 
     private Data<T> data;
-    private Request request = new Request();
+    private HashMap<Data<T>, Request> hashMap = new HashMap<>();
 
     @Override
     public void toUpDate(SheetReference sheetReference) {
-        request.toUpDate(sheetReference);
+        Data<T> key = (Data<T>)sheetReference.list.getModel();
+        if (!hashMap.containsKey(key)) hashMap.put(key, new Request());
+        hashMap.get(key).toUpDate(sheetReference);
     }
 
     @Override
     public void toAdd(SheetReference sheetReference, String stringInput) {
         data = (Data<T>) sheetReference.list.getModel();
         data.addElement(stringInput);
-        request.toAdd(sheetReference, stringInput);
+        if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
+        (hashMap.get(data)).toAdd(sheetReference, stringInput);
     }
 
     @Override
     public void toModify(SheetReference sheetReference, String stringSelect, String stringInput) {
-        int index = indexOf(stringSelect);
         data = (Data<T>) sheetReference.list.getModel();
-        request.toModify(sheetReference, stringSelect, stringInput);
         data.removeElement(stringSelect);
-        data.insertElementAt(stringInput, index);
+        data.addElement(stringInput);
+        if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
+        hashMap.get(data).toModify(sheetReference, stringSelect, stringInput);
     }
 
     @Override
     public void toRemove(SheetReference sheetReference, String stringSelect) {
         data = (Data<T>) sheetReference.list.getModel();
         data.removeElement(stringSelect);
-        request.toRemove(sheetReference, stringSelect);
+        if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
+        hashMap.get(data).toRemove(sheetReference, stringSelect);
     }
 
     @Override
     public void toSave(SheetReference sheetReference) {
-        request.toSave(sheetReference);
+        Data<T> key = (Data<T>)sheetReference.list.getModel();
+        if (hashMap.containsKey(key)) hashMap.get(key).toSave(sheetReference);
     }
 }

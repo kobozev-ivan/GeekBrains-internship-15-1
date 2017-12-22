@@ -16,12 +16,13 @@ public class Request implements Requestable, Editable{
 
     @Override
     public void toUpDate(SheetReference sheetReference) {
-        message = new Message(sheetReference.getName());
+        message = new Message(sheetReference);
         System.out.println(message);
     }
 
     public void toSave(SheetReference sheetReference) {
-        message = new Message(sheetReference.getName(), addWords, changeDelWords, changeAddWords, delWords);
+
+        message = new Message(sheetReference, addWords, changeDelWords, changeAddWords, delWords);
 
         System.out.println(message);
         addWords.clear();

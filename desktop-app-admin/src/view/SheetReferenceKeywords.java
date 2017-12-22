@@ -10,11 +10,12 @@ import java.util.HashMap;
 /**
  * Created by Максим on 17.12.2017.
  */
-class SheetReferenceKeywords extends SheetReference{
+public class SheetReferenceKeywords extends SheetReference{
 
     DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-    HashMap<String, Data<String>> hashMapListModelKeywords = new HashMap<>();
+    private HashMap<String, Data<String>> hashMapListModelKeywords = new HashMap<>();
     private JComboBox<String> nameOfPerson = new JComboBox<>(comboBoxModel);
+    public String selectComboBoxModel;
 
     SheetReferenceKeywords(){
         super();
@@ -22,9 +23,9 @@ class SheetReferenceKeywords extends SheetReference{
         nameOfPerson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = comboBoxModel.getElementAt(nameOfPerson.getSelectedIndex());
-                if (!hashMapListModelKeywords.containsKey(name))  hashMapListModelKeywords.put(name, new Data<>());
-                list.setModel(hashMapListModelKeywords.get(name));
+                selectComboBoxModel = comboBoxModel.getElementAt(nameOfPerson.getSelectedIndex());
+                if (!hashMapListModelKeywords.containsKey(selectComboBoxModel))  hashMapListModelKeywords.put(selectComboBoxModel, new Data<>());
+                list.setModel(hashMapListModelKeywords.get(selectComboBoxModel));
             }
         });
         JPanel upperPanel = new JPanel();
