@@ -12,25 +12,26 @@ import java.util.ArrayList;
  */
 public class Request implements Requestable{
 
-    Message message;
+    private Message message;
     JSONObject answer;
     private JSONArray addWords = new JSONArray();
     private JSONArray changeDelWords = new JSONArray();
     private JSONArray changeAddWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
 
+    FakeServer fakeServer = new FakeServer();
+
     @Override
     public ArrayList<String> toUpDate(SheetReference sheetReference) {
         message = new Message(sheetReference);
-        answer =  new FakeServer().toUpDate(message); // fake
+        answer =  fakeServer.toUpDate(message); // fake
         return message.toExtractData(answer);
     }
 
     public void toSave(SheetReference sheetReference) {
 
         message = new Message(sheetReference, addWords, changeDelWords, changeAddWords, delWords);
-        System.out.println(message);
-        new FakeServer().toSave(message); // fake
+        fakeServer.toSave(message); // fake
         addWords.clear();
         changeDelWords.clear();
         changeAddWords.clear();

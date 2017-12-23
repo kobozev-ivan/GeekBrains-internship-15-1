@@ -6,22 +6,22 @@ import java.util.HashMap;
 /**
  * Created by Максим on 18.12.2017.
  */
-public class FakeData {
+class FakeData {
 
-    ArrayList<String> personsList = new ArrayList<>();
-    ArrayList<String> sitesList = new ArrayList<>();
-    ArrayList<String> keywordsList = new ArrayList<>();
     HashMap<String, ArrayList<String>> persons = new HashMap<>();
     HashMap<String, ArrayList<String>> sites = new HashMap<>();
     HashMap<String, HashMap<String, ArrayList<String>>> keywords = new HashMap<>();
 
     FakeData(){
+        ArrayList<String> personsList = new ArrayList<>();
         personsList.add("Иванов");
         personsList.add("Петров");
         personsList.add("Сидоров");
         personsList.add("Медведев");
+        ArrayList<String> sitesList = new ArrayList<>();
         sitesList.add("bvbi.ru");
         sitesList.add("vhebv.com");
+        ArrayList<String> keywordsList = new ArrayList<>();
         keywordsList.add("Иванова");
         persons.put("Persons", personsList);
         sites.put("Sites", sitesList);
