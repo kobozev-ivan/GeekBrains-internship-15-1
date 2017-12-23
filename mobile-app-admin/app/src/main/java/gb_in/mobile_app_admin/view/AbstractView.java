@@ -8,4 +8,5 @@ public interface AbstractView {
     void updateViewPersonData(String[] data);
     void updateViewSiteData(String[] data);
     void updateViewKeywordData(String[] data);
+    void displayError(String msg);
 }

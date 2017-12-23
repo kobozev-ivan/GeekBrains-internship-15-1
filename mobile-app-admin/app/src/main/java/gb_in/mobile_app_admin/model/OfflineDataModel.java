@@ -32,15 +32,23 @@ class OfflineDataModel {
         }
     }
 
+    boolean isPersonPresent(String name){
+        return personData.containsValue(name);
+    }
+    boolean isPersonPresent(int id){
+        return personData.containsKey(id);
+    }
+
     void removePerson(int id){
         personData.remove(id);
         keywordData.remove(id);
     }
 
     void updatePerson(int id, String name) {
-        String s = personData.remove(id);
+        personData.remove(id);
         personData.put(id,name);
     }
+
 
 
     void addSite(String name){
@@ -67,6 +75,10 @@ class OfflineDataModel {
         return s;
     }
 
+    public boolean isSitePresent(int siteId) {
+        return siteData.containsKey(siteId);
+    }
+
 
 
     void addKeyword(int id, String newKeyword){
@@ -78,12 +90,12 @@ class OfflineDataModel {
     }
 
     void removeKeyword(int personId, int keyId){
-        String[] strings = keywordData.remove(personId);
-        String[] newKeywords = new String[strings.length - 1];
+        String[] oldKeywords = keywordData.remove(personId);
+        String[] newKeywords = new String[oldKeywords.length - 1];
         int index = 0;
-        for (int i = 0; i < strings.length; i++) {
+        for (int i = 0; i < oldKeywords.length; i++) {
             if (i!=keyId) {
-                newKeywords[index] = strings[i];
+                newKeywords[index] = oldKeywords[i];
                 index++;
             }
         }
@@ -99,4 +111,5 @@ class OfflineDataModel {
     public String[] getKeywords(int personId) {
         return keywordData.get(personId);
     }
+
 }

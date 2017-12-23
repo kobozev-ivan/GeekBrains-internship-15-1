@@ -16,6 +16,10 @@ public class Presenter {
         this.view = view;
     }
 
+    public void proceedError(String msg){
+        view.displayError(msg);
+    }
+
 
 
     public void loadPersonData(){

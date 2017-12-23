@@ -26,15 +26,11 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.addPersonData("p1");
-                presenter.addKeywordData(0,"tt");
-                presenter.addKeywordData(0,"ttt");
+                presenter.addSiteData("s1");
+                presenter.addSiteData("s2");
 
-                presenter.addPersonData("p2");
-                presenter.addKeywordData(1,"t");
-
-                presenter.loadKeywordData(0);
-                presenter.loadKeywordData(1);
+                presenter.loadSiteData();
+                presenter.loadSiteData();
             }
         });
 
@@ -42,9 +38,9 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
         btnDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.deleteKeywordData(1,0);
+                presenter.deleteSiteData(3);
 
-                presenter.loadKeywordData(1);
+//                presenter.loadSiteData();
             }
         });
 
@@ -72,5 +68,10 @@ public class MainActivity extends AppCompatActivity implements AbstractView{
     @Override
     public void updateViewKeywordData(String[] data) {
         Toast.makeText(getBaseContext(),Arrays.toString(data),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void displayError(String msg) {
+        Toast.makeText(getBaseContext(),msg,Toast.LENGTH_LONG).show();
     }
 }

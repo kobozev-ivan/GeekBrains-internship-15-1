@@ -30,15 +30,24 @@ public class Model {
 
 
     public void updatePerson(int personId, String newPersonName) {
-        modelData.updatePerson(personId,newPersonName);
+        if (modelData.isPersonPresent(personId))
+            modelData.updatePerson(personId,newPersonName);
+        else
+            presenter.proceedError("person not exist!");
     }
 
     public void addPerson(String personName) {
-        modelData.addPerson(personName);
+        if (!modelData.isPersonPresent(personName))
+            modelData.addPerson(personName);
+        else
+            presenter.proceedError("person already exist!");
     }
 
     public void deletePerson(int personId) {
-        modelData.removePerson(personId);
+        if (modelData.isPersonPresent(personId))
+            modelData.removePerson(personId);
+        else
+            presenter.proceedError("person not exist!");
     }
 
 
@@ -58,7 +67,10 @@ public class Model {
 
 
     public void updateSite(int siteId, String newSiteName) {
-        modelData.updateSite(siteId, newSiteName);
+        if (modelData.isSitePresent(siteId))
+            modelData.updateSite(siteId, newSiteName);
+        else
+            presenter.proceedError("site not exist!");
     }
 
     public void addSite(String siteName) {
@@ -66,7 +78,10 @@ public class Model {
     }
 
     public void deleteSite(int siteId) {
-        modelData.removeSite(siteId);
+        if (modelData.isSitePresent(siteId))
+            modelData.removeSite(siteId);
+        else
+            presenter.proceedError("site not exist!");
     }
 }
 
