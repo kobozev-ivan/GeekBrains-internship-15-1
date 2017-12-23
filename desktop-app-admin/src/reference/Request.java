@@ -1,34 +1,41 @@
 package reference;
 
+import fakeDatabase.FakeServer;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import view.SheetReference;
+
+import java.util.ArrayList;
 
 /**
  * Created by Максим on 19.12.2017.
  */
-public class Request implements Requestable, Editable{
+public class Request implements Requestable{
 
     Message message;
+    JSONObject answer;
     private JSONArray addWords = new JSONArray();
     private JSONArray changeDelWords = new JSONArray();
     private JSONArray changeAddWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
 
     @Override
-    public void toUpDate(SheetReference sheetReference) {
+    public ArrayList<String> toUpDate(SheetReference sheetReference) {
         message = new Message(sheetReference);
-        System.out.println(message);
+        answer =  new FakeServer().toUpDate(message); // fake
+        return message.toExtractData(answer);
     }
 
     public void toSave(SheetReference sheetReference) {
 
         message = new Message(sheetReference, addWords, changeDelWords, changeAddWords, delWords);
-
         System.out.println(message);
+        new FakeServer().toSave(message); // fake
         addWords.clear();
         changeDelWords.clear();
         changeAddWords.clear();
         delWords.clear();
+
     }
 
     private boolean isMatchWord(JSONArray jsonArray, String string){
@@ -41,14 +48,12 @@ public class Request implements Requestable, Editable{
         return false;
     }
 
-    @Override
-    public void toAdd(SheetReference sheetReference, String stringInput) {
+    void toAdditionOfWords(String stringInput) {
         addWords.add(stringInput);
         if (!delWords.isEmpty()) isMatchWord(delWords, stringInput);
     }
 
-    @Override
-    public void toModify(SheetReference sheetReference, String stringSelect, String stringInput) {
+    void toChangeWords(String stringSelect, String stringInput) {
         if (!addWords.isEmpty()){
             if (isMatchWord(addWords, stringSelect)){
                 addWords.add(stringInput);
@@ -59,8 +64,7 @@ public class Request implements Requestable, Editable{
         changeAddWords.add(stringInput);
     }
 
-    @Override
-    public void toRemove(SheetReference sheetReference, String stringSelect) {
+    void toRemovingWords(String stringSelect) {
         if (!addWords.isEmpty()){
             if (isMatchWord(addWords, stringSelect)) return;
         }

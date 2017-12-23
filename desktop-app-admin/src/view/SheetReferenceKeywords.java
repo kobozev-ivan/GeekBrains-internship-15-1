@@ -35,30 +35,40 @@ public class SheetReferenceKeywords extends SheetReference{
 
     void toAgree(SheetReference sheetReference){
         DefaultListModel<String> model = (DefaultListModel<String>) sheetReference.list.getModel();
-        if (sheetReference.removal.size() != 0){
-            for (int i = 0; i < sheetReference.removal.size(); i++) {
-                String key = comboBoxModel.getElementAt(sheetReference.removal.get(i));
-                hashMapListModelKeywords.remove((key), hashMapListModelKeywords.get(key));
-                comboBoxModel.removeElementAt(sheetReference.removal.get(i));
-            }
-            sheetReference.removal.clear();
-        }
+        if (sheetReference.removal.size() != 0) atDeletingElement(sheetReference);
         if (!model.isEmpty()) {
-            if (model.getSize() > comboBoxModel.getSize()){
-                for (int i = comboBoxModel.getSize(); i < model.getSize(); i++) {
-                    comboBoxModel.addElement(model.get(i).trim());
-                }
+            toAddItem(model);
+            toCompareElements(model);
+        }
+    }
+
+    private void atDeletingElement(SheetReference sheetReference){
+        for (int i = 0; i < sheetReference.removal.size(); i++) {
+            String key = comboBoxModel.getElementAt(sheetReference.removal.get(i));
+            hashMapListModelKeywords.remove((key), hashMapListModelKeywords.get(key));
+            comboBoxModel.removeElementAt(sheetReference.removal.get(i));
+        }
+        sheetReference.removal.clear();
+    }
+
+    private void toAddItem(DefaultListModel<String> model){
+        if (model.getSize() > comboBoxModel.getSize()){
+            for (int i = comboBoxModel.getSize(); i < model.getSize(); i++) {
+                comboBoxModel.addElement(model.get(i).trim());
             }
-            if (model.getSize() == comboBoxModel.getSize()){
-                for (int i = 0, j = 0; i < model.getSize(); i++, j++) {
-                    if (!model.getElementAt(i).equals(comboBoxModel.getElementAt(j))){
-                        String oldKey = comboBoxModel.getElementAt(j);
-                        comboBoxModel.removeElementAt(j);
-                        String newKey = model.getElementAt(i);
-                        comboBoxModel.insertElementAt(model.getElementAt(i), j);
-                        hashMapListModelKeywords.put(newKey, hashMapListModelKeywords.get(oldKey));
-                        hashMapListModelKeywords.remove(oldKey, hashMapListModelKeywords.get(oldKey));
-                    }
+        }
+    }
+
+    private void toCompareElements(DefaultListModel<String> model){
+        if (model.getSize() == comboBoxModel.getSize()){
+            for (int i = 0, j = 0; i < model.getSize(); i++, j++) {
+                if (!model.getElementAt(i).equals(comboBoxModel.getElementAt(j))){
+                    String oldKey = comboBoxModel.getElementAt(j);
+                    comboBoxModel.removeElementAt(j);
+                    String newKey = model.getElementAt(i);
+                    comboBoxModel.insertElementAt(model.getElementAt(i), j);
+                    hashMapListModelKeywords.put(newKey, hashMapListModelKeywords.get(oldKey));
+                    hashMapListModelKeywords.remove(oldKey, hashMapListModelKeywords.get(oldKey));
                 }
             }
         }

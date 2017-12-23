@@ -79,17 +79,13 @@ public class SheetReference extends JPanel implements ActionListener{
         Object objEvent = e.getSource();
         if (objEvent == buttonAdd){
             String stringInput = JOptionPane.showInputDialog(panelButton, "Добавить в справочник :", "Добавление", JOptionPane.INFORMATION_MESSAGE);
-            if (stringInput != null && !stringInput.equals("")){
-                dataSheet.toAdd(this, stringInput.trim());
-            }
+            if (stringInput != null && !stringInput.equals("")) dataSheet.toAdd(this, stringInput.trim());
         }
         if (objEvent == buttonEdit){
             if (!list.isSelectionEmpty()){
                 String stringSelect = list.getSelectedValue();
                 String stringInput = JOptionPane.showInputDialog(panelButton, "Редактировать " + list.getSelectedValue(), "Редактирование", JOptionPane.WARNING_MESSAGE);
-                if (stringInput != null && !stringInput.equals("")){
-                    dataSheet.toModify(this, stringSelect, stringInput.trim());
-                }
+                if (stringInput != null && !stringInput.equals("")) dataSheet.toModify(this, stringSelect, stringInput.trim());
             }
         }
         if (objEvent == buttonDel){
@@ -102,7 +98,8 @@ public class SheetReference extends JPanel implements ActionListener{
             }
         }
         if (objEvent == buttonUpDate){
-            dataSheet.toUpDate(this);
+            ArrayList<String> arrayList = dataSheet.toUpDate(this);
+            if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
         }
         if (objEvent == buttonSave){
             dataSheet.toSave(this);

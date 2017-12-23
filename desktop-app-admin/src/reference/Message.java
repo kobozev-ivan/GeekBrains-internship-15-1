@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import view.SheetReference;
 import view.SheetReferenceKeywords;
 
+import java.util.ArrayList;
+
 /**
  * Created by Максим on 21.12.2017.
  */
@@ -40,7 +42,18 @@ class Message extends JSONObject{
         put(TABLE, nameTable);
         if (nameTable.equals(CUW.KEYWORDS)){
             String selectPerson = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
-            put(nameTable, selectPerson);
+            put(CUW.PERSONS, selectPerson);
         }
+    }
+
+    ArrayList<String> toExtractData(JSONObject jsonObject) {
+        JSONArray jsonArray = (JSONArray) jsonObject.get(NAMES);
+        ArrayList<String> arrayList = new ArrayList<>();
+        if (!jsonArray.isEmpty()){
+            for (int i = 0; i < jsonArray.size(); i++) {
+                arrayList.add((String) jsonArray.get(i));
+            }
+        }
+        return arrayList;
     }
 }

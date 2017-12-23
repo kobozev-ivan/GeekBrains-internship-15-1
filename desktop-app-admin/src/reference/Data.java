@@ -3,6 +3,7 @@ package reference;
 import view.SheetReference;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -14,10 +15,17 @@ public class Data<T> extends DefaultListModel<String> implements Editable,Reques
     private HashMap<Data<T>, Request> hashMap = new HashMap<>();
 
     @Override
-    public void toUpDate(SheetReference sheetReference) {
+    public ArrayList<String> toUpDate(SheetReference sheetReference) {
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (!hashMap.containsKey(key)) hashMap.put(key, new Request());
-        hashMap.get(key).toUpDate(sheetReference);
+        ArrayList<String> arrayListData = hashMap.get(key).toUpDate(sheetReference);
+        if (!arrayListData.isEmpty()){
+            key.clear();
+            for (String arrayListElement : arrayListData) {
+                key.addElement(arrayListElement);
+            }
+        }
+        return arrayListData;
     }
 
     @Override
@@ -25,7 +33,7 @@ public class Data<T> extends DefaultListModel<String> implements Editable,Reques
         data = (Data<T>) sheetReference.list.getModel();
         data.addElement(stringInput);
         if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
-        (hashMap.get(data)).toAdd(sheetReference, stringInput);
+        (hashMap.get(data)).toAdditionOfWords(stringInput);
     }
 
     @Override
@@ -34,7 +42,7 @@ public class Data<T> extends DefaultListModel<String> implements Editable,Reques
         data.removeElement(stringSelect);
         data.addElement(stringInput);
         if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
-        hashMap.get(data).toModify(sheetReference, stringSelect, stringInput);
+        hashMap.get(data).toChangeWords(stringSelect, stringInput);
     }
 
     @Override
@@ -42,7 +50,7 @@ public class Data<T> extends DefaultListModel<String> implements Editable,Reques
         data = (Data<T>) sheetReference.list.getModel();
         data.removeElement(stringSelect);
         if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
-        hashMap.get(data).toRemove(sheetReference, stringSelect);
+        hashMap.get(data).toRemovingWords(stringSelect);
     }
 
     @Override
