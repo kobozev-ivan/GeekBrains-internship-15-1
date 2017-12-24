@@ -1,41 +1,36 @@
 package reference;
 
-import fakeDatabase.FakeServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import view.SheetReference;
 
 import java.util.ArrayList;
 
-/**
+    /**
  * Created by Максим on 19.12.2017.
  */
 public class Request implements Requestable{
 
-    private Message message;
-    JSONObject answer;
     private JSONArray addWords = new JSONArray();
     private JSONArray changeDelWords = new JSONArray();
     private JSONArray changeAddWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
 
-    FakeServer fakeServer = new FakeServer();
-
     @Override
     public ArrayList<String> toUpDate(SheetReference sheetReference) {
-        message = new Message(sheetReference);
-        answer =  fakeServer.toUpDate(message); // fake
-        return message.toExtractData(answer);
+        Communication.communication.toSendData(new Message(sheetReference).toJSONString());
+        return toExtractData(Communication.communication.toObtainData());
     }
 
     public void toSave(SheetReference sheetReference) {
-
-        message = new Message(sheetReference, addWords, changeDelWords, changeAddWords, delWords);
-        fakeServer.toSave(message); // fake
+        Communication.communication.toSendData(new Message(sheetReference, addWords, changeDelWords, changeAddWords, delWords).toJSONString());
         addWords.clear();
         changeDelWords.clear();
         changeAddWords.clear();
         delWords.clear();
+        Communication.communication.toObtainData();
 
     }
 
@@ -73,5 +68,22 @@ public class Request implements Requestable{
             if (isMatchWord(changeAddWords, stringSelect)) return;
         }
         delWords.add(stringSelect);
+    }
+
+    private ArrayList<String> toExtractData(String string) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(string);
+            JSONArray jsonArray = (JSONArray) jsonObject.get(CUW.NAMES);
+            if (!jsonArray.isEmpty()){
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    arrayList.add((String) jsonArray.get(i));
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return arrayList;
     }
 }

@@ -1,5 +1,6 @@
 package view;
 
+import reference.Communication;
 import reference.Data;
 import reference.Request;
 import reference.Requestable;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  * Created by Максим on 15.12.2017.
  */
 public class SheetReference extends JPanel implements ActionListener{
+
 
     Data<String> dataSheet = new Data<>();
     public JList<String> list = new JList<>(dataSheet);
@@ -98,10 +100,18 @@ public class SheetReference extends JPanel implements ActionListener{
             }
         }
         if (objEvent == buttonUpDate){
+            if (Communication.offline) {
+                JOptionPane.showMessageDialog(this, "Нет подключения", "Внимание", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             ArrayList<String> arrayList = dataSheet.toUpDate(this);
             if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
         }
         if (objEvent == buttonSave){
+            if (Communication.offline) {
+                JOptionPane.showMessageDialog(this, "Нет подключения", "Внимание", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             dataSheet.toSave(this);
         }
     }

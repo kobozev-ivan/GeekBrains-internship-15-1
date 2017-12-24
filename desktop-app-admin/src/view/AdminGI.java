@@ -1,4 +1,4 @@
-import view.*;
+package view;
 
 
 import javax.swing.*;
@@ -16,12 +16,13 @@ public class AdminGI extends JFrame{
     private JButton buttonOut = new JButton("Закрыть");
 
 
-    AdminGI(){
+    private AdminGI(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setTitle(TITLE);
         setResizable(false);
+        setAlwaysOnTop(true);
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(buttonOut);
         add(reference, BorderLayout.CENTER);
@@ -35,6 +36,7 @@ public class AdminGI extends JFrame{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                new ConnectionWindow();
                 new AdminGI();
             }
         });

@@ -1,10 +1,15 @@
 package fakeDatabase;
 
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,34 +18,58 @@ import java.util.HashMap;
  */
 public class FakeServer {
     private FakeData fakeData = new FakeData();
-    JSONParser parser = new JSONParser();
+    private JSONParser parser = new JSONParser();
     private JSONArray jsonArray = new JSONArray();
 
     private String nameTable;
     private String namePerson;
 
-
-    public JSONObject toUpDate(JSONObject jsonObject) {
-        nameTable = jsonObject.get("table").toString();
-        if (fakeData.persons.containsKey(nameTable)){
-            getDataCollection(fakeData.persons, nameTable);
-        }
-        if (fakeData.sites.containsKey(nameTable)){
-            getDataCollection(fakeData.sites, nameTable);
-        }
-        if (fakeData.keywords.containsKey(nameTable)){
-            namePerson = jsonObject.get("Persons").toString();
-            HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
-            if (hashMapObj.containsKey(namePerson)) {
-                getDataCollection(hashMapObj, namePerson);
+    public static void main(String[] args) {
+        FakeServer fakeServer = new FakeServer();
+        try(ServerSocket serverSocket = new ServerSocket(8189)) {
+            try (Socket socket = serverSocket.accept();){
+                DataInputStream in = new DataInputStream(socket.getInputStream());
+                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                while (true){
+                    String string = in.readUTF();
+                    String answer = fakeServer.toUpDate(string);
+                    out.writeUTF(answer);
+                    out.flush();
+                }
+//                in.close();
+//                out.close();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String toUpDate(String string) {
+        if (!jsonArray.isEmpty()) jsonArray.clear();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(string);
+            nameTable = jsonObject.get("table").toString();
+            if (fakeData.persons.containsKey(nameTable)){
+                getDataCollection(fakeData.persons, nameTable);
+            }
+            if (fakeData.sites.containsKey(nameTable)){
+                getDataCollection(fakeData.sites, nameTable);
+            }
+            if (fakeData.keywords.containsKey(nameTable)){
+                namePerson = jsonObject.get("Persons").toString();
+                HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
+                if (hashMapObj.containsKey(namePerson)) {
+                    getDataCollection(hashMapObj, namePerson);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         JSONObject jsonAnswer = new JSONObject();
         jsonAnswer.put("table", nameTable);
         if (nameTable.equalsIgnoreCase("keywords")) jsonAnswer.put("Persons", namePerson);
         jsonAnswer.put("namesString", jsonArray);
-        return jsonAnswer;
-
+        return jsonAnswer.toJSONString();
     }
 
     private void getDataCollection(HashMap<String, ArrayList<String>> hashMap, String stringKey){
@@ -51,7 +80,7 @@ public class FakeServer {
     }
 
 
-    public void toSave(JSONObject jsonObject) {
+    private void toSave(JSONObject jsonObject) {
         nameTable = jsonObject.get("table").toString();
         JSONArray jsonArrayAdd = (JSONArray) jsonObject.get("add");
         JSONArray jsonArrayChangeDel = (JSONArray) jsonObject.get("changeDel");

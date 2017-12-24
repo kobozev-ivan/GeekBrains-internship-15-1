@@ -9,8 +9,6 @@ import java.util.ArrayList;
  */
 public interface Requestable {
 
-//    void toObtainData();
-//    void toSendData();
     ArrayList<String> toUpDate(SheetReference sheetReference);
     void toSave(SheetReference sheetReference);
 }

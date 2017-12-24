@@ -9,13 +9,13 @@ import javax.swing.event.ChangeListener;
 /**
  * Created by Максим on 15.12.2017.
  */
-public class Reference extends JTabbedPane{
+class Reference extends JTabbedPane{
 
     private SheetReference namesOfIndividuals = new SheetReference();
     private SheetReference namesOfSites = new SheetReference();
     private SheetReferenceKeywords keywords = new SheetReferenceKeywords();
 
-    public Reference(){
+    Reference(){
 
         namesOfIndividuals.setName(CUW.PERSONS);
         namesOfSites.setName(CUW.SITES);

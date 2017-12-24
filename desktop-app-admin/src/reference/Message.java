@@ -17,12 +17,11 @@ class Message extends JSONObject{
     private static final String CHANGE_DEL = "changeDel";
     private static final String CHANGE_ADD = "changeAdd";
     private static final String DEL = "del";
-    private static final String NAMES = "namesString";
     private static final String ALL = "*";
 
     Message(SheetReference sheetReference){
         toDefineTable(sheetReference);
-        put(NAMES, ALL);
+        put(CUW.NAMES, ALL);
     }
 
     Message(SheetReference sheetReference, JSONArray addWords, JSONArray changeDelWords, JSONArray changeAddWords, JSONArray delWords){
@@ -44,16 +43,5 @@ class Message extends JSONObject{
             String selectPerson = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
             put(CUW.PERSONS, selectPerson);
         }
-    }
-
-    ArrayList<String> toExtractData(JSONObject jsonObject) {
-        JSONArray jsonArray = (JSONArray) jsonObject.get(NAMES);
-        ArrayList<String> arrayList = new ArrayList<>();
-        if (!jsonArray.isEmpty()){
-            for (int i = 0; i < jsonArray.size(); i++) {
-                arrayList.add((String) jsonArray.get(i));
-            }
-        }
-        return arrayList;
     }
 }
