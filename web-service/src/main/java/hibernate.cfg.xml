@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="connection.url">jdbc:mysql://localhost:3306/geekbrains_internship_15_1_db</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.username">GBUser</property>
+        <property name="connection.password">GBUser</property>
+        <property name="connection.pool_size">1</property>
+        <property name="current_session_context_class">thread</property>
+        <property name="show_sql">true</property>
+        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <mapping class="com.web.service.Keywords"/>
+        <mapping resource="com/web/service/Keywords.hbm.xml"/>
+        <mapping class="com.web.service.Pages"/>
+        <mapping resource="com/web/service/Pages.hbm.xml"/>
+        <mapping class="com.web.service.PersonPageRank"/>
+        <mapping resource="com/web/service/PersonPageRank.hbm.xml"/>
+        <mapping class="com.web.service.Persons"/>
+        <mapping resource="com/web/service/Persons.hbm.xml"/>
+        <mapping class="com.web.service.Sites"/>
+        <mapping resource="com/web/service/Sites.hbm.xml"/>
+        <!-- DB schema will be updated if needed -->
+        <!-- <property name="hbm2ddl.auto">update</property> -->
+    </session-factory>
+</hibernate-configuration>
