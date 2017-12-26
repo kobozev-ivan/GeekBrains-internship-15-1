@@ -1,14 +1,21 @@
 package com.web.service;
 
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * Created by DRSPEED-PC on 18.12.2017.
  */
+@Entity
 public class PersonPageRank {
+
+    @Id
     public int ID;
+
     public int PersonID;
+
     public int PageID;
+
     public int Rank;
 
     public int getID() {

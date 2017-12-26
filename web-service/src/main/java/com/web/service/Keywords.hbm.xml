@@ -4,7 +4,9 @@
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
     <class name="com.web.service.Keywords" table="keywords">
-        <id name="ID" column="ID" type="java.lang.Integer"/>
+        <id name="ID" column="ID" type="java.lang.Integer">
+            <generator class="identity"/>
+        </id>
         <property name="PersonID" column="PERSON_ID"  type="java.lang.Integer"/>
         <property name="Name" column="NAME" type="java.lang.String"/>
     </class>

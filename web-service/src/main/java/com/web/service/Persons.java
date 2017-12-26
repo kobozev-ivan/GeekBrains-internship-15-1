@@ -1,10 +1,17 @@
 package com.web.service;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * Created by DRSPEED-PC on 18.12.2017.
  */
+@Entity
 public class Persons {
+
+    @Id
     public int ID;
+
     public String Name;
 
     public int getID() {

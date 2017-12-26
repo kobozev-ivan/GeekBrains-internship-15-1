@@ -5,7 +5,9 @@
 <hibernate-mapping>
 
     <class name="com.web.service.Pages" table="pages">
-        <id name="ID" column="ID" type="java.lang.Integer"/>
+        <id name="ID" column="ID" type="java.lang.Integer">
+            <generator class="identity"/>
+        </id>
         <property name="siteID" column="SITE_ID" type="java.lang.Integer"/>
         <property name="URL" column="URL" type="java.lang.String"/>
         <property name="found" column="FOUND" type="java.util.Date"/>

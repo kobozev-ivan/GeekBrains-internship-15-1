@@ -5,7 +5,9 @@
 <hibernate-mapping>
 
     <class name="com.web.service.Sites" table="sites">
-        <id name="ID" column="ID" type="java.lang.Integer"/>
+        <id name="ID" column="ID" type="java.lang.Integer">
+            <generator class="identity"/>
+        </id>
         <property name="Name" column="NAME" type="java.lang.String"/>
     </class>
 </hibernate-mapping>

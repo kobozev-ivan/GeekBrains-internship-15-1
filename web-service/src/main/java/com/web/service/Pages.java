@@ -1,14 +1,23 @@
 package com.web.service;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * Created by DRSPEED-PC on 17.12.2017.
  */
+@Entity
 public class Pages {
 
+    @Id
     public int ID;
+
     public String SiteID;
+
     public String URL;
+
     public String Found;
+
     public String LastScan;
 
     public int getID() {
