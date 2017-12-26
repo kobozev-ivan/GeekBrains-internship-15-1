@@ -50,6 +50,10 @@ public class Collector extends Thread {
             newPagesList.putAll(smps.getPagesList());
         }
 
+        if(!(unchHTMLPagesList.isEmpty())) {
+            ParseHTML phtml = new ParseHTML(unchHTMLPagesList);
+        }
+
         ptw.insertIntoPagesTablePagesListFromCollector(newPagesList);
 
     }
@@ -62,12 +66,10 @@ public class Collector extends Thread {
                     unchRobotsList.put(item.getKey(), item.getValue());
                 } else if (item.getKey().contains("sitemap")) {
                     unchSiteMapsList.put(item.getKey(), item.getValue());
-                } else {
+                } else if(item.getKey().contains(".html")){
                     unchHTMLPagesList.put(item.getKey(), item.getValue());
                 }
             }
         }
     }
-
-
 }

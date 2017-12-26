@@ -18,8 +18,9 @@ public class ParseSiteMaps extends Thread {
 
     private TreeMap<String, Integer> unchSitemapsList = new TreeMap<>();
     private TreeMap<String, Integer> pagesList = new TreeMap<>();
+    private TreeMap<String, Integer> sitemapXMLFilesList = new TreeMap<>();
     private TreeMap<String, Integer> sitemapGZFiles = new TreeMap<>();
-    private TreeMap<String, Integer> contentSitemapGZFile = new TreeMap<>();
+    private TreeMap<String, Integer> container = new TreeMap<>();
 
     public ParseSiteMaps(TreeMap<String, Integer> unchSitemapsList) {
         this.unchSitemapsList = unchSitemapsList;
@@ -32,21 +33,39 @@ public class ParseSiteMaps extends Thread {
         for (Map.Entry<String, Integer> item: set) {
             if (item.getKey().contains(".gz")) {
                 sitemapGZFiles.put(item.getKey(), item.getValue());
+            } else if(item.getKey().substring(item.getKey().length() - 4).equals(".xml")) {
+                sitemapXMLFilesList.put(item.getKey(), item.getValue());
             } else {
                 pagesList.put(item.getKey(), item.getValue());
             }
         }
 
         if (!(sitemapGZFiles.isEmpty())) {
-            contentSitemapGZFile = openSitemapGZArchiveFile();
-            Set<Map.Entry<String, Integer>> contents = contentSitemapGZFile.entrySet();
+            container = openSitemapGZArchiveFile();
+            Set<Map.Entry<String, Integer>> contents = container.entrySet();
             for (Map.Entry<String, Integer> cont : contents) {
                 String[] splitResult1 = cont.getKey().split(" ");
                 for (int i = 0; i < splitResult1.length; i++) {
                     pagesList.put(splitResult1[i], cont.getValue());
                 }
             }
-            sitemapGZFiles.clear();
+            container.clear();
+        }
+
+        if(!(sitemapXMLFilesList.isEmpty())) {
+            int count = 1;
+            Set<Map.Entry<String, Integer>> pair = sitemapXMLFilesList.entrySet();
+            for (Map.Entry<String, Integer> item : pair) {
+                String xmlFileDir = "d:/forSitemaps/sm" + count + ".xml";
+                downloadUsingStream(item.getKey(), xmlFileDir);
+                String result = openXMLFile(xmlFileDir);
+                String[] splitResult1 = result.split(" ");
+                for (int i = 0; i < splitResult1.length; i++) {
+                    pagesList.put(splitResult1[i], item.getValue());
+                }
+                count++;
+            }
+
         }
 
         System.out.println("parseSiteMaps end");
@@ -103,7 +122,7 @@ public class ParseSiteMaps extends Thread {
             FileInputStream fis = new FileInputStream(gzipFile);
             GZIPInputStream gis = new GZIPInputStream(fis);
             FileOutputStream fos = new FileOutputStream(newFile);
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[16384];
             int len;
             while((len = gis.read(buffer)) != -1){
                 fos.write(buffer, 0, len);
