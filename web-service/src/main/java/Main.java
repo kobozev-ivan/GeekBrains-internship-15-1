@@ -1,24 +1,43 @@
-import com.web.service.Factory;
-import com.web.service.Persons;
-import com.web.service.Sites;
-import com.web.service.Keywords;
-import com.web.service.Pages;
-import com.web.service.PersonPageRank;
+import com.web.service.hibernate.Factory;
+import com.web.service.hibernate.Pages;
+import com.web.service.hibernate.Persons;
+import com.web.service.hibernate.Sites;
+
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by DRSPEED-PC on 24.12.2017.
  */
 public class Main {
     public static void main(final String[] args) throws Exception {
-//        Sites sites = new Sites();
-//        sites.setName("www.list.ru");
+        Sites sites = new Sites();
+        sites.setName("www.list.ru");
+
         Persons persons = new Persons();
-        persons.setName("¬‡Òˇ");
+        persons.setName("–í–∞—Å—è");
+        
+
+
+        Pages pages = new Pages();
+        pages.setURL("http://www.lenta.ru/page/page");
+        pages.setSiteID(1);
+
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = simpleDateFormat.format(date);
+
+        pages.setFound(currentTime);
+        pages.setLastScan(currentTime);
         try {
-//            Factory.getInstance().getSitesInterface().addSite(sites);
+            Factory.getInstance().getSitesInterface().addSite(sites);
             Factory.getInstance().getPersonsInterface().addPerson(persons);
-        } catch (Exception e){
+            Factory.getInstance().getPagesInterface().addPage(pages);
+        } catch (SQLException e){
             System.out.println(e.getStackTrace());
         }
+//        long date = System.currentTimeMillis();
+//        System.out.println(currentTime);
     }
 }

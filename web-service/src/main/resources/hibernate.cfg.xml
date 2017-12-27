@@ -10,11 +10,11 @@
         <property name="connection.password">GBUser</property>
         <property name="show_sql">true</property>
         <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
-        <mapping class="com.web.service.Keywords"/>
-        <mapping class="com.web.service.Pages"/>
-        <mapping class="com.web.service.PersonPageRank"/>
-        <mapping class="com.web.service.Persons"/>
-        <mapping class="com.web.service.Sites"/>
+        <mapping class="com.web.service.hibernate.Keywords"/>
+        <mapping class="com.web.service.hibernate.Pages"/>
+        <mapping class="com.web.service.hibernate.PersonPageRank"/>
+        <mapping class="com.web.service.hibernate.Persons"/>
+        <mapping class="com.web.service.hibernate.Sites"/>
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
     </session-factory>
