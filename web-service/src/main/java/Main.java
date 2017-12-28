@@ -37,7 +37,5 @@ public class Main {
         } catch (SQLException e){
             System.out.println(e.getStackTrace());
         }
-//        long date = System.currentTimeMillis();
-//        System.out.println(currentTime);
     }
 }
