@@ -1,12 +1,17 @@
 package com.web.service.hibernate;
 
+import com.web.service.rest.adapters.JaxBDateAdapter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Timestamp;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Created by DRSPEED-PC on 17.12.2017.
  */
+@XmlRootElement(name = "pages")
+
 @Entity
 public class Pages {
 
@@ -44,6 +49,8 @@ public class Pages {
     public void setURL(String URL) {
         this.url = URL;
     }
+
+    @XmlJavaTypeAdapter(JaxBDateAdapter.class)
 
     public String getFound() {
         return found;

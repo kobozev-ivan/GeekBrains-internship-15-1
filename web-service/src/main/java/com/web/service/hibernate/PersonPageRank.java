@@ -2,10 +2,13 @@ package com.web.service.hibernate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by DRSPEED-PC on 18.12.2017.
  */
+@XmlRootElement(name = "personpagerank")
+
 @Entity
 public class PersonPageRank {
 

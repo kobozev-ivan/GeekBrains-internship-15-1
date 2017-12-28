@@ -12,7 +12,7 @@ import java.util.List;
  * Created by DRSPEED-PC on 24.12.2017.
  */
 public class SitesImpl implements SitesInterface {
-    public void addSite(Sites site) throws SQLException {
+    public Sites addSite(Sites site) throws SQLException {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -26,14 +26,16 @@ public class SitesImpl implements SitesInterface {
                 session.close();
             }
         }
+        return site;
     }
 
-    public void deleteSite(Sites site) throws SQLException {
+    public Boolean deleteSite(int ID) throws SQLException {
         Session session = null;
+        Sites site = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            session.load(Sites.class, site.getName());
+            site = session.load(Sites.class, ID);
             session.delete(site);
             session.getTransaction().commit();
         } catch (Exception e){
@@ -43,7 +45,7 @@ public class SitesImpl implements SitesInterface {
                 session.close();
             }
         }
-
+        return true;
     }
 
     public void updateSite(int ID, Sites site) throws SQLException {
