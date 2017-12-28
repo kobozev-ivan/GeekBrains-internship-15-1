@@ -21,9 +21,7 @@ import java.util.List;
 @Path("/")
 public class WebService{
 
-    private FakeData fakeData = new FakeData();
-    HashMap<String, ArrayList<String>> persons = new HashMap<>();
-    ArrayList<String> personsList = new ArrayList<>();
+    private FakeData fakeData = FakeData.getInstance();
     private JSONArray jsonArray = new JSONArray();
     private JSONParser parser = new JSONParser();
 
@@ -32,7 +30,7 @@ public class WebService{
     @Produces(MediaType.APPLICATION_JSON)
     public Response toUpDate(@PathParam("table") String nameTable) {
             JSONObject jsonAnswer = new JSONObject();
-        if (persons.containsKey(nameTable)) getDataCollection(persons, nameTable);
+        if (fakeData.persons.containsKey(nameTable)) getDataCollection(fakeData.persons, nameTable);
         if (fakeData.sites.containsKey(nameTable)) getDataCollection(fakeData.sites, nameTable);
         jsonAnswer.put(nameTable, jsonArray);
         return Response.ok(jsonAnswer.toString()).build();
@@ -63,8 +61,8 @@ public class WebService{
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(stringAdd);
             JSONArray jsonArray = (JSONArray) jsonObject.get(nameTable);
-            if (persons.containsKey(nameTable)){
-                addDataCollection(persons, jsonArray, nameTable);
+            if (fakeData.persons.containsKey(nameTable)){
+                addDataCollection(fakeData.persons, jsonArray, nameTable);
                 return Response.status(201).build();
             }
             if (fakeData.sites.containsKey(nameTable)){
@@ -75,6 +73,27 @@ public class WebService{
             throw new WebApplicationException(e.getMessage());
         }
         return Response.serverError().build();
+    }
+
+    @POST
+    @Path ("/keywords/{Person}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setAddKeywords(@PathParam("Person") String namePerson, String stringAdd) {
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(stringAdd);
+            JSONArray jsonArray = (JSONArray) jsonObject.get(namePerson);
+            HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(CUW.KEYWORDS);
+            if (hashMapObj.containsKey(namePerson)){
+                addDataCollection(hashMapObj, jsonArray, namePerson);
+                return Response.status(201).build();
+            }else {
+                hashMapObj.put(namePerson, new ArrayList<>());
+                addDataCollection(hashMapObj, jsonArray, namePerson);
+                return Response.status(201).build();
+            }
+        } catch (ParseException e) {
+            throw new WebApplicationException(e.getMessage());
+        }
     }
 
     private void addDataCollection(HashMap<String, ArrayList<String>> hashMap, JSONArray jsonArray, String nameTable){

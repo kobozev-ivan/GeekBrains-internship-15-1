@@ -1,7 +1,5 @@
 package view;
 
-import reference.Communication;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -27,7 +25,7 @@ class ConnectionWindow extends JFrame implements ActionListener{
 
     private String nameHost;
     private int port;
-    private Communication communication;
+
 
     ConnectionWindow(){
 
@@ -87,11 +85,11 @@ class ConnectionWindow extends JFrame implements ActionListener{
             textArea.append("Порт подключения: " + stringPort + "\n");
         }
         if (object == buttonGreatConnect){
-            communication = new Communication(nameHost, port, textArea);
+//            communication = new Communication(nameHost, port, textArea);
             buttonGreatConnect.setEnabled(false); // потом убрать
         }
         if (object == buttonDisConnect){
-            communication.close();
+//            communication.close();
             buttonGreatConnect.setEnabled(true);
         }
     }

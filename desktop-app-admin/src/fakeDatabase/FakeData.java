@@ -1,18 +1,23 @@
 package fakeDatabase;
 
+import javax.ws.rs.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Максим on 18.12.2017.
  */
+
 class FakeData {
 
     HashMap<String, ArrayList<String>> persons = new HashMap<>();
     HashMap<String, ArrayList<String>> sites = new HashMap<>();
     HashMap<String, HashMap<String, ArrayList<String>>> keywords = new HashMap<>();
 
-    FakeData(){
+    private static volatile FakeData instance;
+
+    private FakeData(){
+
         ArrayList<String> personsList = new ArrayList<>();
         personsList.add("Иванов");
         personsList.add("Петров");
@@ -29,6 +34,21 @@ class FakeData {
         keywordsPersons.put("Иванов", keywordsList);
         keywords.put("keywords", keywordsPersons);
     }
+
+    static FakeData getInstance() {
+        FakeData localInstance = instance;
+        if (localInstance == null) {
+            synchronized (FakeData.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new FakeData();
+                }
+            }
+        }
+        return localInstance;
+    }
+
+
 
 
 }

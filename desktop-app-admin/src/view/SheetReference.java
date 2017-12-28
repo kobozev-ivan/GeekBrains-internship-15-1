@@ -1,12 +1,8 @@
 package view;
 
-import reference.Communication;
 import reference.Data;
-import reference.Request;
-import reference.Requestable;
 
 import javax.swing.*;
-import javax.ws.rs.WebApplicationException;
 import javax.xml.ws.WebServiceException;
 import java.awt.*;
 import java.awt.event.ActionEvent;

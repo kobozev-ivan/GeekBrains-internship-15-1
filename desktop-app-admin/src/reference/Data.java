@@ -3,7 +3,6 @@ package reference;
 import view.SheetReference;
 
 import javax.swing.*;
-import javax.ws.rs.WebApplicationException;
 import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.HashMap;
