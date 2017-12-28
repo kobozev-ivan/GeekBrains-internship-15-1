@@ -36,7 +36,6 @@ public class AdminGI extends JFrame{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ConnectionWindow();
                 new AdminGI();
             }
         });

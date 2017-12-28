@@ -6,6 +6,8 @@ import reference.Request;
 import reference.Requestable;
 
 import javax.swing.*;
+import javax.ws.rs.WebApplicationException;
+import javax.xml.ws.WebServiceException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,19 +102,21 @@ public class SheetReference extends JPanel implements ActionListener{
             }
         }
         if (objEvent == buttonUpDate){
-            if (Communication.offline) {
-                JOptionPane.showMessageDialog(this, "Нет подключения", "Внимание", JOptionPane.WARNING_MESSAGE);
-                return;
+            try {
+                ArrayList<String> arrayList = dataSheet.toUpDate(this);
+                if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
+            }catch (WebServiceException err){
+                JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
-            ArrayList<String> arrayList = dataSheet.toUpDate(this);
-            if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
+
         }
         if (objEvent == buttonSave){
-            if (Communication.offline) {
-                JOptionPane.showMessageDialog(this, "Нет подключения", "Внимание", JOptionPane.WARNING_MESSAGE);
-                return;
+            try {
+                dataSheet.toSave(this);
+            }catch (WebServiceException err){
+                JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
-            dataSheet.toSave(this);
+
         }
     }
 }

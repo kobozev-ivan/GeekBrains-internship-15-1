@@ -10,6 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by Максим on 21.12.2017.
  */
+
 class Message extends JSONObject{
 
     private static final String TABLE = "table";
@@ -19,9 +20,8 @@ class Message extends JSONObject{
     private static final String DEL = "del";
     private static final String ALL = "*";
 
-    Message(SheetReference sheetReference){
-        toDefineTable(sheetReference);
-        put(CUW.NAMES, ALL);
+    Message(String title, JSONArray jsonArray){
+        put(title, jsonArray);
     }
 
     Message(SheetReference sheetReference, JSONArray addWords, JSONArray changeDelWords, JSONArray changeAddWords, JSONArray delWords){

@@ -19,8 +19,8 @@ class FakeData {
         personsList.add("Сидоров");
         personsList.add("Медведев");
         ArrayList<String> sitesList = new ArrayList<>();
-        sitesList.add("bvbi.ru");
-        sitesList.add("vhebv.com");
+        sitesList.add("http://bvbi.ru");
+        sitesList.add("http://vhebv.com");
         ArrayList<String> keywordsList = new ArrayList<>();
         keywordsList.add("Иванова");
         persons.put("Persons", personsList);
