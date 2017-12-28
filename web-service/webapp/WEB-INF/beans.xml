@@ -10,12 +10,9 @@
     <!-- Imported bean for dao -->
     <import resource="classpath:META-INF/spring/dao.xml"></import>
 
-    <bean id="customersService" class="com.web.service.rest.CustomersServiceJSON">
-        <property name="customersDAO" ref="customersDAO"/>
+    <bean id="customersService" class="com.web.service.rest.SitesServiceJSON">
+        <property name="sitesInterface" ref="sitesDAO"/>
     </bean>
-
-    <bean id="preInvokeHandler" class="com.web.service.rest.PreInvokeHandler" />
-    <bean id="customExceptionMapper" class="com.web.service.rest.CustomExceptionMapper" />
 
     <jaxrs:server id="restContainer" address="/customer">
         <jaxrs:serviceBeans>
