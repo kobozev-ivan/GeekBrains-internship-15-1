@@ -101,4 +101,33 @@ public class WebService{
             hashMap.get(nameTable).add((String) jsonArray.get(i));
         }
     }
+
+    @PUT
+    @Path("/{table}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response setChange(@PathParam("table") String nameTable, String stringDel, String stringAdd) {
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(stringAdd);
+            JSONArray jsonArray = (JSONArray) jsonObject.get(nameTable);
+            if (fakeData.persons.containsKey(nameTable)){
+                addDataCollection(fakeData.persons, jsonArray, nameTable);
+                return Response.status(201).build();
+            }
+            if (fakeData.sites.containsKey(nameTable)){
+                addDataCollection(fakeData.sites, jsonArray, nameTable);
+                return Response.status(201).build();
+            }
+        } catch (ParseException e) {
+            throw new WebApplicationException(e.getMessage());
+        }
+        return Response.serverError().build();
+    }
+
+    private void changeDataCollection(HashMap<String, ArrayList<String>> hashMap, JSONArray jsonArray, String nameTable){
+        for (int i = 0; i < jsonArray.size(); i++) {
+            hashMap.get(nameTable).add((String) jsonArray.get(i));
+        }
+    }
+
+
 }

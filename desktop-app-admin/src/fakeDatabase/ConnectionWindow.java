@@ -1,4 +1,4 @@
-package view;
+package fakeDatabase;
 
 import javax.swing.*;
 import java.awt.*;

@@ -22,15 +22,14 @@ public class Request implements Requestable{
     private static final int OK = 200;
     private static final int CREATED_OK = 201;
     private JSONArray addWords = new JSONArray();
-    private JSONArray changeDelWords = new JSONArray();
-    private JSONArray changeAddWords = new JSONArray();
+    private JSONArray changeWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
 
     private String host;
     private String port;
     private String title;
 
-        @Override
+    @Override
     public ArrayList<String> toUpDate(SheetReference sheetReference) throws WebServiceException{
         WebTarget target = getPath(sheetReference);
         Response answer = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
@@ -38,26 +37,40 @@ public class Request implements Requestable{
         return toExtractData(answer.readEntity(String.class),title);
     }
 
+    @Override
     public void toSave(SheetReference sheetReference)throws WebServiceException{
         WebTarget target = getPath(sheetReference);
         if (!addWords.isEmpty()){
-            String postRequest = new Message(title, addWords).toJSONString();
+            String postRequest =  (new JSONObject().put(title, addWords)).toString();
             Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
                     .post(Entity.entity(postRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
             if (answer.getStatus() != CREATED_OK) {
                 addWords.clear();
                 throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus() + "\n" + answer.getStatusInfo());
             }
-            addWords.clear();
         }
-
-
-        changeDelWords.clear();
-        changeAddWords.clear();
+        if (!changeWords.isEmpty()){
+            String putRequest =  (new JSONObject().put(title, changeWords)).toString();
+            Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
+                    .put(Entity.entity(putRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
+            if (answer.getStatus() != CREATED_OK) {
+                changeWords.clear();
+                throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus() + "\n" + answer.getStatusInfo());
+            }
+        }
+        if (!delWords.isEmpty()){
+            String delRequest =  (new JSONObject().put(title, delWords)).toString();
+            Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
+                    .delete();
+            if (answer.getStatus() != OK) {
+                delWords.clear();
+                throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus() + "\n" + answer.getStatusInfo());
+            }
+        }
+        addWords.clear();
+        changeWords.clear();
         delWords.clear();
     }
-
-
 
     private WebTarget getPath(SheetReference sheetReference){
         title = sheetReference.getName();
@@ -73,16 +86,6 @@ public class Request implements Requestable{
         return ClientBuilder.newClient(new ClientConfig()).target("http://LocalHost:8080");
     }
 
-    private boolean isMatchWord(JSONArray jsonArray, String string){
-        for (int i = 0; i < jsonArray.size(); i++) {
-            if (jsonArray.get(i).equals(string)){
-                jsonArray.remove(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
     void toAdditionOfWords(String stringInput) {
         addWords.add(stringInput);
         if (!delWords.isEmpty()) isMatchWord(delWords, stringInput);
@@ -95,21 +98,37 @@ public class Request implements Requestable{
                 return;
             }
         }
-        changeDelWords.add(stringSelect);
-        changeAddWords.add(stringInput);
+        changeWords.add(new JSONObject().put(stringSelect, stringInput));
     }
 
     void toRemovingWords(String stringSelect) {
         if (!addWords.isEmpty()){
             if (isMatchWord(addWords, stringSelect)) return;
         }
-        if (!changeAddWords.isEmpty()){
-            if (isMatchWord(changeAddWords, stringSelect)) return;
+        if (!changeWords.isEmpty()){
+            if (isMatchWord(changeWords, stringSelect)) return;
         }
         delWords.add(stringSelect);
     }
 
-    private ArrayList<String> toExtractData(String answer, String nameTable) {
+        private boolean isMatchWord(JSONArray jsonArray, String string){
+            for (int i = 0; i < jsonArray.size(); i++) {
+                if (jsonArray.get(i) instanceof  JSONObject){
+                    if (((JSONObject) jsonArray.get(i)).containsValue(string)){
+                        jsonArray.remove(i);
+                        return true;
+                    }
+                }
+                if (jsonArray.get(i).equals(string)){
+                    jsonArray.remove(i);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        private ArrayList<String> toExtractData(String answer, String nameTable) {
         ArrayList<String> arrayList = new ArrayList<>();
         JSONParser parser = new JSONParser();
         try {
