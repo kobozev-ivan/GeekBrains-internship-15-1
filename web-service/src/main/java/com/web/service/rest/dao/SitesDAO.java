@@ -4,6 +4,7 @@ import com.web.service.hibernate.Sites;
 import com.web.service.hibernate.SitesInterface;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SitesDAO implements SitesDAOInterface {
@@ -38,6 +39,13 @@ public class SitesDAO implements SitesDAOInterface {
     }
 
     public List<Sites> getAllSites(int[] ID) {
-        return null;
+        List<Sites> sitesList = new ArrayList<Sites>();
+        try {
+            sitesList = sitesInterface.getAllSites(ID);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return sitesList;
     }
 }

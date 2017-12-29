@@ -35,6 +35,7 @@ public class SitesServiceJSON implements StiesServiceInterface {
     // status message in body
     @DELETE
 //    @Path("/{id}")
+    @Path(value = "/api/v1/sites")
     @Consumes(MediaType.APPLICATION_JSON)
 //    public Response removeSite(@PathParam("id") int id) {
     public Response removeSite(@QueryParam("id") int id) throws SQLException {
@@ -49,6 +50,7 @@ public class SitesServiceJSON implements StiesServiceInterface {
     // create row representing sites and returns created sites as
     // object->JSON structure
     @POST
+    @Path(value = "/api/v1/sites")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createSite(@QueryParam("URL") String URL) throws SQLException {
         System.out.println("POST");
@@ -56,14 +58,14 @@ public class SitesServiceJSON implements StiesServiceInterface {
         if (crsites != null) {
             return ResponseCreator.success(getHeaderVersion(), crsites);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),
-                    getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
         }
     }
 
     // update row and return previous version of row representing sites as
     // object->JSON structure
     @PUT
+    @Path(value = "/api/v1/sites")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSite(Sites sites, int ID) {
         System.out.println("PUT");
@@ -71,27 +73,26 @@ public class SitesServiceJSON implements StiesServiceInterface {
         if (udsite != null) {
             return ResponseCreator.success(getHeaderVersion(), udsite);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),
-                    getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
         }
     }
 
     // returns list of customers meeting query params
     @GET
+    @Path(value = "/api/v1/sites")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllSites(int[] ID){
+    public Response getAllSites(int[] ID)
+    //                                 @QueryParam("pagenum") Integer pageNum,
+    //                                 @QueryParam("pagesize") Integer pageSize)
+    {
         System.out.println("GET");
         List<Sites> listSites = sitesDAOInterface.getAllSites(ID);
-//                                 @QueryParam("pagenum") Integer pageNum,
-//                                 @QueryParam("pagesize") Integer pageSize) {
         if (listSites != null) {
-            GenericEntity<List<Sites>> entity = new GenericEntity<List<Sites>>(
-                    listSites) {
+            GenericEntity<List<Sites>> entity = new GenericEntity<List<Sites>>(listSites) {
             };
             return ResponseCreator.success(getHeaderVersion(), entity);
         } else {
-            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(),
-                    getHeaderVersion());
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
         }
     }
 }
