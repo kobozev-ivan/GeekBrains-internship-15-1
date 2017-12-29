@@ -14,13 +14,4 @@
         <property name="sitesInterface" ref="sitesDAO"/>
     </bean>
 
-    <jaxrs:server id="restContainer" address="/customer">
-        <jaxrs:serviceBeans>
-            <ref bean="customersService" />
-        </jaxrs:serviceBeans>
-        <jaxrs:providers>
-            <ref bean="preInvokeHandler" />
-            <ref bean="customExceptionMapper" />
-        </jaxrs:providers>
-    </jaxrs:server>
 </beans>
