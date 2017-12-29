@@ -1,75 +1,123 @@
+/**
+ * Осуществляет узловые функции:
+ * - запускает автоматический запрос в БД
+ * - извлекает список непроверенных ссылок на веб-страницы
+ * - сортирует список по типу ссылок: robots.txt, sitemap, HTML
+ * - отправляет каждый отсортированный список в соответствующий объект для обхода
+ * - получает из этих объектов новые списки ссылок, объединяет их в один
+ * - передает получившийся список в объект, осуществляющий запись ссылок в таблицу PAGES
+ * @author Anton Lapin, Yury Tweritin
+ * @date 29.12.2017
+ */
 package parser;
 
 import dbworker.PagesTableReader;
 import dbworker.PagesTableWriter;
 
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 public class Collector extends Thread {
-    private TreeMap<String, Integer> unchecked = new TreeMap<>();
+    private TreeMap<String, Integer> unchecked;
     private TreeMap<String, Integer> unchRobotsList = new TreeMap<>();
     private TreeMap<String, Integer> unchSiteMapsList = new TreeMap<>();
     private TreeMap<String, Integer> unchHTMLPagesList = new TreeMap<>();
     private TreeMap<String, Integer> newPagesList = new TreeMap<>();
+    private PagesTableWriter ptw;
+    private PagesTableReader ptr;
+    private ParseRobotsDotTxt rbts;
+    private ParseSiteMaps smps;
+    private ParseHTML phtml;
+
+    /**
+     * Основной алгоритм работы
+     */
 
     public void run() {
-        PagesTableWriter ptw = new PagesTableWriter();
-        ptw.insertIntoPagesTableRobotsTxtFile();
-        PagesTableReader ptr = new PagesTableReader();
-
-        try {
-            unchecked = ptr.queryUncheckedPages();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        initUncheckedSitesList();
         sortUncheckedPages();
-
-        if(!(unchRobotsList.isEmpty())) {
-            ParseRobotsDotTxt rbts = new ParseRobotsDotTxt(unchRobotsList);
-            rbts.start();
-            try {
-                rbts.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            newPagesList.putAll(rbts.getPagesList());
+        if(!(this.unchRobotsList.isEmpty())) {
+            initParseRobotsDotTxt();
         }
-
-        if(!(unchSiteMapsList.isEmpty())) {
-            ParseSiteMaps smps = new ParseSiteMaps(unchSiteMapsList);
-            smps.start();
-            try {
-                smps.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            newPagesList.putAll(smps.getPagesList());
+        if(!(this.unchSiteMapsList.isEmpty())) {
+            initParseSiteMaps();
         }
-
-        if(!(unchHTMLPagesList.isEmpty())) {
-            ParseHTML phtml = new ParseHTML(unchHTMLPagesList);
+        if(!(this.unchHTMLPagesList.isEmpty())) {
+            initParseHTML();
         }
-
-        ptw.insertIntoPagesTablePagesListFromCollector(newPagesList);
-
+        this.ptw.insertIntoPagesTablePagesListFromCollector(this.newPagesList);
     }
 
+    /**
+     * Метод, инициализирующий поиск ссылок непроверенных веб-страниц
+     */
+
+    private void initUncheckedSitesList() {
+        this.ptw = new PagesTableWriter();
+        this.ptw.insertIntoPagesTableRobotsTxtFile();
+        this.ptr = new PagesTableReader();
+        try {
+            this.unchecked = this.ptr.getUncheckedPages();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Метод, осуществляющий сортировку общего списка ссылок непроверенных веб-страниц
+     */
+
     private void sortUncheckedPages(){
-        Set<Map.Entry<String, Integer>> pair = unchecked.entrySet();
+        Set<Map.Entry<String, Integer>> pair = this.unchecked.entrySet();
         for (Map.Entry<String, Integer> item : pair) {
             if (item.getKey().contains("http")) {
                 if (item.getKey().contains("robots.txt")) {
-                    unchRobotsList.put(item.getKey(), item.getValue());
+                    this.unchRobotsList.put(item.getKey(), item.getValue());
                 } else if (item.getKey().contains("sitemap")) {
-                    unchSiteMapsList.put(item.getKey(), item.getValue());
+                    this.unchSiteMapsList.put(item.getKey(), item.getValue());
                 } else if(item.getKey().contains(".html")){
-                    unchHTMLPagesList.put(item.getKey(), item.getValue());
+                    this.unchHTMLPagesList.put(item.getKey(), item.getValue());
                 }
             }
         }
+    }
+
+    /**
+     * Метод, добавляющий в новый список ссылок веб-страниц элементы, полученные в результате обхода.
+     */
+
+    private void initParseRobotsDotTxt() {
+        this.rbts = new ParseRobotsDotTxt(this.unchRobotsList);
+        this.rbts.start();
+        try {
+            this.rbts.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.newPagesList.putAll(this.rbts.getPagesList());
+    }
+
+    /**
+     * Аналогично с предыдущим методом
+     */
+
+    private void initParseSiteMaps() {
+        this.smps = new ParseSiteMaps(this.unchSiteMapsList);
+        this.smps.start();
+        try {
+            this.smps.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.newPagesList.putAll(this.smps.getPagesList());
+    }
+
+    /**
+     * В разработке...
+     */
+
+    private void initParseHTML() {
+        this.phtml = new ParseHTML(this.unchHTMLPagesList);
     }
 }

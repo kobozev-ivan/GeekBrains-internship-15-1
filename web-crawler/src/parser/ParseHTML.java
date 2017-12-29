@@ -1,9 +1,10 @@
+/**
+ * В разработке...
+ * @author Anton Lapin, Yury Tweritin
+ * @date 29.12.2017
+ */
 package parser;
 
-import downloader.Downloader;
-
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class ParseHTML extends Thread {
@@ -14,11 +15,12 @@ public class ParseHTML extends Thread {
         this.unchHTMLPagesList = unchHTMLPagesList;
     }
 
+    public ParseHTML(){
+
+    }
+
     public void run() {
-        Set<Map.Entry<String, Integer>> pages = unchHTMLPagesList.entrySet();
-        for (Map.Entry<String, Integer> page : pages) {
-            System.out.println(new Downloader().download(page.getKey()));
-        }
+
     }
 
 }

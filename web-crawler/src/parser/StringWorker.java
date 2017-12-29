@@ -1,53 +1,70 @@
+/**
+ * Работает со строками большой длины, сокращает, вынимая из исходных строк нужную для обработки информацию
+ * @author Anton Lapin, Yury Tweritin
+ * @date 29.12.2017
+ */
 package parser;
 
 public class StringWorker {
-    //работает со строками большой длины
-    //сокращает, вынимая из исходных строк нужную для обработки информацию
+    private String[] splitResult1;
+    private String[] resOfSingleThread;
+    private String[][] array1;
+    private Thread[] threads;
+    private int threadsCount;
+    private int length;
+    private String result;
+    private int partSize;
 
-    public String handlingString(String str) { //требуется оптимизация метода, работает очень медленно!
-        String[] splitResult1 = str.split("<loc>");
-        String[] resOfSingleThread;
-        String res = "";
-        String[][] array1;
-        Thread[] threads;
-        int length = splitResult1.length;
-        int NUMBER_OF_THREADS = length;
-        int partSize = splitResult1.length / NUMBER_OF_THREADS;
+    /**
+     * Метод обработки строк большой длины, вычленение из них ссылок веб-страниц
+     * @param str
+     * @return
+     */
 
-        array1 = new String[NUMBER_OF_THREADS][partSize];
-        threads = new Thread[NUMBER_OF_THREADS];
-        resOfSingleThread = new String[NUMBER_OF_THREADS];
+    public String handlingString(String str) {
+        /**
+         * TODO: требуется оптимизация метода, работает очень медленно!
+         */
+        this.splitResult1 = str.split("<loc>");
+        this.result = "";
+        this.length = this.splitResult1.length;
+        this.threadsCount = this.length;
+        this.partSize = this.splitResult1.length / this.threadsCount;
 
-        for (int i = 0; i < threads.length; i++) {
-            System.arraycopy(splitResult1, partSize * i, array1[i], 0, partSize);
+        this.array1 = new String[this.threadsCount][this.partSize];
+        this.threads = new Thread[this.threadsCount];
+        this.resOfSingleThread = new String[this.threadsCount];
+
+        for (int i = 0; i < this.threads.length; i++) {
+            System.arraycopy(this.splitResult1, this.partSize * i, this.array1[i], 0, this.partSize);
             final int u = i;
-            threads[i] = new Thread(() -> {
+            this.threads[i] = new Thread(() -> {
                 String[] splitResult2;
-                for(int j = 0; j < partSize; j++) {
-                    String string = array1[u][j];
+                for(int j = 0; j < this.partSize; j++) {
+                    String string = this.array1[u][j];
                     splitResult2 = string.split("</loc>");
-                    array1[u][j] = splitResult2[0];
+                    this.array1[u][j] = splitResult2[0];
                 }
-                resOfSingleThread[u] = "";
-                for(int k = 0; k < array1[u].length; k++) {
-                    resOfSingleThread[u] += array1[u][k] + " ";
+                this.resOfSingleThread[u] = "";
+                for(int k = 0; k < this.array1[u].length; k++) {
+                    this.resOfSingleThread[u] += this.array1[u][k] + " ";
                 }
             });
-            threads[i].start();
+            this.threads[i].start();
         }
 
-        for (int i = 0; i < NUMBER_OF_THREADS; i++) {
+        for (int i = 0; i < this.threadsCount; i++) {
             try {
-                threads[i].join();
+                this.threads[i].join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        for (int i = 1; i < resOfSingleThread.length; i++) {
-            res += resOfSingleThread[i];
+        for (int i = 1; i < this.resOfSingleThread.length; i++) {
+            this.result += this.resOfSingleThread[i];
         }
 
-        return res;
+        return this.result;
     }
 }

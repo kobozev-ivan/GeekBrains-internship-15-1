@@ -1,39 +1,49 @@
+/**
+ * Получает список robots.txt, инициирует поиск robots.txt данных сайтов,
+ * просматривает robots.txt в поисках ссылок на новые страницы
+ * @author Anton Lapin, Yury Tweritin
+ * @date 29.12.2017
+ */
 package parser;
 
 import downloader.Downloader;
-
-import java.io.*;
-import java.net.URL;
-import java.sql.SQLException;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.zip.GZIPInputStream;
 
-public class ParseRobotsDotTxt extends Thread{
-    //получает список robots.txt
-    //инициирует поиск robots.txt данных сайтов
-    //просматривает robots.txt в поисках ссылок на новые страницы
+public class ParseRobotsDotTxt extends Thread {
 
     private TreeMap<String, Integer> pagesList = new TreeMap<>();
-    private TreeMap<String, Integer> unchRobotsList = new TreeMap<>();
+    private TreeMap<String, Integer> unchRobotsList;
+
+    /**
+     * Конструктор класса
+     * @param unchRobotsList
+     */
 
     public ParseRobotsDotTxt(TreeMap<String, Integer> unchRobotsList) {
         this.unchRobotsList = unchRobotsList;
     }
 
-    public void run(){
-        System.out.println("parseRobotsDotTxt begin");
+    /**
+     * Основной алгоритм работы нити
+     */
 
-        Set<Map.Entry<String, Integer>> set = unchRobotsList.entrySet();
+    public void run(){
+        Set<Map.Entry<String, Integer>> set = this.unchRobotsList.entrySet();
         for (Map.Entry<String, Integer> item: set) {
             Integer id = item.getValue();
             String url = item.getKey();
-            pagesList.putAll(searchNewPageReferences(url, id));
+            this.pagesList.putAll(searchNewPageReferences(url, id));
         }
-        System.out.println("parseRobotsDotTxt end");
     }
+
+    /**
+     * Метод, осуществляющий поиск новых ссылок веб-страниц
+     * @param url
+     * @param id
+     * @return список новых ссылок веб-страниц
+     */
 
     private TreeMap<String, Integer> searchNewPageReferences(String url, int id) {
         TreeMap<String, Integer> newPages = new TreeMap<>();
@@ -45,11 +55,15 @@ public class ParseRobotsDotTxt extends Thread{
                 newPages.put(splitContent[i + 1], id);
             }
         }
-
         return newPages;
     }
 
+    /**
+     * Метод, осуществляющий получение списка ссылок веб-страниц
+     * @return список ссылок веб-страниц
+     */
+
     public TreeMap<String, Integer> getPagesList() {
-        return pagesList;
+        return this.pagesList;
     }
 }

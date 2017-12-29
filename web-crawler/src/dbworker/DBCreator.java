@@ -1,3 +1,8 @@
+/**
+ * Создает базу данных SQLite3 для тестирования элементов веб-краулера
+ * @author Anton Lapin
+ * @date 29.12.2017
+ */
 package dbworker;
 
 import java.io.BufferedReader;
@@ -8,21 +13,29 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBCreator {
+
     private Connection connection;
     private Statement stmt;
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+    /**
+     * Точка входа
+     * @param args
+     */
+
     public static void main(String[] args) {
         new DBCreator().run();
     }
+
+    /**
+     * Основной алгоритм работы
+     */
 
     public void run(){
         try{
             connect();
             dropTables();
             createTables();
-            //clearTable();
-            //insertIntoTable();
         }catch (Exception e){
             e.printStackTrace();
         }finally {
@@ -30,11 +43,20 @@ public class DBCreator {
         }
     }
 
+    /**
+     * Метод, отвечающий за подключение к БД
+     * @throws Exception
+     */
+
     private void connect() throws Exception{
         Class.forName("org.sqlite.JDBC");
         connection = DriverManager.getConnection("jdbc:sqlite:GEEKBRAINS_INTERNSHIP_15_1_DB.db");
         stmt = connection.createStatement();
     }
+
+    /**
+     * Метод, отвечающий за отключение от БД
+     */
 
     private void disconnect(){
         try {
@@ -43,6 +65,11 @@ public class DBCreator {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Метод - SQL-запрос на создание БД
+     * @throws SQLException
+     */
 
     private void createTables() throws SQLException{
         stmt.executeUpdate("CREATE TABLE PERSONS(\n" +
@@ -79,6 +106,11 @@ public class DBCreator {
                 "   CONSTRAINT fk_persons_rank FOREIGN KEY (PERSON_ID) REFERENCES PERSONS(ID)\n" +
                 ");\n");
     }
+
+    /**
+     * Метод по очистке БД от старых таблиц
+     * @throws SQLException
+     */
 
     private void dropTables() throws SQLException {
         stmt.executeUpdate("DROP TABLE IF EXISTS PERSONS;\n" +
