@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+    <!-- Imported resources for cxf -->
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+    <!-- Imported bean for dao -->
+    <import resource="classpath:META-INF/spring/dao.xml"></import>
+
+    <bean id="customersService" class="com.web.service.rest.SitesServiceJSON">
+        <property name="sitesInterface" ref="sitesDAO"/>
+    </bean>
+
+    <jaxrs:server id="restContainer" address="/customer">
+        <jaxrs:serviceBeans>
+            <ref bean="customersService" />
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="preInvokeHandler" />
+            <ref bean="customExceptionMapper" />
+        </jaxrs:providers>
+    </jaxrs:server>
+</beans>
