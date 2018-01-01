@@ -47,14 +47,23 @@ public class ParseRobotsDotTxt extends Thread {
 
     private TreeMap<String, Integer> searchNewPageReferences(String url, int id) {
         TreeMap<String, Integer> newPages = new TreeMap<>();
-        String pageContent = new Downloader().download(url);
-        String[] splitContent = pageContent.split(" ");
-
-        for(int i = 0; i < splitContent.length; i++){
-            if(splitContent[i].equals("Sitemap:") || splitContent[i].equals("sitemap:")){
-                newPages.put(splitContent[i + 1], id);
+        String pageContent = new Downloader().download(url);//скачивание страницы по адресу url
+        String[] splitContent = pageContent.split("\n");// делим на строки и кладем в массив строк
+		//ищем строку Sitemap: или sitemap:, после которой идет его адрес
+		for (String line :splitContent){
+			int index=line.indexOf("Sitemap:");
+            if (index!=-1){
+               String url=line.substring(index+8).replace( " ", "" );
             }
-        }
+            else{
+               index=line.indexOf("sitemap:");
+               if (index!=-1){
+               url=line.substring(index+8).replace( " ", "" );
+               }
+            }
+			newPages.put(url,id);
+		}
+        
         return newPages;
     }
 
