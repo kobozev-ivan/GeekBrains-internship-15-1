@@ -1,5 +1,5 @@
 /**
- * Получает список robots.txt, инициирует поиск robots.txt данных сайтов,
+ * Получает список ссылок robots.txt, инициирует поиск robots.txt данных сайтов,
  * просматривает robots.txt в поисках ссылок на новые страницы
  * @author Anton Lapin, Yury Tweritin
  * @date 29.12.2017

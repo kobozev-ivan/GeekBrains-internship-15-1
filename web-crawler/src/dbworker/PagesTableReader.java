@@ -43,10 +43,14 @@ public class PagesTableReader {
     }
 
     /**
-     * Метод, осуществляющий запрос на поиск и получение ссылок веб-страниц, у которых отсутствует время последнего
-     * сканирования
+     * Метод, осуществляющий запрос на поиск и получение ссылок веб-страниц 
+     * всех сайтов, у которых отсутствует время последнего сканирования
+     * Во время запроса добавляет время последнего сканирования страниц(для 
+     * каждой страницы)
      * @return неотсканированные ссылки веб-страниц
      * @throws Exception
+     * возвращает коллекцию ссылок на страницы всех сайтов, которые еще
+     * не сканировали 
      */
 
     public TreeMap<String, Integer> getUncheckedPages() throws Exception {
@@ -55,15 +59,16 @@ public class PagesTableReader {
         this.rs = this.stmt.executeQuery("SELECT URL, SITE_ID FROM PAGES" +
                 " WHERE LAST_SCAN IS NULL;");
         while(this.rs.next()){
-            this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));
+            this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));//кладем в коллекцию
         }
-        setLastScanDateForEachItem();
+        setLastScanDateForEachItem();//добавление времени последнего сканирования
         disconnect();
         return this.unchecked;
     }
 
     /**
-     * Метод, осуществляющий простановку у каждого выявленного элемента дату последнего сканирования
+     * Метод, осуществляющий простановку у каждого выявленного элемента дату
+     * последнего сканирования
      * @throws SQLException
      */
 

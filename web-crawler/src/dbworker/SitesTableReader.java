@@ -56,6 +56,7 @@ public class SitesTableReader extends Thread {
 
     /**
      * Метод, осуществляющий запрос в БД на получение списка названий сайтов, не имеющих robots.txt
+     * помещает найденные сайты в коллекцию siteNamelist
      * @throws SQLException
      */
 

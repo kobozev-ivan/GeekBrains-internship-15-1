@@ -43,15 +43,17 @@ public class PagesTableWriter {
     }
 
     /**
-     * Метод, который записывает ссылку на robots.txt веб-сайта в таблицу PAGES
+     * Метод, который записывает ссылки на robots.txt непроверенных веб-сайтов в таблицу PAGES
      */
 
     public void insertIntoPagesTableRobotsTxtFile() {
         try{
-            startSitesTableReader();
+            startSitesTableReader();//получили из БД коллекцию сайтов, без robots.txt
             connect();
-            this.connection.setAutoCommit(false);
-            sitesListHandling(true);
+            this.connection.setAutoCommit(false);//отключаем автоматическое 
+            //управление транзакциями при работе с БД(для ускорения серии запросов)
+            sitesListHandling(true);//формируем список ссылок на robots.txt и 
+            //передаем его в БД (в PAGES), привязывая по времени
             this.connection.setAutoCommit(true);
         } catch (Exception e){
             e.printStackTrace();
@@ -62,15 +64,19 @@ public class PagesTableWriter {
     }
 
     /**
-     * Метод, запускающий SitesTableReader, получает список названий сайтов, у которых нет robots.txt
+     * Метод, запускающий SitesTableReader, 
+     * возвращает список названий сайтов, у которых нет robots.txt (которые не
+     * сканировались на наличие robots.txt)
      */
 
     private void startSitesTableReader(){
         this.sitesTableReader = new SitesTableReader();
         try {
-            this.sitesTableReader.start();
+            this.sitesTableReader.start();//запрос из БД списка сайтов, 
+            //которых еще не сканировали на наличие robots.txt (т.е. новые сайты) 
             this.sitesTableReader.join();
-            this.sites = this.sitesTableReader.getNoReferenceSiteNamesList();
+            //возвращение колллекции сайтов не сканированных на наличие robots.txt
+            this.sites = this.sitesTableReader.getNoReferenceSiteNamesList();//получение
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,20 +84,28 @@ public class PagesTableWriter {
 
     /**
      * Метод, осуществляющий обработку элементов списка названий сайта, не имеющих robots.txt
+     * В процессе обхода формирует ссылки на robots.txt и кладет их 
+     * в БД, привязывая к временной отметке.
      */
 
     private void sitesListHandling(boolean isRobots) {
-        Set<Map.Entry<String, Integer>> names = this.sites.entrySet();
+        Set<Map.Entry<String, Integer>> names = this.sites.entrySet();/*
+        /*чтобы пробежаться по всем парам ключ-сайт используя метод 
+         *entrySet(возвращает множество пар) преобразуем в коллекцию Set 
+         *(инициализируем её в переменной names) и пробегаемся по коллекции
+         */
         for (Map.Entry<String, Integer> siteName : names) {
             int id = siteName.getValue();
-            this.date = new Date();
-            this.date.getTime();
+            this.date = new Date();//инициализируем  переменную для хранения даты 
+            //обрабатываемого сайта без robots.txt
+            this.date.getTime();//присваиваем текущую дату
             if(isRobots) {
+                //формируем ссылку на файл robots.txt
                 this.url = "http://" + siteName.getKey() + "/robots.txt";
             } else {
-                this.url = siteName.getKey();
+                this.url = siteName.getKey();// для чего данная строчка не понятно!!!!!!!!!!!!!!
             }
-            insertQueryExecutor(this.url, id, date);
+            insertQueryExecutor(this.url, id, date); //запрос на добавление данных в БД
         }
     }
 

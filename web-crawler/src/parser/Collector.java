@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class Collector extends Thread {
-    private TreeMap<String, Integer> unchecked;
+    private TreeMap<String, Integer> unchecked;//коллекция страниц всех сайтов,
+    //которые еще не сканировали
     private TreeMap<String, Integer> unchRobotsList = new TreeMap<>();
     private TreeMap<String, Integer> unchSiteMapsList = new TreeMap<>();
     private TreeMap<String, Integer> unchHTMLPagesList = new TreeMap<>();
@@ -35,10 +36,11 @@ public class Collector extends Thread {
      */
 
     public void run() {
-        initUncheckedSitesList();
-        sortUncheckedPages();
-        if(!(this.unchRobotsList.isEmpty())) {
-            initParseRobotsDotTxt();
+        initUncheckedSitesList();//поиск непроверенных ссылок страниц сайтов
+        sortUncheckedPages();// сортируем ссылки (robots,sitemap,html)
+        if(!(this.unchRobotsList.isEmpty())) {//если коллекция не пустая
+            initParseRobotsDotTxt();//анализ ссылок на robots.txt(чтение 
+            //и поиск ссылки на sitemap'ы)
         }
         if(!(this.unchSiteMapsList.isEmpty())) {
             initParseSiteMaps();
@@ -50,7 +52,8 @@ public class Collector extends Thread {
     }
 
     /**
-     * Метод, инициализирующий поиск ссылок непроверенных веб-страниц
+     * Метод, выполняющий с помощью других методов и классов,поиск ссылок 
+     * непроверенных веб-страниц (для всех сайтов) 
      */
 
     private void initUncheckedSitesList() {
@@ -73,10 +76,13 @@ public class Collector extends Thread {
         for (Map.Entry<String, Integer> item : pair) {
             if (item.getKey().contains("http")) {
                 if (item.getKey().contains("robots.txt")) {
+                    //кладем в коллекцию ссылок на robots.txt
                     this.unchRobotsList.put(item.getKey(), item.getValue());
                 } else if (item.getKey().contains("sitemap")) {
+                    //кладем в коллекцию ссылок на sitemap
                     this.unchSiteMapsList.put(item.getKey(), item.getValue());
                 } else if(item.getKey().contains(".html")){
+                    //кладем в коллекцию ссылок обычных .html
                     this.unchHTMLPagesList.put(item.getKey(), item.getValue());
                 }
             }
@@ -84,7 +90,8 @@ public class Collector extends Thread {
     }
 
     /**
-     * Метод, добавляющий в новый список ссылок веб-страниц элементы, полученные в результате обхода.
+     * Метод, добавляющий в новый список ссылок веб-страниц элементы, 
+     * полученные в результате обхода.
      */
 
     private void initParseRobotsDotTxt() {
@@ -95,6 +102,7 @@ public class Collector extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //помещаем коллекцию sitemap'ов в newPageList
         this.newPagesList.putAll(this.rbts.getPagesList());
     }
 
@@ -110,7 +118,8 @@ public class Collector extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.newPagesList.putAll(this.smps.getPagesList());
+        this.newPagesList.putAll(this.smps.getPagesList());//почему добавляем в
+        //ту же коллекцию??????????
     }
 
     /**
