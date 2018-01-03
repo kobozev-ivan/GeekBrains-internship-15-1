@@ -50,12 +50,13 @@ public class ParseSiteMaps extends Thread {
     private void sortUncheckedSiteMapsList() {
         Set<Map.Entry<String, Integer>> set = this.unchSitemapsList.entrySet();
         for (Map.Entry<String, Integer> item: set) {
+            String[] key = item.getKey().split(" ");
             if (item.getKey().contains(".gz")) {
-                this.sitemapGZFiles.put(item.getKey(), item.getValue());
-            } else if(item.getKey().substring(item.getKey().length() - 4).equals(".xml")) {
-                this.sitemapXMLFilesList.put(item.getKey(), item.getValue());
+                this.sitemapGZFiles.put(key[1], item.getValue());
+            } else if(key[1].substring(key[1].length() - 4).equals(".xml")) {
+                this.sitemapXMLFilesList.put(key[1], item.getValue());
             } else {
-                this.pagesList.put(item.getKey(), item.getValue());
+                this.pagesList.put(key[1], item.getValue());
             }
         }
     }
