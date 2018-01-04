@@ -1,5 +1,4 @@
-package view;
-
+package gia;
 import reference.Data;
 
 import javax.swing.*;
@@ -7,9 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-/**
- * Created by Максим on 17.12.2017.
- */
 public class SheetReferenceKeywords extends SheetReference{
 
     DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
@@ -74,4 +70,5 @@ public class SheetReferenceKeywords extends SheetReference{
             }
         }
     }
+
 }

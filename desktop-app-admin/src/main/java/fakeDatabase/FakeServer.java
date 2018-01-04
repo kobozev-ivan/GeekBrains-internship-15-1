@@ -4,27 +4,36 @@ import com.sun.net.httpserver.HttpServer;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by Максим on 22.12.2017.
- */
 public class FakeServer {
 
 
     public static void main(String[] args) {
-        URI baseUri = UriBuilder.fromUri("http://LocalHost/").port(8080).build();
-        HttpServer server = JdkHttpServerFactory.createHttpServer(baseUri, new ResourceConfig(WebService.class));
+        baseUri = UriBuilder.fromUri("http://LocalHost/").port(8989).build();
+//        ResourceConfig resourceConfig = new ResourceConfig(WebService.class);
+//        resourceConfig.register(FakeData.class);
+//        resourceConfig.packages("fakeDatabase");
+//        resourceConfig.register(org.glassfish.jersey.server.filter.UriConnegFilter.class);
+//        resourceConfig.register(org.glassfish.jersey.jdkhttp.JdkHttpHandlerContainerProvider.class);
+//
+//        resourceConfig.property(ServerProperties.METAINF_SERVICES_LOOKUP_DISABLE, true);
+
+//        httpServer = JdkHttpServerFactory.createHttpServer(baseUri, new ResourceConfig(WebService.class));
+        httpServer = getHttpServer();
+
     }
 
+    private static HttpServer httpServer;
+    private static URI baseUri;
 
+    static HttpServer getHttpServer() {
+        if(httpServer == null) httpServer = JdkHttpServerFactory.createHttpServer(baseUri, new ResourceConfig(WebService.class),true) ;
+        return httpServer;
+    }
 
     private void toChange(HashMap<String, ArrayList<String>> hashMap, String stringKey, JSONArray jsonArrayDel, JSONArray jsonArrayAdd){
         pass: for (int i = 0; i < jsonArrayDel.size(); i++) {
@@ -47,4 +56,6 @@ public class FakeServer {
             }
         }
     }
+
+
 }

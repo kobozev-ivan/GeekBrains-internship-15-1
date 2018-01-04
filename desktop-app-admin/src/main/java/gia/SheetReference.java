@@ -1,4 +1,4 @@
-package view;
+package gia;
 
 import reference.Data;
 
@@ -9,11 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-/**
- * Created by Максим on 15.12.2017.
- */
 public class SheetReference extends JPanel implements ActionListener{
-
 
     Data<String> dataSheet = new Data<>();
     public JList<String> list = new JList<>(dataSheet);

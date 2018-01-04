@@ -1,16 +1,13 @@
 package reference;
 
-import view.SheetReference;
+import gia.SheetReference;
 
 import javax.swing.*;
 import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by Максим on 15.12.2017.
- */
-public class Data<T> extends DefaultListModel<String> implements Editable,Requestable{
+public class Data<T> extends DefaultListModel<String> implements Editable, Requestable {
 
     private Data<T> data;
     private HashMap<Data<T>, Request> hashMap = new HashMap<>();
@@ -59,4 +56,6 @@ public class Data<T> extends DefaultListModel<String> implements Editable,Reques
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (hashMap.containsKey(key)) hashMap.get(key).toSave(sheetReference);
     }
+
+
 }

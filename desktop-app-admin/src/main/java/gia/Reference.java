@@ -1,4 +1,4 @@
-package view;
+package gia;
 
 import reference.CUW;
 
@@ -6,9 +6,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-/**
- * Created by Максим on 15.12.2017.
- */
 class Reference extends JTabbedPane{
 
     private SheetReference namesOfIndividuals = new SheetReference();

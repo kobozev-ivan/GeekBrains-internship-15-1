@@ -1,14 +1,10 @@
 package fakeDatabase;
 
-import javax.ws.rs.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by Максим on 18.12.2017.
- */
 
-class FakeData {
+public class FakeData {
 
     HashMap<String, ArrayList<String>> persons = new HashMap<>();
     HashMap<String, ArrayList<String>> sites = new HashMap<>();
@@ -47,8 +43,4 @@ class FakeData {
         }
         return localInstance;
     }
-
-
-
-
 }
