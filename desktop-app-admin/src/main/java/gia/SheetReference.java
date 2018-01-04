@@ -7,11 +7,12 @@ import javax.xml.ws.WebServiceException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.ConnectException;
 import java.util.ArrayList;
 
 public class SheetReference extends JPanel implements ActionListener{
 
-    Data<String> dataSheet = new Data<>();
+    private Data<String> dataSheet = new Data<>();
     public JList<String> list = new JList<>(dataSheet);
 
     JButton buttonAdd = new JButton("Добавить");
@@ -97,7 +98,7 @@ public class SheetReference extends JPanel implements ActionListener{
             try {
                 ArrayList<String> arrayList = dataSheet.toUpDate(this);
                 if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
-            }catch (WebServiceException err){
+            }catch (ConnectException | WebServiceException err){
                 JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
 

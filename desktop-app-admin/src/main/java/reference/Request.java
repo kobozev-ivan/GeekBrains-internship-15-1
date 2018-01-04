@@ -8,15 +8,15 @@ import org.json.simple.parser.ParseException;
 import gia.SheetReference;
 import gia.SheetReferenceKeywords;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.ws.WebServiceException;
+import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Request implements Requestable {
     private static final int OK = 200;
@@ -30,9 +30,14 @@ public class Request implements Requestable {
     private String title;
 
     @Override
-    public ArrayList<String> toUpDate(SheetReference sheetReference) throws WebServiceException{
+    public ArrayList<String> toUpDate(SheetReference sheetReference) throws WebServiceException, ConnectException {
         WebTarget target = getPath(sheetReference);
-        Response answer = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
+        Response answer;
+        try{
+            answer = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
+        }catch (ProcessingException e){
+            throw new ConnectException("Связь с сервером не установлена\n");
+        }
         if (answer.getStatus() != OK){
             answer.close();
             throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus());
@@ -77,7 +82,6 @@ public class Request implements Requestable {
 
     private WebTarget getPath(SheetReference sheetReference){
         title = sheetReference.getName();
-        System.out.println(title);
         if (title.equals(CUW.KEYWORDS)){
             title = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
             return getTarget().path(CUW.KEYWORDS).path(title);
@@ -129,7 +133,6 @@ public class Request implements Requestable {
             }
             return false;
         }
-
 
         private ArrayList<String> toExtractData(String answer, String nameTable) {
         ArrayList<String> arrayList = new ArrayList<>();

@@ -28,7 +28,7 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
     private final JTextField fieldPort = new JTextField("8989");
     private final JButton buttonGreatConnect = new JButton("Включение");
     private final JButton buttonDisConnect = new JButton("Остановка");
-    static final JTextArea textArea = new JTextArea();
+    private WindowServer textArea = WindowServer.getInstance();
 
     private String nameHost;
     private int port;
@@ -59,11 +59,6 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
 
         upperPanel.add(panelButton);
 
-        textArea.setEditable(false);
-        textArea.setAutoscrolls(true);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-
         JScrollPane scrollPane = new JScrollPane(textArea);
 
         add(upperPanel, BorderLayout.NORTH);
@@ -79,7 +74,6 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
                 new FakeServerHTTP();
             }
         });
-
     }
 
     @Override

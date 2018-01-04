@@ -6,8 +6,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import reference.CUW;
 
-import javax.annotation.Resource;
-import javax.swing.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -19,6 +17,7 @@ import java.util.HashMap;
 public class WebService{
 
     private FakeData fakeData = FakeData.getInstance();
+    private WindowServer textArea = WindowServer.getInstance();
     private JSONArray jsonArray;
     private JSONParser parser = new JSONParser();
 
@@ -33,7 +32,7 @@ public class WebService{
         System.out.println(jsonArray.toString());
         jsonAnswer.put(nameTable, jsonArray);
         Response response = Response.ok(jsonAnswer.toJSONString()).build();
-        FakeServerHTTP.textArea.append(response.toString()+ "\n" + response.getEntity().toString()+ "\n");
+        textArea.append(response.toString()+ "\n" + response.getEntity().toString()+ "\n");
         return response;
     }
 

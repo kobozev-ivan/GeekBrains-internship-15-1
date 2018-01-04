@@ -4,6 +4,7 @@ import gia.SheetReference;
 
 import javax.swing.*;
 import javax.xml.ws.WebServiceException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ public class Data<T> extends DefaultListModel<String> implements Editable, Reque
     private HashMap<Data<T>, Request> hashMap = new HashMap<>();
 
     @Override
-    public ArrayList<String> toUpDate(SheetReference sheetReference) throws WebServiceException {
+    public ArrayList<String> toUpDate(SheetReference sheetReference) throws WebServiceException, ConnectException {
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (!hashMap.containsKey(key)) hashMap.put(key, new Request());
         ArrayList<String> arrayListData = hashMap.get(key).toUpDate(sheetReference);
