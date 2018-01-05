@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 @Path("/")
 public class WebService{
 
@@ -21,7 +20,6 @@ public class WebService{
     private JSONArray jsonArray;
     private JSONParser parser = new JSONParser();
 
-
     @GET
     @Path("/{table}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -29,10 +27,9 @@ public class WebService{
         JSONObject jsonAnswer = new JSONObject();
         if (fakeData.persons.containsKey(nameTable)) jsonArray = getDataCollection(fakeData.persons, nameTable);
         if (fakeData.sites.containsKey(nameTable)) jsonArray = getDataCollection(fakeData.sites, nameTable);
-        System.out.println(jsonArray.toString());
         jsonAnswer.put(nameTable, jsonArray);
         Response response = Response.ok(jsonAnswer.toJSONString()).build();
-        textArea.append(response.toString()+ "\n" + response.getEntity().toString()+ "\n");
+        toViewAnswer(response);
         return response;
     }
 
@@ -44,7 +41,9 @@ public class WebService{
         HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(CUW.KEYWORDS);
         if (hashMapObj.containsKey(namePerson))  jsonArray = getDataCollection(hashMapObj, namePerson);
         jsonAnswer.put(namePerson, jsonArray);
-        return Response.ok(jsonAnswer.toString()).build();
+        Response response = Response.ok(jsonAnswer.toJSONString()).build();
+        toViewAnswer(response);
+        return response;
     }
 
     private JSONArray getDataCollection(HashMap<String, ArrayList<String>> hashMap, String stringKey){
@@ -130,6 +129,10 @@ public class WebService{
 //            hashMap.get(nameTable).add((String) jsonArray.get(i));
 //        }
 //    }
+
+    private void toViewAnswer(Response response){
+        textArea.append("ОТВЕТ:\n" + response.toString()+ "\n" + response.getEntity().toString()+ "\n");
+    }
 
 
 }

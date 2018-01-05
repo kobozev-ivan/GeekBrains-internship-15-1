@@ -21,6 +21,8 @@ import java.util.ArrayList;
 public class Request implements Requestable {
     private static final int OK = 200;
     private static final int CREATED_OK = 201;
+    private static final String SERVER_CONNECTION_NOT_ESTABLISHED = "Связь с сервером не установлена\n";
+    private static final String FAILED_HTTP_ERROR_CODE = "Failed: HTTP error code: ";
     private JSONArray addWords = new JSONArray();
     private JSONArray changeWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
@@ -36,48 +38,53 @@ public class Request implements Requestable {
         try{
             answer = target.request().accept(MediaType.APPLICATION_JSON_TYPE).get();
         }catch (ProcessingException e){
-            throw new ConnectException("Связь с сервером не установлена\n");
+            throw new ConnectException(SERVER_CONNECTION_NOT_ESTABLISHED);
         }
         if (answer.getStatus() != OK){
             answer.close();
-            throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus());
+            throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus());
         }
         return toExtractData(answer.readEntity(String.class),title);
     }
 
     @Override
-    public void toSave(SheetReference sheetReference)throws WebServiceException{
+    public void toSave(SheetReference sheetReference) throws WebServiceException, ConnectException {
         WebTarget target = getPath(sheetReference);
-        if (!addWords.isEmpty()){
-            String postRequest =  (new Message(title, addWords)).toJSONString();
-            Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.entity(postRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
-            if (answer.getStatus() != CREATED_OK) {
-                addWords.clear();
-                throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus() + "\n" + answer.getStatusInfo());
+        try{
+            if (!addWords.isEmpty()){
+                String postRequest =  (new Message(title, addWords)).toJSONString();
+                Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
+                        .post(Entity.entity(postRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
+                if (answer.getStatus() != CREATED_OK) {
+                    addWords.clear();
+                    throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus() + "\n" + answer.getStatusInfo());
+                }
             }
-        }
-        if (!changeWords.isEmpty()){
-            String putRequest =  (new Message(title, changeWords)).toJSONString();
-            Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
-                    .put(Entity.entity(putRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
-            if (answer.getStatus() != OK) {
-                changeWords.clear();
-                throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus() + "\n" + answer.getStatusInfo());
+            if (!changeWords.isEmpty()){
+                String putRequest =  (new Message(title, changeWords)).toJSONString();
+                Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
+                        .put(Entity.entity(putRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
+                if (answer.getStatus() != OK) {
+                    changeWords.clear();
+                    throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus() + "\n" + answer.getStatusInfo());
+                }
             }
-        }
-        if (!delWords.isEmpty()){
-            String delRequest =  (new Message(title, delWords)).toJSONString();
-            Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
-                    .delete();
-            if (answer.getStatus() != OK) {
-                delWords.clear();
-                throw new WebServiceException("Failed : HTTP error code : " + answer.getStatus() + "\n" + answer.getStatusInfo());
+            if (!delWords.isEmpty()){
+                String delRequest =  (new Message(title, delWords)).toJSONString();
+                Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
+                        .delete();
+                if (answer.getStatus() != OK) {
+                    delWords.clear();
+                    throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus() + "\n" + answer.getStatusInfo());
+                }
             }
+        }catch (ProcessingException e){
+            throw new ConnectException(SERVER_CONNECTION_NOT_ESTABLISHED);
+        }finally {
+            addWords.clear();
+            changeWords.clear();
+            delWords.clear();
         }
-        addWords.clear();
-        changeWords.clear();
-        delWords.clear();
     }
 
     private WebTarget getPath(SheetReference sheetReference){
@@ -139,6 +146,7 @@ public class Request implements Requestable {
         JSONParser parser = new JSONParser();
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(answer);
+            if (jsonObject.get(nameTable) == null) return arrayList;
             JSONArray jsonArray = (JSONArray) jsonObject.get(nameTable);
             if (!jsonArray.isEmpty()){
                 for (int i = 0; i < jsonArray.size(); i++) {

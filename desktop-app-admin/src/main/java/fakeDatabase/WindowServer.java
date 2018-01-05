@@ -1,12 +1,14 @@
 package fakeDatabase;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class WindowServer extends JTextArea {
 
     private static volatile WindowServer instance;
 
     private WindowServer(){
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         setEditable(false);
         setAutoscrolls(true);
         setLineWrap(true);

@@ -106,10 +106,9 @@ public class SheetReference extends JPanel implements ActionListener{
         if (objEvent == buttonSave){
             try {
                 dataSheet.toSave(this);
-            }catch (WebServiceException err){
+            }catch (ConnectException | WebServiceException err){
                 JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
-
         }
     }
 }
