@@ -13,6 +13,8 @@ import javax.ws.rs.core.UriBuilder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -96,7 +98,6 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
             textArea.append("Порт подключения: " + stringPort + "\n");
             baseUri = UriBuilder.fromUri("http://" + nameHost + "/").port(port).build();
             textArea.append("Url сервера " + baseUri.toString() + "\n");
-
         }
         if (object == buttonGreatConnect){
             if (baseUri == null || port == 0) {

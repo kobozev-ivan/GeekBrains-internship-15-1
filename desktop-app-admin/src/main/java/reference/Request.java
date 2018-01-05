@@ -64,7 +64,7 @@ public class Request implements Requestable {
                 String putRequest =  (new Message(title, changeWords)).toJSONString();
                 Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
                         .put(Entity.entity(putRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
-                if (answer.getStatus() != OK) {
+                if (answer.getStatus() != CREATED_OK) {
                     changeWords.clear();
                     throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus() + "\n" + answer.getStatusInfo());
                 }
@@ -112,7 +112,7 @@ public class Request implements Requestable {
                 return;
             }
         }
-        changeWords.add(new JSONObject().put(stringSelect, stringInput));
+        changeWords.add(new Message(stringSelect, stringInput));
     }
 
     void toRemovingWords(String stringSelect) {
@@ -163,6 +163,10 @@ public class Request implements Requestable {
 
         Message(String title, JSONArray jsonArray){
             put(title, jsonArray);
+        }
+
+        Message(String stringSelect, String stringInput){
+            put(stringSelect, stringInput);
         }
     }
 }
