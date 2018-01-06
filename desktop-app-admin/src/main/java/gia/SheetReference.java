@@ -25,6 +25,7 @@ public class SheetReference extends JPanel implements ActionListener{
 
     SheetReference(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         list.setSelectionForeground(Color.BLUE);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL);

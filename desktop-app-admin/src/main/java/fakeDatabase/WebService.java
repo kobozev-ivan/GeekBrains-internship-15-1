@@ -8,41 +8,37 @@ import reference.CUW;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.*;
 
-@Path("/")
+@Path("/api/v1.0/")
 public class WebService{
 
     private static final int CREATE = 201;
     private static final String ANSWER = "ОТВЕТ:\n";
+    private static final String REQUEST = "ЗАПРОС:\n";
     private FakeData fakeData = FakeData.getInstance();
     private WindowServer textArea = WindowServer.getInstance();
-    private JSONArray jsonArray;
+    private JSONParser parser = new JSONParser();
+    private Response response = Response.status(404, "Элемент в базе не найден").build();
 
     @GET
     @Path("/{table}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response toUpDate(@PathParam("table") String nameTable) {
+    public Response toUpDate(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam("subtable") String name) {
         JSONObject jsonAnswer = new JSONObject();
-        if (fakeData.persons.containsKey(nameTable)) jsonArray = getDataCollection(fakeData.persons, nameTable);
-        if (fakeData.sites.containsKey(nameTable)) jsonArray = getDataCollection(fakeData.sites, nameTable);
+        JSONArray jsonArray = null;
+        if (name.isEmpty()){
+            if (fakeData.persons.containsKey(nameTable)) jsonArray = getDataCollection(fakeData.persons, nameTable);
+            if (fakeData.sites.containsKey(nameTable)) jsonArray = getDataCollection(fakeData.sites, nameTable);
+        }else{
+            HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
+            if (hashMapObj.containsKey(name))  {
+                jsonArray = getDataCollection(hashMapObj, name);
+                nameTable = name;
+            }
+        }
         jsonAnswer.put(nameTable, jsonArray);
-        Response response = Response.ok(jsonAnswer.toJSONString()).build();
-        toViewAnswer(response);
-        return response;
-    }
-
-    @GET
-    @Path("/keywords/{Person}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response toUpDateKeywords(@PathParam("Person") String namePerson) {
-        JSONObject jsonAnswer = new JSONObject();
-        HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(CUW.KEYWORDS);
-        if (hashMapObj.containsKey(namePerson))  jsonArray = getDataCollection(hashMapObj, namePerson);
-        jsonAnswer.put(namePerson, jsonArray);
         Response response = Response.ok(jsonAnswer.toJSONString()).build();
         toViewAnswer(response);
         return response;
@@ -60,33 +56,48 @@ public class WebService{
     @POST
     @Path("/{table}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setAdd(@PathParam("table") String nameTable, String stringAdd) {
-        Response response = Response.status(CREATE).build();;
+    public Response setAdd(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam("subtable") String name, String message) {
+        toViewingRequestMessage(message);
         try {
-            JSONArray jsonArray = parseToJSONString(nameTable, stringAdd);
-            if (fakeData.persons.containsKey(nameTable)) addDataCollection(fakeData.persons, jsonArray, nameTable);
-            if (fakeData.sites.containsKey(nameTable)) addDataCollection(fakeData.sites, jsonArray, nameTable);
-        } catch (ParseException e) {
-            response = Response.serverError().build();
-            throw new WebApplicationException(e.getMessage());
-        }finally {
-            toViewAnswer(response);
-        }
-        return response;
-    }
-
-    @POST
-    @Path ("/keywords/{Person}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response setAddKeywords(@PathParam("Person") String namePerson, String stringAdd) {
-        Response response = Response.status(CREATE).build();
-        try {
-            JSONArray jsonArray = parseToJSONString(namePerson, stringAdd);
-            HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(CUW.KEYWORDS);
-            if (hashMapObj.containsKey(namePerson)) addDataCollection(hashMapObj, jsonArray, namePerson);
-            else {
-                hashMapObj.put(namePerson, new ArrayList<>());
-                addDataCollection(hashMapObj, jsonArray, namePerson);
+            JSONObject jsonObject = (JSONObject) parser.parse(message);
+            if (jsonObject.containsKey(nameTable)){
+                JSONObject jobject = (JSONObject) jsonObject.get(nameTable);
+                if (jobject.containsKey("add")){
+                    JSONArray jsonArray = (JSONArray)jobject.get("add");
+                    if (fakeData.persons.containsKey(nameTable)) addDataCollection(fakeData.persons, jsonArray, nameTable);
+                    if (fakeData.sites.containsKey(nameTable)) addDataCollection(fakeData.sites, jsonArray, nameTable);
+                    response = Response.status(CREATE).build();
+                }
+                if (jobject.containsKey("del")){
+                    JSONArray jsonArray = (JSONArray)jobject.get("del");
+                    if (fakeData.persons.containsKey(nameTable)) delDataCollection(fakeData.persons, jsonArray, nameTable);
+                    if (fakeData.sites.containsKey(nameTable)) delDataCollection(fakeData.sites, jsonArray, nameTable);
+                    response = Response.status(CREATE).build();
+                }
+            }
+            if (jsonObject.containsKey(name)){
+                JSONObject jobject = (JSONObject) jsonObject.get(name);
+                if (jobject.containsKey("add")){
+                    JSONArray jsonArray = (JSONArray)jobject.get("add");
+                    HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
+                    if (hashMapObj.containsKey(name)){
+                        addDataCollection(hashMapObj, jsonArray, name);
+                        response = Response.status(CREATE).build();
+                    }
+                    else {
+                        hashMapObj.put(name, new ArrayList<>());
+                        addDataCollection(hashMapObj, jsonArray, name);
+                        response = Response.status(CREATE).build();
+                    }
+                }
+                if (jobject.containsKey("del")){
+                    JSONArray jsonArray = (JSONArray)jobject.get("del");
+                    HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
+                    if (hashMapObj.containsKey(name)){
+                        delDataCollection(hashMapObj, jsonArray, name);
+                        response = Response.status(CREATE).build();
+                    }
+                }
             }
         } catch (ParseException e) {
             response = Response.serverError().build();
@@ -103,42 +114,38 @@ public class WebService{
         }
     }
 
-    @PUT
-    @Path("/{table}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setChange(@PathParam("table") String nameTable, String stringChange) {
-        System.out.println(stringChange);
-        Response response = Response.status(404, "Элемент в базе не найден").build();
-        try {
-            JSONArray jsonArray = parseToJSONString(nameTable, stringChange);
-            if (fakeData.persons.containsKey(nameTable)) {
-                changeDataCollection(fakeData.persons, jsonArray, nameTable);
-                response = Response.status(CREATE).build();
+    private void delDataCollection(HashMap<String, ArrayList<String>> hashMap, JSONArray jsonArray, String nameTable){
+        ArrayList<String> arrayList = hashMap.get(nameTable);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            for (int j = 0; j < arrayList.size(); j++) {
+                if (jsonArray.get(i).equals(arrayList.get(j))) arrayList.remove(j);
             }
-            if (fakeData.sites.containsKey(nameTable)){
-                changeDataCollection(fakeData.sites, jsonArray, nameTable);
-                response = Response.status(CREATE).build();
-            }
-        } catch (ParseException e) {
-            response = Response.serverError().build();
-            throw new WebApplicationException(e.getMessage());
-        }finally {
-            toViewAnswer(response);
         }
-        return response;
     }
 
     @PUT
-    @Path("/keywords/{table}")
+    @Path("/{table}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setChangeKeywords(@PathParam("table") String nameTable, String stringChange) {
-        Response response = Response.status(404, "Элемент в базе не найден").build();
+    public Response setChange(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam("subtable") String name, String stringChange) {
+        toViewingRequestMessage(stringChange);
         try {
-            JSONArray jsonArray = parseToJSONString(nameTable, stringChange);
-            HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(CUW.KEYWORDS);
-            if (hashMapObj.containsKey(nameTable)) {
-                changeDataCollection(hashMapObj, jsonArray, nameTable);
-                response = Response.status(CREATE).build();
+            if (name.isEmpty()){
+                JSONArray jsonArray = parseToJSONString(nameTable, stringChange);
+                if (fakeData.persons.containsKey(nameTable)) {
+                    changeDataCollection(fakeData.persons, jsonArray, nameTable);
+                    response = Response.status(CREATE).build();
+                }
+                if (fakeData.sites.containsKey(nameTable)){
+                    changeDataCollection(fakeData.sites, jsonArray, nameTable);
+                    response = Response.status(CREATE).build();
+                }
+            }else{
+                JSONArray jsonArray = parseToJSONString(name, stringChange);
+                HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
+                if (hashMapObj.containsKey(name)) {
+                    changeDataCollection(hashMapObj, jsonArray, name);
+                    response = Response.status(CREATE).build();
+                }
             }
         } catch (ParseException e) {
             response = Response.serverError().build();
@@ -163,18 +170,19 @@ public class WebService{
     }
 
     private JSONArray parseToJSONString(String nameTable, String stringJSON) throws ParseException {
-        JSONParser parser = new JSONParser();
         JSONObject jsonObject = (JSONObject) parser.parse(stringJSON);
         return (JSONArray) jsonObject.get(nameTable);
     }
 
-    private void toViewAnswer(Response response){
-        if (response.getStatus() != CREATE){
-            textArea.append(ANSWER + response.toString()+ "\n" + response.getEntity().toString()+ "\n");
-            return;
-        }
-        textArea.append(ANSWER + String.valueOf(response.getStatus()) + "\t"+ response.getStatusInfo() + "\n");
+    private void toViewingRequestMessage(String message){
+        textArea.append(REQUEST + message +"\n\n");
     }
 
-
+    private void toViewAnswer(Response response){
+        if (response.getStatus() != CREATE){
+            textArea.append(ANSWER + response.toString()+ "\n" + response.getEntity().toString()+ "\n\n");
+            return;
+        }
+        textArea.append(ANSWER + String.valueOf(response.getStatus()) + "\t"+ response.getStatusInfo() + "\n\n");
+    }
 }

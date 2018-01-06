@@ -22,7 +22,7 @@ import java.net.UnknownHostException;
 public class FakeServerHTTP extends JFrame implements ActionListener{
 
     private static final int WIDTH = 400;
-    private static final int HEIGHT = 200;
+    private static final int HEIGHT = 800;
     private static final int POS_X = 1400;
     private static final int POS_Y = 200;
 

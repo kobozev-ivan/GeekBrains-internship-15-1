@@ -26,9 +26,6 @@ public class Request implements Requestable {
     private JSONArray addWords = new JSONArray();
     private JSONArray changeWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
-
-    private String host;
-    private String port;
     private String title;
 
     @Override
@@ -52,9 +49,9 @@ public class Request implements Requestable {
         WebTarget target = getPath(sheetReference);
         try{
             if (!addWords.isEmpty()){
-                String postRequest =  (new Message(title, addWords)).toJSONString();
+                String addRequest =  new Message(title,(new Message("add", addWords))).toJSONString();
                 Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.entity(postRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
+                        .post(Entity.entity(addRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
                 if (answer.getStatus() != CREATED_OK) {
                     addWords.clear();
                     throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus() + "\n" + answer.getStatusInfo());
@@ -70,10 +67,11 @@ public class Request implements Requestable {
                 }
             }
             if (!delWords.isEmpty()){
-                String delRequest =  (new Message(title, delWords)).toJSONString();
+                String delRequest =  new Message(title,(new Message("del", delWords))).toJSONString();
                 Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
-                        .delete();
-                if (answer.getStatus() != OK) {
+                        .post(Entity.entity(delRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
+
+                if (answer.getStatus() != CREATED_OK) {
                     delWords.clear();
                     throw new WebServiceException(FAILED_HTTP_ERROR_CODE + answer.getStatus() + "\n" + answer.getStatusInfo());
                 }
@@ -91,9 +89,9 @@ public class Request implements Requestable {
         title = sheetReference.getName();
         if (title.equals(CUW.KEYWORDS)){
             title = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
-            return getTarget().path(CUW.KEYWORDS).path(title);
+            return getTarget().path("/api/v1.0/").path(CUW.KEYWORDS).queryParam("subtable", title);
         }
-        return getTarget().path(title);
+        return getTarget().path("/api/v1.0/").path(title);
     }
 
     private WebTarget getTarget(){
@@ -167,6 +165,10 @@ public class Request implements Requestable {
 
         Message(String stringSelect, String stringInput){
             put(stringSelect, stringInput);
+        }
+
+        Message(String title, JSONObject jsonObject){
+            put(title, jsonObject);
         }
     }
 }
