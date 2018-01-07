@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class SheetReferenceKeywords extends SheetReference{
 
     DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-    private HashMap<String, Data<String>> hashMapListModelKeywords = new HashMap<>();
+    private HashMap<String, Data<String>> dataModelKeywords = new HashMap<>();
     private JComboBox<String> nameOfPerson = new JComboBox<>(comboBoxModel);
     public String selectComboBoxModel;
 
@@ -21,8 +21,8 @@ public class SheetReferenceKeywords extends SheetReference{
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectComboBoxModel = comboBoxModel.getElementAt(nameOfPerson.getSelectedIndex());
-                if (!hashMapListModelKeywords.containsKey(selectComboBoxModel))  hashMapListModelKeywords.put(selectComboBoxModel, new Data<>());
-                list.setModel(hashMapListModelKeywords.get(selectComboBoxModel));
+                if (!dataModelKeywords.containsKey(selectComboBoxModel))  dataModelKeywords.put(selectComboBoxModel, new Data<>());
+                list.setModel(dataModelKeywords.get(selectComboBoxModel));
             }
         });
         JPanel upperPanel = new JPanel();
@@ -42,8 +42,8 @@ public class SheetReferenceKeywords extends SheetReference{
     private void atDeletingElement(SheetReference sheetReference){
         for (int i = 0; i < sheetReference.removal.size(); i++) {
             String key = comboBoxModel.getElementAt(sheetReference.removal.get(i));
-            hashMapListModelKeywords.remove((key), hashMapListModelKeywords.get(key));
-            comboBoxModel.removeElementAt(sheetReference.removal.get(i));
+            dataModelKeywords.remove((key), dataModelKeywords.get(key));
+            comboBoxModel.removeElement(key);
         }
         sheetReference.removal.clear();
     }
@@ -64,8 +64,8 @@ public class SheetReferenceKeywords extends SheetReference{
                     comboBoxModel.removeElementAt(j);
                     String newKey = model.getElementAt(i);
                     comboBoxModel.insertElementAt(model.getElementAt(i), j);
-                    hashMapListModelKeywords.put(newKey, hashMapListModelKeywords.get(oldKey));
-                    hashMapListModelKeywords.remove(oldKey, hashMapListModelKeywords.get(oldKey));
+                    dataModelKeywords.put(newKey, dataModelKeywords.get(oldKey));
+                    dataModelKeywords.remove(oldKey, dataModelKeywords.get(oldKey));
                 }
             }
         }

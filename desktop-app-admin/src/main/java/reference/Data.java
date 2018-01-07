@@ -38,8 +38,8 @@ public class Data<T> extends DefaultListModel<String> implements Editable, Reque
     @Override
     public void toModify(SheetReference sheetReference, String stringSelect, String stringInput) {
         data = (Data<T>) sheetReference.list.getModel();
-        data.removeElement(stringSelect);
-        data.addElement(stringInput);
+        int index = data.indexOf(stringSelect);
+        data.set(index, stringInput);
         if (!hashMap.containsKey(data))  hashMap.put(data, new Request());
         hashMap.get(data).toChangeWords(stringSelect, stringInput);
     }

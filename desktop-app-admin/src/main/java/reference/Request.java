@@ -23,6 +23,8 @@ public class Request implements Requestable {
     private static final int CREATED_OK = 201;
     private static final String SERVER_CONNECTION_NOT_ESTABLISHED = "Связь с сервером не установлена\n";
     private static final String FAILED_HTTP_ERROR_CODE = "Failed: HTTP error code: ";
+    private static final String URI_CLIENT = "http://LocalHost:8989/";
+    private static final String API_V1_0 = "/api/v1.0/";
     private JSONArray addWords = new JSONArray();
     private JSONArray changeWords = new JSONArray();
     private JSONArray delWords = new JSONArray();
@@ -89,13 +91,13 @@ public class Request implements Requestable {
         title = sheetReference.getName();
         if (title.equals(CUW.KEYWORDS)){
             title = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
-            return getTarget().path("/api/v1.0/").path(CUW.KEYWORDS).queryParam("subtable", title);
+            return getTarget().path(API_V1_0).path(CUW.KEYWORDS).queryParam("subtable", title);
         }
-        return getTarget().path("/api/v1.0/").path(title);
+        return getTarget().path(API_V1_0).path(title);
     }
 
     private WebTarget getTarget(){
-        return ClientBuilder.newClient(new ClientConfig()).target("http://LocalHost:8989/");
+        return ClientBuilder.newClient(new ClientConfig()).target(URI_CLIENT);
     }
 
     void toAdditionOfWords(String stringInput) {

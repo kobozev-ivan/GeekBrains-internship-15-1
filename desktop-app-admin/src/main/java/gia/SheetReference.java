@@ -16,11 +16,11 @@ public class SheetReference extends JPanel implements ActionListener{
     public JList<String> list = new JList<>(dataSheet);
 
     JButton buttonAdd = new JButton("Добавить");
-    JButton buttonEdit = new JButton("Редактировать");
-    JButton buttonDel = new JButton("Удалить");
-    JButton buttonUpDate = new JButton("Обновить");
-    JButton buttonSave = new JButton("Сохранить");
-    JPanel panelButton = new JPanel();
+    private JButton buttonEdit = new JButton("Редактировать");
+    private JButton buttonDel = new JButton("Удалить");
+    private JButton buttonUpDate = new JButton("Обновить");
+    private JButton buttonSave = new JButton("Сохранить");
+    private JPanel panelButton = new JPanel();
     ArrayList<Integer> removal = new ArrayList<>();
 
     SheetReference(){

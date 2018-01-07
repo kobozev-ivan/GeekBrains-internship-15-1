@@ -5,16 +5,13 @@ import com.sun.net.httpserver.HttpServer;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import javax.annotation.Resource;
+
 import javax.swing.*;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.UriBuilder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -36,7 +33,6 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
     private int port;
     private URI baseUri;
     private HttpServer server;
-
     private FakeServerHTTP(){
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -109,7 +105,7 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
                 return;
             }
             server = JdkHttpServerFactory.createHttpServer(baseUri, new ResourceConfig(WebService.class));
-            textArea.append("Сервер запущен\n");
+            textArea.append("Сервер запущен\n\n");
         }
         if (object == buttonDisConnect){
             if (server == null){
