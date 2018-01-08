@@ -1,6 +1,9 @@
 /**
- * получает из SitesTableReader лист названий сайтов добавляет в таблицу PAGES ссылку на robots.txt,
- * принимает от парсера ссылки на HTML страницы, передает их в PAGES как непроверенные
+ * получает из SitesTableReader лист названий сайтов, которые еще не сканировались
+ * формирует и добавляет  в таблицу PAGES ссылки на robots.txt,передает их в 
+ * PAGES как непроверенные
+ * или добавляет ссылки на HTML страницы(не robots.txt), передает 
+ * их в PAGES как непроверенные
  * @author Anton Lapin, Yury Tweritin
  * @date 29.12.2017
  */
@@ -43,7 +46,8 @@ public class PagesTableWriter {
     }
 
     /**
-     * Метод, который записывает ссылки на robots.txt непроверенных веб-сайтов в таблицу PAGES
+     * Метод, который записывает ссылки на robots.txt непроверенных веб-сайтов 
+     * в таблицу PAGES
      */
 
     public void insertIntoPagesTableRobotsTxtFile() {
@@ -103,14 +107,14 @@ public class PagesTableWriter {
                 //формируем ссылку на файл robots.txt
                 this.url = "http://" + siteName.getKey() + "/robots.txt";
             } else {
-                this.url = siteName.getKey();// для чего данная строчка не понятно!!!!!!!!!!!!!!
+                this.url = siteName.getKey();// если формируем ссылку не на robots.txt
             }
-            insertQueryExecutor(this.url, id, date); //запрос на добавление данных в БД
+            insertQueryExecutor(this.url, id, this.date); //запрос на добавление данных в БД
         }
     }
 
     /**
-     * Метод, осуществляющий запись в PAGES новых ссылок на веб-страницы, полученных из Collector
+     * Метод, осуществляющий запись в PAGES новых ссылок на веб-страницы(не robots.txt), полученных из Collector
      * @param newPagesList
      */
 
@@ -130,7 +134,7 @@ public class PagesTableWriter {
     }
 
     /**
-     * Метод, осуществляющий непосредственно запрос в БД
+     * Метод, осуществляющий непосредственно запрос на запись в БД
      * @param url
      * @param siteId
      * @param found
