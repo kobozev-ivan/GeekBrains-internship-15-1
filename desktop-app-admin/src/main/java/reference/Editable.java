@@ -1,10 +1,7 @@
 package reference;
 
-import view.SheetReference;
+import gia.SheetReference;
 
-/**
- * Created by Максим on 15.12.2017.
- */
 public interface Editable {
 
     void toAdd(SheetReference sheetReference, String stringInput);

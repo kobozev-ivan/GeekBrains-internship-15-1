@@ -1,4 +1,4 @@
-package view;
+package gia;
 
 import reference.Data;
 
@@ -7,27 +7,25 @@ import javax.xml.ws.WebServiceException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.ConnectException;
 import java.util.ArrayList;
 
-/**
- * Created by Максим on 15.12.2017.
- */
 public class SheetReference extends JPanel implements ActionListener{
 
-
-    Data<String> dataSheet = new Data<>();
+    private Data<String> dataSheet = new Data<>();
     public JList<String> list = new JList<>(dataSheet);
 
     JButton buttonAdd = new JButton("Добавить");
-    JButton buttonEdit = new JButton("Редактировать");
-    JButton buttonDel = new JButton("Удалить");
-    JButton buttonUpDate = new JButton("Обновить");
-    JButton buttonSave = new JButton("Сохранить");
-    JPanel panelButton = new JPanel();
+    private JButton buttonEdit = new JButton("Редактировать");
+    private JButton buttonDel = new JButton("Удалить");
+    private JButton buttonUpDate = new JButton("Обновить");
+    private JButton buttonSave = new JButton("Сохранить");
+    private JPanel panelButton = new JPanel();
     ArrayList<Integer> removal = new ArrayList<>();
 
     SheetReference(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         list.setSelectionForeground(Color.BLUE);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setLayoutOrientation(JList.VERTICAL);
@@ -100,8 +98,9 @@ public class SheetReference extends JPanel implements ActionListener{
         if (objEvent == buttonUpDate){
             try {
                 ArrayList<String> arrayList = dataSheet.toUpDate(this);
-                if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
-            }catch (WebServiceException err){
+                if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "Таблица пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
+            }catch (ConnectException | WebServiceException err){
+                dataSheet.clear();
                 JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
 
@@ -109,10 +108,9 @@ public class SheetReference extends JPanel implements ActionListener{
         if (objEvent == buttonSave){
             try {
                 dataSheet.toSave(this);
-            }catch (WebServiceException err){
+            }catch (ConnectException | WebServiceException err){
                 JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
-
         }
     }
 }

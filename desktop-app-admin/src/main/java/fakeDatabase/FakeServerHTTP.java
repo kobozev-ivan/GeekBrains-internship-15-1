@@ -1,38 +1,44 @@
 package fakeDatabase;
 
+
+import com.sun.net.httpserver.HttpServer;
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
+
+
 import javax.swing.*;
+import javax.ws.rs.core.UriBuilder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.UnknownHostException;
 
-/**
- * Created by Максим on 24.12.2017.
- */
-class ConnectionWindow extends JFrame implements ActionListener{
+public class FakeServerHTTP extends JFrame implements ActionListener{
 
     private static final int WIDTH = 400;
-    private static final int HEIGHT = 200;
+    private static final int HEIGHT = 600;
     private static final int POS_X = 1400;
     private static final int POS_Y = 200;
 
     private final JTextField fieldHost = new JTextField("LocalHost");
-    private final JTextField fieldPort = new JTextField("8189");
-    private final JButton buttonGreatConnect = new JButton("Создать подключение");
-    private final JButton buttonDisConnect = new JButton("Разорвать подключение");
-    private final JTextArea textArea = new JTextArea();
+    private final JTextField fieldPort = new JTextField("8989");
+    private final JButton buttonGreatConnect = new JButton("Включение");
+    private final JButton buttonDisConnect = new JButton("Остановка");
+    private WindowServer textArea = WindowServer.getInstance();
 
     private String nameHost;
     private int port;
-
-
-    ConnectionWindow(){
+    private URI baseUri;
+    private HttpServer server;
+    private FakeServerHTTP(){
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
         setLocation(POS_X, POS_Y);
-        setTitle("Подключение  к серверу БД");
+        setTitle("ФейкСервер с ФейкБД");
         setResizable(false);
         setAlwaysOnTop(true);
 
@@ -51,17 +57,22 @@ class ConnectionWindow extends JFrame implements ActionListener{
 
         upperPanel.add(panelButton);
 
-        textArea.setEditable(false);
-        textArea.setAutoscrolls(true);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-
         JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setAutoscrolls(true);
 
         add(upperPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
         setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new FakeServerHTTP();
+            }
+        });
     }
 
     @Override
@@ -78,19 +89,33 @@ class ConnectionWindow extends JFrame implements ActionListener{
             }
             textArea.append("IP адрес: " + address + "\n");
         }
-
         if (object == fieldPort){
             String stringPort = fieldPort.getText().trim();
             port = Integer.parseInt(stringPort);
             textArea.append("Порт подключения: " + stringPort + "\n");
+            baseUri = UriBuilder.fromUri("http://" + nameHost + "/").port(port).build();
+            textArea.append("Url сервера " + baseUri.toString() + "\n");
         }
         if (object == buttonGreatConnect){
-//            communication = new Communication(nameHost, port, textArea);
-            buttonGreatConnect.setEnabled(false); // потом убрать
+            if (baseUri == null || port == 0) {
+                textArea.append("Нет параметров подключения сервера\n");
+                return;
+            }
+            if (server != null){
+                textArea.append("Сервер уже работает\n");
+                return;
+            }
+            server = JdkHttpServerFactory.createHttpServer(baseUri, new ResourceConfig(WebService.class));
+            textArea.append("Сервер запущен\n\n");
         }
         if (object == buttonDisConnect){
-//            communication.close();
-            buttonGreatConnect.setEnabled(true);
+            if (server == null){
+                textArea.append("Сервер не работает\n");
+                return;
+            }
+            server.stop(0);
+            server = null;
+            textArea.append("Сервер выключен\n");
         }
     }
 }

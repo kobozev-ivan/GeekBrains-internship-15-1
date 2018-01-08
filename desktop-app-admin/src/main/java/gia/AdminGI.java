@@ -1,12 +1,8 @@
-package view;
-
+package gia;
 
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by Максим on 15.12.2017.
- */
 public class AdminGI extends JFrame{
 
     private static final int WIDTH = 600;
@@ -14,7 +10,6 @@ public class AdminGI extends JFrame{
     private static final String TITLE = "Справочник";
     private Reference reference = new Reference();
     private JButton buttonOut = new JButton("Закрыть");
-
 
     private AdminGI(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -42,3 +37,5 @@ public class AdminGI extends JFrame{
     }
 
 }
+
+
