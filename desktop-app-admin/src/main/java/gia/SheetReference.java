@@ -98,8 +98,9 @@ public class SheetReference extends JPanel implements ActionListener{
         if (objEvent == buttonUpDate){
             try {
                 ArrayList<String> arrayList = dataSheet.toUpDate(this);
-                if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "База пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
+                if (arrayList.isEmpty()) JOptionPane.showMessageDialog(this, "Таблица пуста. Данных нет", "Ответ сервера", JOptionPane.WARNING_MESSAGE);
             }catch (ConnectException | WebServiceException err){
+                dataSheet.clear();
                 JOptionPane.showMessageDialog(this, err.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
 

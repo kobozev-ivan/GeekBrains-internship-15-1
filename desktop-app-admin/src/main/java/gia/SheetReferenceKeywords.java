@@ -16,7 +16,6 @@ public class SheetReferenceKeywords extends SheetReference{
     SheetReferenceKeywords(){
         super();
         nameOfPerson.setPrototypeDisplayValue("1 2 3 4 5 6 7 8 9 10 11 12 13 14 15");
-        if (comboBoxModel.getSize() != 0) nameOfPerson.setSelectedItem(comboBoxModel.getElementAt(0));
         nameOfPerson.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -35,7 +34,7 @@ public class SheetReferenceKeywords extends SheetReference{
         if (!model.isEmpty()) {
             toAddItem(model);
             toCompareElements(model);
-        }
+        }else if (comboBoxModel.getSize() != 0)comboBoxModel.removeAllElements();
         if (sheetReference.removal.size() != 0) atDeletingElement(sheetReference);
     }
 

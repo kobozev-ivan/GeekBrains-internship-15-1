@@ -9,9 +9,9 @@ public class WindowServer extends JTextArea {
 
     private WindowServer(){
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 18));
+
         setTabSize(2);
         setEditable(false);
-        setAutoscrolls(true);
         setLineWrap(true);
         setWrapStyleWord(true);
     }

@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
 public class FakeServerHTTP extends JFrame implements ActionListener{
 
     private static final int WIDTH = 400;
-    private static final int HEIGHT = 800;
+    private static final int HEIGHT = 600;
     private static final int POS_X = 1400;
     private static final int POS_Y = 200;
 
@@ -58,6 +58,7 @@ public class FakeServerHTTP extends JFrame implements ActionListener{
         upperPanel.add(panelButton);
 
         JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setAutoscrolls(true);
 
         add(upperPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);

@@ -32,6 +32,9 @@ public class Request implements Requestable {
 
     @Override
     public ArrayList<String> toUpDate(SheetReference sheetReference) throws WebServiceException, ConnectException {
+        if (!addWords.isEmpty())addWords.clear();
+        if (!changeWords.isEmpty())changeWords.clear();
+        if (!delWords.isEmpty())delWords.clear();
         WebTarget target = getPath(sheetReference);
         Response answer;
         try{
