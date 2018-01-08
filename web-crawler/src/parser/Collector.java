@@ -36,11 +36,11 @@ public class Collector extends Thread {
      */
 
     public void run() {
-        initUncheckedSitesList();//поиск непроверенных ссылок страниц сайтов
+        initUncheckedSitesList();//поиск непроверенных ссылок страниц сайтов из PAGES
         sortUncheckedPages();// сортируем ссылки (robots,sitemap,html)
         if(!(this.unchRobotsList.isEmpty())) {//если коллекция не пустая
-            initParseRobotsDotTxt();//анализ ссылок на robots.txt(чтение 
-            //и поиск ссылки на sitemap'ы)
+            initParseRobotsDotTxt();//анализ ссылок на robots.txt(извлечение 
+            //ссылок на sitemap'ы и добавление их в коллекцию newPagesList)
         }
         if(!(this.unchSiteMapsList.isEmpty())) {
             initParseSiteMaps();
@@ -58,10 +58,12 @@ public class Collector extends Thread {
 
     private void initUncheckedSitesList() {
         this.ptw = new PagesTableWriter();
-        this.ptw.insertIntoPagesTableRobotsTxtFile();
+        this.ptw.insertIntoPagesTableRobotsTxtFile();//формируем из новых сайтов
+        //ссылки на их robots.txt и кладем их в БД (PAGES)
         this.ptr = new PagesTableReader();
         try {
-            this.unchecked = this.ptr.getUncheckedPages();
+            this.unchecked = this.ptr.getUncheckedPages();//считываем из PAGES 
+            //все непросканированные ссылки
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,7 +80,7 @@ public class Collector extends Thread {
                 if (item.getKey().contains("robots.txt")) {
                     //кладем в коллекцию ссылок на robots.txt
                     this.unchRobotsList.put(item.getKey(), item.getValue());
-                } else if (item.getKey().contains("sitemap")) {
+                } else if (item.getKey().contains("sitemap")||item.getKey().contains("Sitemap")) {
                     //кладем в коллекцию ссылок на sitemap
                     this.unchSiteMapsList.put(item.getKey(), item.getValue());
                 } else if(item.getKey().contains(".html")){
@@ -118,8 +120,7 @@ public class Collector extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.newPagesList.putAll(this.smps.getPagesList());//почему добавляем в
-        //ту же коллекцию??????????
+        this.newPagesList.putAll(this.smps.getPagesList());
     }
 
     /**
