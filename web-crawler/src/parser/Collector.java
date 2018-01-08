@@ -130,10 +130,18 @@ public class Collector extends Thread {
     }
 
     /**
-     * В разработке...
+     * Метод, в результате отработки которого получаем лист популярности личностей.
      */
 
     private void initParseHTML() {
         this.phtml = new ParseHTML(this.unchHTMLPagesList);
+        this.phtml.start();
+        try {
+            this.phtml.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.newPersonPageRankList = this.phtml.getPersonsPageRank();
     }
+
 }
