@@ -33,15 +33,28 @@ public class ParseSiteMaps extends Thread {
 
         Set<Map.Entry<String, Integer>> set = this.unchSitemapsList.entrySet();
         for (Map.Entry<String, Integer> item: set) {
-            if (item.getKey().contains(".gz")) {//если ссылка содержит расширение
-                //кладем в коллецию архивированных файлов
-                this.sitemapGZFiles.put(item.getKey(), item.getValue());
-            } else if(item.getKey().substring(item.getKey().length() - 4).equals(".xml")) {
-                //кладем в коллекцию xml ссылок
-                this.sitemapXMLFilesList.put(item.getKey(), item.getValue());
+            String[] key = item.getKey().split(" ");
+            if (item.getKey().contains(".gz")) {
+                this.sitemapGZFiles.put(key[1], item.getValue());
+            } else if(key[1].substring(key[1].length() - 4).equals(".xml")) {
+                this.sitemapXMLFilesList.put(key[1], item.getValue());
             } else {
-                //кладем все остальное (html)
-                this.pagesList.put(item.getKey(), item.getValue());
+                this.pagesList.put(key[1], item.getValue());
+            }
+        }
+    }
+
+    /**
+     * Метод, осуществляющий извлечение, и прочтение содержимого из .gz архивов
+     */
+
+    private void initSitemapsGZFiles() {
+        this.container = openSitemapGZArchiveFile();
+        Set<Map.Entry<String, Integer>> contents = this.container.entrySet();
+        for (Map.Entry<String, Integer> cont : contents) {
+            String[] splitResult1 = cont.getKey().split(" ");
+            for (int i = 0; i < splitResult1.length; i++) {
+                this.pagesList.put(splitResult1[i], cont.getValue());
             }
         }
 //обработка списка архивированных файлов

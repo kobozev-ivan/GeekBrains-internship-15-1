@@ -59,10 +59,11 @@ public class PagesTableReader {
     public TreeMap<String, Integer> getUncheckedPages() throws Exception {
         this.unchecked = new TreeMap<>();
         connect();
-        this.rs = this.stmt.executeQuery("SELECT URL, SITE_ID FROM PAGES" +
+        this.rs = this.stmt.executeQuery("SELECT ID, URL, SITE_ID FROM PAGES" +
                 " WHERE LAST_SCAN IS NULL;");
         while(this.rs.next()){
-            this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));//кладем в коллекцию
+            this.unchecked.put(this.rs.getInt(1) + " " + this.rs.getString(2),
+                    this.rs.getInt(3));
         }
         setLastScanDateForEachItem();//добавление времени последнего сканирования
         disconnect();

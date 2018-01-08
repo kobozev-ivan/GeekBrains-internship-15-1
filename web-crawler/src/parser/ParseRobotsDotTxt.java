@@ -33,8 +33,8 @@ public class ParseRobotsDotTxt extends Thread {
         Set<Map.Entry<String, Integer>> set = this.unchRobotsList.entrySet();
         for (Map.Entry<String, Integer> item: set) {
             Integer id = item.getValue();
-            String url = item.getKey();
-            this.pagesList.putAll(searchNewPageReferences(url, id));
+            String[] url = item.getKey().split(" ");
+            this.pagesList.putAll(searchNewPageReferences(url[1], id));
         }
     }
 

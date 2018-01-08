@@ -13,6 +13,7 @@ package parser;
 
 import dbworker.PagesTableReader;
 import dbworker.PagesTableWriter;
+import dbworker.PersonPageRankTableWriter;
 
 import java.util.Map;
 import java.util.Set;
@@ -25,11 +26,13 @@ public class Collector extends Thread {
     private TreeMap<String, Integer> unchSiteMapsList = new TreeMap<>();
     private TreeMap<String, Integer> unchHTMLPagesList = new TreeMap<>();
     private TreeMap<String, Integer> newPagesList = new TreeMap<>();
+    private TreeMap<String, Integer> newPersonPageRankList = new TreeMap<>();
     private PagesTableWriter ptw;
     private PagesTableReader ptr;
     private ParseRobotsDotTxt rbts;
     private ParseSiteMaps smps;
     private ParseHTML phtml;
+    private PersonPageRankTableWriter pprtw;
 
     /**
      * Основной алгоритм работы
@@ -49,6 +52,9 @@ public class Collector extends Thread {
             initParseHTML();
         }
         this.ptw.insertIntoPagesTablePagesListFromCollector(this.newPagesList);
+        if(!this.newPersonPageRankList.isEmpty()) {
+            this.pprtw.insertIntoPPRTablePPRListFromCollector(this.newPersonPageRankList);
+        }
     }
 
     /**
