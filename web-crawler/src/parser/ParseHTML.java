@@ -44,25 +44,27 @@ public class ParseHTML extends Thread {
 
     private void rankScore() {
         //TODO: упростить подсчет рейтинга, разбить метод на меньшие
-        Set<Map.Entry<String, Integer>> set = this.unchHTMLPagesList.entrySet();
-        for (Map.Entry<String, Integer> page: set) {
-            String[] splittedKey = page.getKey().split(" ");
-            Integer pageId = Integer.parseInt(splittedKey[0]);
-            String pageName = splittedKey[1];
-            Set<Map.Entry<String, Integer>> set1 = this.keywordsList.entrySet();
+        Set<Map.Entry<String, Integer>> urls = this.unchHTMLPagesList.entrySet();
+        for (Map.Entry<String, Integer> url: urls) {
+//            String[] splittedKey = url.getKey().line(" ");//делим ссылку на куски
+//            Integer pageId = Integer.parseInt(splittedKey[0]);//берем первый кусок это номер????
+//            String pageName = splittedKey[1];//второй кусок это имя????
+            Set<Map.Entry<String, Integer>> keywords = this.keywordsList.entrySet();
             int rank = 0;
-            for (Map.Entry<String, Integer> item1: set1) {
-                Integer personId = item1.getValue();
-                String keyword = item1.getKey();
-                String[] splitContent = getContentFromHTML(pageName).split(" ");
-                for (int i = 0; i < splitContent.length; i++) {
-                    if(splitContent.equals(keyword)) {
-                        rank++;
+            for (Map.Entry<String, Integer> word: keywords) {
+                Integer personId = word.getValue();
+                String keyword = word.getKey();
+                String[] splitContent = getContentFromHTML(url.getKey()).split("\n");
+                for (String line:splitContent) {
+                    String[] splitLine=line.split(" ");
+                    for(String piece :splitLine){
+                        if(piece.equals(keyword)) rank++;                   
                     }
                 }
-                personsPageRank.put(personId + " " + pageId, rank);
+                this.personsPageRank.put(personId + " " + url.getKey(), rank);                
             }
         }
+        System.out.println("Подсчет статистики закончен");
     }
 
     /**
@@ -104,5 +106,3 @@ public class ParseHTML extends Thread {
         return this.personsPageRank;
     }
 }
-
-

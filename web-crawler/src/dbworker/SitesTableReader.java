@@ -20,7 +20,7 @@ public class SitesTableReader extends Thread {
      */
 
     public void run(){
-        System.out.println("sitesTableWorker begin");
+        System.out.println("sitesTableReader begin");
         try{
             connect();
             querySitesName();
@@ -29,7 +29,7 @@ public class SitesTableReader extends Thread {
         }finally {
             disconnect();
         }
-        System.out.println("sitesTableWorker end");
+        System.out.println("sitesTableReader end");
     }
 
     /**

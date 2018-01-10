@@ -22,7 +22,7 @@ public class KeywordsTableReader extends Thread {
     public void run() {
         try {
             connect();
-            getKeywordsList();
+            initKeywordsList();
             disconnect();
         } catch (Exception e){
             e.printStackTrace();
@@ -56,18 +56,23 @@ public class KeywordsTableReader extends Thread {
     }
 
     /**
-     * Метод, осуществляющий запрос на поиск и получение ссылок веб-страниц, у которых отсутствует время последнего
-     * сканирования
-     * @return неотсканированные ссылки веб-страниц
+     * Метод, осуществляющий запрос из БД ключевых слов по которым ведется
+     * парсинг html страниц
      * @throws Exception
      */
 
-    public TreeMap<String, Integer> getKeywordsList() throws Exception {
+    public void initKeywordsList() throws Exception {
         this.keywordsList = new TreeMap<>();
         this.rs = this.stmt.executeQuery("SELECT NAME, PERSON_ID FROM KEYWORDS;");
         while(this.rs.next()){
             this.keywordsList.put(this.rs.getString(1), this.rs.getInt(2));
         }
+//        return this.keywordsList;
+    }
+    /*
+    *Метод возвращающий коллекцию ключевых слов
+    */
+    public TreeMap<String, Integer> getKeywordsList(){
         return this.keywordsList;
     }
 }

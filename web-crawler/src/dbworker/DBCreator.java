@@ -83,7 +83,7 @@ public class DBCreator {
                 "   );\n\n" +
 
                 "CREATE TABLE KEYWORDS(\n" +
-                "   ID INT PRIMARY KEY UNIQUE,\n" +
+                "   ID INT PRIMARY KEY,\n" +
                 "   NAME NVARCHAR(2048) NOT NULL,\n" +
                 "   PERSON_ID INT,\n" +
                 "   CONSTRAINT fk_persons FOREIGN KEY (PERSON_ID) REFERENCES PERSONS(ID)\n" +
@@ -105,9 +105,14 @@ public class DBCreator {
                 "   CONSTRAINT fk_pages_rank FOREIGN KEY (PAGE_ID) REFERENCES PAGES(ID),\n" +
                 "   CONSTRAINT fk_persons_rank FOREIGN KEY (PERSON_ID) REFERENCES PERSONS(ID)\n" +
                 ");\n"+
+                //для тестирования заполняю PERSONS и KEYWORDS
+                "INSERT INTO PERSONS (ID,NAME) VALUES ('1','Прохоров');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('1','Прохоров','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('2','Прохорову','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('3','Прохорове','1');\n"+
                 //для тестирования заполняю сразу несколько сайтов
                 "INSERT INTO SITES (NAME) VALUES ('aif.ru');\n"+
-                "INSERT INTO SITES (NAME) VALUES ('tass.ru');\n"+
+//                "INSERT INTO SITES (NAME) VALUES ('tass.ru');\n"+
                 "INSERT INTO SITES (NAME) VALUES ('udmapk.ru');\n");
     }
 

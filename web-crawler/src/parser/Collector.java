@@ -40,6 +40,7 @@ public class Collector extends Thread {
 
     public void run() {
         initUncheckedSitesList();//поиск непроверенных ссылок страниц сайтов из PAGES
+        System.out.println("Сортируем ссылки");
         sortUncheckedPages();// сортируем ссылки (robots,sitemap,html)
         if(!(this.unchRobotsList.isEmpty())) {//если коллекция не пустая
             initParseRobotsDotTxt();//анализ ссылок на robots.txt(извлечение 
@@ -48,13 +49,15 @@ public class Collector extends Thread {
         if(!(this.unchSiteMapsList.isEmpty())) {
             initParseSiteMaps();
         }
+//        System.out.println("Проверка списка несканированных ссылок html");
         if(!(this.unchHTMLPagesList.isEmpty())) {
             initParseHTML();
+            System.out.println("Парсинг html завершился");
         }
+        System.out.println("Вставка всех найденных коллектором ссылок в БД:Начато");
         this.ptw.insertIntoPagesTablePagesListFromCollector(this.newPagesList);
-        if(!this.newPersonPageRankList.isEmpty()) {
-            this.pprtw.insertIntoPPRTablePPRListFromCollector(this.newPersonPageRankList);
-        }
+        System.out.println("Вставка всех найденных коллектором ссылок в БД:Закончено");
+        
     }
 
     /**
@@ -68,8 +71,10 @@ public class Collector extends Thread {
         //ссылки на их robots.txt и кладем их в БД (PAGES)
         this.ptr = new PagesTableReader();
         try {
+            System.out.println("Считывание из БД всех непроверенных url:Начало");
             this.unchecked = this.ptr.getUncheckedPages();//считываем из PAGES 
             //все непросканированные ссылки
+            System.out.println("Считывание из БД всех непроверенных url:Конец");
         } catch (Exception e) {
             e.printStackTrace();
         }

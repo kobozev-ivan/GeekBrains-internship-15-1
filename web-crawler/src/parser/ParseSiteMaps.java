@@ -23,6 +23,7 @@ public class ParseSiteMaps extends Thread {
     private TreeMap<String, Integer> sitemapGZFiles = new TreeMap<>();
     private TreeMap<String, Integer> container = new TreeMap<>();
     private TreeMap<String, Integer>  urlssitemap=new TreeMap<>();
+    private FileManager fileManager;
 //Конструктор класса
     public ParseSiteMaps(TreeMap<String, Integer> unchSitemapsList) {
         this.unchSitemapsList = unchSitemapsList;
@@ -31,36 +32,23 @@ public class ParseSiteMaps extends Thread {
     public void run() {
         System.out.println("parseSiteMaps begin");
 
-        Set<Map.Entry<String, Integer>> set = this.unchSitemapsList.entrySet();
+        Set<Map.Entry<String, Integer>> set = unchSitemapsList.entrySet();
         for (Map.Entry<String, Integer> item: set) {
-            String[] key = item.getKey().split(" ");
-            if (item.getKey().contains(".gz")) {
-                this.sitemapGZFiles.put(key[1], item.getValue());
-            } else if(key[1].substring(key[1].length() - 4).equals(".xml")) {
-                this.sitemapXMLFilesList.put(key[1], item.getValue());
+            if (item.getKey().contains(".gz")) {//если ссылка содержит расширение
+                //кладем в коллецию архивированных файлов
+                sitemapGZFiles.put(item.getKey(), item.getValue());
+            } else if(item.getKey().substring(item.getKey().length() - 4).equals(".xml")) {
+                //кладем в коллекцию xml ссылок
+                sitemapXMLFilesList.put(item.getKey(), item.getValue());
             } else {
-                this.pagesList.put(key[1], item.getValue());
-            }
-        }
-    }
-
-    /**
-     * Метод, осуществляющий извлечение, и прочтение содержимого из .gz архивов
-     */
-
-    private void initSitemapsGZFiles() {
-        this.container = openSitemapGZArchiveFile();
-        Set<Map.Entry<String, Integer>> contents = this.container.entrySet();
-        for (Map.Entry<String, Integer> cont : contents) {
-            String[] splitResult1 = cont.getKey().split(" ");
-            for (int i = 0; i < splitResult1.length; i++) {
-                this.pagesList.put(splitResult1[i], cont.getValue());
+                //кладем все остальное (html)
+                pagesList.put(item.getKey(), item.getValue());
             }
         }
 //обработка списка архивированных файлов
         if (!(sitemapGZFiles.isEmpty())) {
             container = openSitemapGZArchiveFile();
-//            Set<Map.Entry<String, Integer>> contents = this.container.entrySet();
+//            Set<Map.Entry<String, Integer>> contents = container.entrySet();
 //            for (Map.Entry<String, Integer> cont : contents) {
 //                String[] splitResult1 = cont.getKey().split(" ");
 //                for (int i = 0; i < splitResult1.length; i++) {
@@ -72,7 +60,7 @@ public class ParseSiteMaps extends Thread {
 
         if(!(sitemapXMLFilesList.isEmpty())) {
             int count = 1;             
-            Set<Map.Entry<String, Integer>> pair = this.sitemapXMLFilesList.entrySet();
+            Set<Map.Entry<String, Integer>> pair = sitemapXMLFilesList.entrySet();
             for (Map.Entry<String, Integer> item : pair) {
                 String xmlFileDir = "d:/forSitemaps/sm" + count + ".xml";
                 //метод скачивания и записи  файла
@@ -100,7 +88,7 @@ public class ParseSiteMaps extends Thread {
         //коллекция полученных ссылок при обработке всех архивированных sitemap'ов
         TreeMap<String, Integer> result = new TreeMap<>();
 
-        Set<Map.Entry<String, Integer>> names = this.sitemapGZFiles.entrySet();
+        Set<Map.Entry<String, Integer>> names = sitemapGZFiles.entrySet();
         for (Map.Entry<String, Integer> gzsitemap : names) {
             System.out.println();
             count++;

@@ -57,15 +57,24 @@ public class PagesTableReader {
      */
 
     public TreeMap<String, Integer> getUncheckedPages() throws Exception {
+        System.out.println("Чтение из БД");
+        long t = System.currentTimeMillis();
         this.unchecked = new TreeMap<>();
         connect();
-        this.rs = this.stmt.executeQuery("SELECT ID, URL, SITE_ID FROM PAGES" +
-                " WHERE LAST_SCAN IS NULL;");
+        this.connection.setAutoCommit(false);
+        this.rs = this.stmt.executeQuery("SELECT URL, SITE_ID FROM PAGES" +
+                " WHERE LAST_SCAN IS NULL LIMIT 50;");
+        
         while(this.rs.next()){
-            this.unchecked.put(this.rs.getInt(1) + " " + this.rs.getString(2),
-                    this.rs.getInt(3));
+            this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));//кладем в коллекцию
         }
+        this.connection.setAutoCommit(true);
+        System.out.println((System.currentTimeMillis() - t) / 1000 + "s" + (System.currentTimeMillis() - t) % 1000 + "ms");
+        /*
+        *обновление даты работает очень медленно
+        */
         setLastScanDateForEachItem();//добавление времени последнего сканирования
+//        this.connection.setAutoCommit(true);
         disconnect();
         return this.unchecked;
     }
