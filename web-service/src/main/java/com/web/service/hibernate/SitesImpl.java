@@ -29,7 +29,7 @@ public class SitesImpl implements SitesInterface {
         return site;
     }
 
-    public Boolean deleteSite(int ID) throws SQLException {
+    public boolean deleteSite(int ID) throws SQLException {
         Session session = null;
         Sites site = null;
         try {

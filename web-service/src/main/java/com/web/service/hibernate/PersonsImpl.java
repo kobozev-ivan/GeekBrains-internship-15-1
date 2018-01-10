@@ -26,12 +26,12 @@ public class PersonsImpl implements PersonsInterface {
         }
     }
 
-    public void deletePerson(Persons person) throws SQLException {
+    public boolean deletePerson(Persons person) throws SQLException {
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            session.load(Keywords.class, person.getName());
+            session.load(Persons.class, person.getName());
             session.delete(person);
             session.getTransaction().commit();
         } catch (Exception e){
@@ -41,6 +41,7 @@ public class PersonsImpl implements PersonsInterface {
                 session.close();
             }
         }
+        return true;
     }
 
     public void updatePerson(int ID, Persons person) throws SQLException {

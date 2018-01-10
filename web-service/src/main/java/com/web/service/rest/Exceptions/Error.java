@@ -1,8 +1,8 @@
-package com.web.service.rest.Exceptions;
+package com.web.service.rest.exceptions;
 
 public enum Error {
-    NOT_AUTHORIZED(4010, "Not Authorized"),
-    FORBIDDEN(4030, "Forbidden"),
+//    NOT_AUTHORIZED(4010, "Not Authorized"),
+//    FORBIDDEN(4030, "Forbidden"),
     NOT_FOUND(4040, "Not Found."),
     SERVER_ERROR(5001, "Server error during operation.");
 
