@@ -1,6 +1,6 @@
 /**
- * Получает список robots.txt, инициирует поиск robots.txt данных сайтов,
- * просматривает robots.txt в поисках ссылок на новые страницы
+ * Получает список ссылок robots.txt, инициирует поиск robots.txt данных сайтов,
+ * просматривает robots.txt в поисках ссылок (sitemap'ов) на новые страницы
  * @author Anton Lapin, Yury Tweritin
  * @date 29.12.2017
  */
@@ -50,7 +50,7 @@ public class ParseRobotsDotTxt extends Thread {
         String pageContent = new Downloader().download(url);//скачивание страницы по адресу url
         String[] splitContent = pageContent.split("\n");// делим на строки и кладем в массив строк
 		//ищем строку Sitemap: или sitemap:, после которой идет его адрес
-        String urlsitemap=null;
+        String urlsitemap=null;        
 	for (String line :splitContent){                    
             int index=line.indexOf("Sitemap:");
             if (index!=-1){
@@ -61,15 +61,16 @@ public class ParseRobotsDotTxt extends Thread {
                if (index!=-1){
                urlsitemap=line.substring(index+8).replace( " ", "" );
                }
+               else break;//если не встретится ссылка на sitemap
             }
-            newPages.put(urlsitemap,id);
+            newPages.put(urlsitemap,id);           
 	}
         
         return newPages;
     }
 
     /**
-     * Метод, осуществляющий получение списка ссылок веб-страниц
+     * Метод, осуществляющий получение списка ссылок веб-страниц Sitemap'ов
      * @return список ссылок веб-страниц
      */
 

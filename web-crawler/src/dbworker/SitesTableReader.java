@@ -1,5 +1,6 @@
 /**
- * Делает запрос в БД таблицу Sites, получает сведения об элементах таблицы, у которых нет соответствий в таблице PAGES
+ * Делает запрос в БД таблицу Sites, получает сведения об элементах таблицы,
+ * у которых нет соответствий в таблице PAGES
  * @author Anton Lapin, Yury Tweritin
  * @date 29.12.2017
  */
@@ -19,7 +20,7 @@ public class SitesTableReader extends Thread {
      */
 
     public void run(){
-        System.out.println("sitesTableWorker begin");
+        System.out.println("sitesTableReader begin");
         try{
             connect();
             querySitesName();
@@ -28,7 +29,7 @@ public class SitesTableReader extends Thread {
         }finally {
             disconnect();
         }
-        System.out.println("sitesTableWorker end");
+        System.out.println("sitesTableReader end");
     }
 
     /**
@@ -55,7 +56,9 @@ public class SitesTableReader extends Thread {
     }
 
     /**
-     * Метод, осуществляющий запрос в БД на получение списка названий сайтов, не имеющих robots.txt
+     * Метод, осуществляющий запрос в БД на получение списка названий сайтов, 
+     * не имеющих robots.txt
+     * помещает найденные сайты в коллекцию siteNamelist
      * @throws SQLException
      */
 
