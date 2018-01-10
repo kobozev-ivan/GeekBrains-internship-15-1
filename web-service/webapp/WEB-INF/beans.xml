@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!-- Imported resources for cxf -->
     <import resource="classpath:META-INF/cxf/cxf.xml" />
     <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
@@ -10,8 +10,24 @@
     <!-- Imported bean for dao -->
     <import resource="classpath:META-INF/spring/dao.xml"></import>
 
-    <bean id="customersService" class="com.web.service.rest.SitesServiceJSON">
+    <bean id="sitesService" class="com.web.service.rest.SitesServiceJSON">
         <property name="sitesInterface" ref="sitesDAO"/>
+    </bean>
+
+    <bean id="personsService" class="com.web.service.rest.PersonsServiceJSON">
+        <property name="personsInterface" ref="personsDAO"/>
+    </bean>
+
+    <bean id="rankService" class="com.web.service.rest.PersonPageRankServiceJSON">
+        <property name="personPageRankInterface" ref="rankDAO"/>
+    </bean>
+
+    <bean id="pagesService" class="com.web.service.rest.PagesServiceJSON">
+        <property name="pagesInterface" ref="pagesDAO"/>
+    </bean>
+
+    <bean id="keywordService" class="com.web.service.rest.KeywordsServiceJSON">
+        <property name="keywordsInterface" ref="keywordsDAO"/>
     </bean>
 
 </beans>
