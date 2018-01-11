@@ -44,11 +44,16 @@ public class ParseHTML extends Thread {
 
     private void rankScore() {
         //TODO: упростить подсчет рейтинга, разбить метод на меньшие
+       
+        //коллекция url и их id
         Set<Map.Entry<String, Integer>> urls = this.unchHTMLPagesList.entrySet();
+        System.out.println("Подсчет рейтинга");
         for (Map.Entry<String, Integer> url: urls) {
 //            String[] splittedKey = url.getKey().line(" ");//делим ссылку на куски
 //            Integer pageId = Integer.parseInt(splittedKey[0]);//берем первый кусок это номер????
 //            String pageName = splittedKey[1];//второй кусок это имя????
+
+            //коллекция ключевых слов и person_id
             Set<Map.Entry<String, Integer>> keywords = this.keywordsList.entrySet();
             int rank = 0;
             for (Map.Entry<String, Integer> word: keywords) {
@@ -61,7 +66,9 @@ public class ParseHTML extends Thread {
                         if(piece.equals(keyword)) rank++;                   
                     }
                 }
-                this.personsPageRank.put(personId + " " + url.getKey(), rank);                
+                System.out.println(personId+" "+url.getValue()+" "+rank);
+                
+                this.personsPageRank.put(personId + " " + url.getValue(), rank);                
             }
         }
         System.out.println("Подсчет статистики закончен");
@@ -91,6 +98,7 @@ public class ParseHTML extends Thread {
             e.printStackTrace();
         }
         try {
+            //получаем ключевые слова и PERSON_ID 
             this.keywordsList = this.ktr.getKeywordsList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +109,7 @@ public class ParseHTML extends Thread {
      * Возврат списка популярности личностей по html страницам
      * @return
      */
-
+    //получаем коллекцию составных ключей personID+IDPAGE и рангов
     public TreeMap<String, Integer> getPersonsPageRank() {
         return this.personsPageRank;
     }
