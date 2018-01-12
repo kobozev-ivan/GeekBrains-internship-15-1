@@ -50,20 +50,20 @@ public class ParseRobotsDotTxt extends Thread {
         String pageContent = new Downloader().download(url);//скачивание страницы по адресу url
         String[] splitContent = pageContent.split("\n");// делим на строки и кладем в массив строк
 		//ищем строку Sitemap: или sitemap:, после которой идет его адрес
-        String urlsitemap=null;        
+        String[] urlsitemap=null;        
 	for (String line :splitContent){                    
             int index=line.indexOf("Sitemap:");
             if (index!=-1){
-               urlsitemap=line.substring(index+8).replace( " ", "" );
+               urlsitemap=line.substring(index+8).split(".xml");
             }
             else{
                index=line.indexOf("sitemap:");
                if (index!=-1){
-               urlsitemap=line.substring(index+8).replace( " ", "" );
+               urlsitemap=line.substring(index+8).split(".xml");
                }
                else break;//если не встретится ссылка на sitemap
             }
-            newPages.put(urlsitemap,id);           
+            newPages.put(urlsitemap[0]+".xml",id);           
 	}
         
         return newPages;
