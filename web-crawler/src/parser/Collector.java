@@ -32,7 +32,7 @@ public class Collector extends Thread {
     private ParseRobotsDotTxt rbts;
     private ParseSiteMaps smps;
     private ParseHTML phtml;
-    private PersonPageRankTableWriter pprtw;
+    private PersonPageRankTableWriter pprtw=new PersonPageRankTableWriter();
 
     /**
      * Основной алгоритм работы
