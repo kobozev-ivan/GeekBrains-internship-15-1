@@ -63,7 +63,7 @@ public class PagesTableReader {
         connect();
         this.connection.setAutoCommit(false);
         this.rs = this.stmt.executeQuery("SELECT URL, ID FROM PAGES" +
-                " WHERE LAST_SCAN IS NULL LIMIT 50;");
+                " WHERE LAST_SCAN IS NULL LIMIT 20;");
         
         while(this.rs.next()){
             this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));//кладем в коллекцию
