@@ -32,7 +32,7 @@ public class Collector extends Thread {
     private ParseRobotsDotTxt rbts;
     private ParseSiteMaps smps;
     private ParseHTML phtml;
-    private PersonPageRankTableWriter pprtw;
+    private PersonPageRankTableWriter pprtw=new PersonPageRankTableWriter();
 
     /**
      * Основной алгоритм работы
@@ -94,7 +94,7 @@ public class Collector extends Thread {
                 } else if (item.getKey().contains("sitemap")||item.getKey().contains("Sitemap")) {
                     //кладем в коллекцию ссылок на sitemap
                     this.unchSiteMapsList.put(item.getKey(), item.getValue());
-                } else if(item.getKey().contains(".html")){
+                } else {
                     //кладем в коллекцию ссылок обычных .html
                     this.unchHTMLPagesList.put(item.getKey(), item.getValue());
                 }
@@ -147,6 +147,8 @@ public class Collector extends Thread {
             e.printStackTrace();
         }
         this.newPersonPageRankList = this.phtml.getPersonsPageRank();
+        //запись статистики в БД        
+        this.pprtw.insertIntoPPRTablePPRListFromCollector(newPersonPageRankList);
     }
 
 }

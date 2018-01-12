@@ -57,13 +57,13 @@ public class PagesTableReader {
      */
 
     public TreeMap<String, Integer> getUncheckedPages() throws Exception {
-        System.out.println("Чтение из БД");
+        System.out.println("Чтение из PAGES непроверенных url");
         long t = System.currentTimeMillis();
         this.unchecked = new TreeMap<>();
         connect();
         this.connection.setAutoCommit(false);
-        this.rs = this.stmt.executeQuery("SELECT URL, SITE_ID FROM PAGES" +
-                " WHERE LAST_SCAN IS NULL LIMIT 50;");
+        this.rs = this.stmt.executeQuery("SELECT URL, ID FROM PAGES" +
+                " WHERE LAST_SCAN IS NULL LIMIT 20;");
         
         while(this.rs.next()){
             this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));//кладем в коллекцию
