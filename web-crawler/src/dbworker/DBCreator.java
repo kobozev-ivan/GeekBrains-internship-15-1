@@ -107,13 +107,14 @@ public class DBCreator {
                 ");\n"+
                 //для тестирования заполняю PERSONS и KEYWORDS
                 "INSERT INTO PERSONS (ID,NAME) VALUES ('1','Прохоров');\n"+
-                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('1','Прохоров','1');\n"+
-                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('2','Прохорову','1');\n"+
-                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('3','Прохорове','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('1','дня','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('2','день','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('3','День','1');\n"+
                 //для тестирования заполняю сразу несколько сайтов
-                "INSERT INTO SITES (NAME) VALUES ('aif.ru');\n"+
+                "INSERT INTO SITES (NAME) VALUES ('udmapk.ru');\n"+
+//                "INSERT INTO SITES (NAME) VALUES ('ackordofmine.ru');\n"+
 //                "INSERT INTO SITES (NAME) VALUES ('tass.ru');\n"+
-                "INSERT INTO SITES (NAME) VALUES ('udmapk.ru');\n");
+                "INSERT INTO SITES (NAME) VALUES ('aif.ru');\n");
     }
 
     /**
