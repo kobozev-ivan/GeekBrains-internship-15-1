@@ -8,6 +8,6 @@ import java.util.List;
 public interface PersonsDAOInterface {
     Persons createPerson(String name);
     boolean removePerson(int ID) throws SQLException;
-    Persons updatePerson(int ID, Persons person);
+    Persons updatePerson(int ID, String person);
     List<Persons> getAllPersons(int[] ID);
 }

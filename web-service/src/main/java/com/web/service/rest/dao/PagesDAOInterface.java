@@ -9,6 +9,6 @@ import java.util.Date;
 public interface PagesDAOInterface {
     Pages createPage(String URL, int siteID, Date found, Date lastScan);
     boolean removePage(int ID) throws SQLException;
-    void updatePage(int ID, Pages page);
+    Pages updatePage(int ID, String URL, int siteID, Date found, Date lastScan);
     List<Pages> getAllPagesBySite(int siteID);
 }
