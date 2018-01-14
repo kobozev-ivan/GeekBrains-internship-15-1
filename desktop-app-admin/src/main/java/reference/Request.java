@@ -5,8 +5,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import gia.SheetReference;
-import gia.SheetReferenceKeywords;
+import reference.gia.SheetReference;
+import reference.gia.SheetReferenceKeywords;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.ClientBuilder;

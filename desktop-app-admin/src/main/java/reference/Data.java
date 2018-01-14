@@ -1,6 +1,6 @@
 package reference;
 
-import gia.SheetReference;
+import reference.gia.SheetReference;
 
 import javax.swing.*;
 import javax.xml.ws.WebServiceException;

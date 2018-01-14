@@ -1,6 +1,6 @@
 package reference;
 
-import gia.SheetReference;
+import reference.gia.SheetReference;
 
 public interface Editable {
 
