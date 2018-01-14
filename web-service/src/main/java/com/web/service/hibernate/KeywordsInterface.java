@@ -7,8 +7,8 @@ import java.util.List;
  * Created by DRSPEED-PC on 24.12.2017.
  */
 public interface KeywordsInterface {
-    public void addKeyword(Keywords keyword) throws SQLException;
-    public void deleteKeyword(Keywords keywords) throws SQLException;
+    public Keywords addKeyword(Keywords keyword) throws SQLException;
+    public boolean deleteKeyword(int ID) throws SQLException;
     public void updateKeyword(int ID, Keywords keyword) throws SQLException;
-    public List<Keywords> getKeywordByPerson(Persons person) throws SQLException;
+    public List<Keywords> getKeywordByPerson(int personID) throws SQLException;
 }

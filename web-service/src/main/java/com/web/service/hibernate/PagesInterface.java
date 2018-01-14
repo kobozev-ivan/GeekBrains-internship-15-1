@@ -7,8 +7,8 @@ import java.util.List;
  * Created by DRSPEED-PC on 24.12.2017.
  */
 public interface PagesInterface {
-    public void addPage(Pages page) throws SQLException;
-    public void deletePage(Pages page) throws SQLException;
+    public Pages addPage(Pages page) throws SQLException;
+    public boolean deletePage(int ID) throws SQLException;
     public void updatePage(int ID, Pages page) throws SQLException;
-    public List<Pages> getAllPagesBySite(Sites site) throws SQLException;
+    public List<Pages> getAllPagesBySite(int siteID) throws SQLException;
 }

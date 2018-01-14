@@ -2,11 +2,13 @@ package com.web.service.rest.dao;
 
 import com.web.service.hibernate.Pages;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Date;
 
 public interface PagesDAOInterface {
-    Pages createPage(String URL);
-    boolean removePage(int ID);
-    Pages updatePage(int ID, Pages page);
-    List<Pages> getAllPages(int[] ID);
+    Pages createPage(String URL, int siteID, Date found, Date lastScan);
+    boolean removePage(int ID) throws SQLException;
+    void updatePage(int ID, Pages page);
+    List<Pages> getAllPagesBySite(int siteID);
 }
