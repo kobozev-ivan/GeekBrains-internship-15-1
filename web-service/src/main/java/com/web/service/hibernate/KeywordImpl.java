@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class KeywordImpl implements KeywordsInterface {
 
-    public void addKeyword(Keywords keywords){
+    public Keywords addKeyword(Keywords keywords){
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -27,23 +27,27 @@ public class KeywordImpl implements KeywordsInterface {
                 session.close();
             }
         }
+        return keywords;
     }
 
-    public void deleteKeyword(Keywords keywords) throws SQLException {
+    public boolean deleteKeyword(int ID) throws SQLException {
         Session session = null;
+        Keywords keywords = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            session.load(Keywords.class, keywords.getName());
+            keywords = session.load(Keywords.class, ID);
             session.delete(keywords);
             session.getTransaction().commit();
         } catch (Exception e){
             JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при удалении ключевого слова " + keywords.getName() + "!", JOptionPane.OK_OPTION);
+            return false;
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }
         }
+        return true;
     }
 
     public void updateKeyword(int ID, Keywords keyword) throws SQLException {
@@ -64,17 +68,16 @@ public class KeywordImpl implements KeywordsInterface {
         }
     }
 
-    public List<Keywords> getKeywordByPerson(Persons person) throws SQLException {
+    public List<Keywords> getKeywordByPerson(int personID) throws SQLException {
         Session session = null;
         List<Keywords> keywordsList= new ArrayList<Keywords>();
         try{
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            int personID = person.getID();
             Query query = session.createQuery("select k from Keywords k where PersonID = :personID").setParameter("personID", personID);
             keywordsList = (List<Keywords>)query.list();
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при извлечении списка ключевых слов для " + person.getName() + "!", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при извлечении списка ключевых слов для person" + personID + "!", JOptionPane.OK_OPTION);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
