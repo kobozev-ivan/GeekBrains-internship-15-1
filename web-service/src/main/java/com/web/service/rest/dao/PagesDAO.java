@@ -35,12 +35,18 @@ public class PagesDAO implements PagesDAOInterface{
         }
     }
 
-    public void updatePage(int ID, Pages page) {
+    public Pages updatePage(int ID, String URL, int siteID, Date found, Date lastScan) {
+        Pages page = new Pages();
+        page.setURL(URL);
+        page.setSiteID(siteID);
+        page.setFound(found.toString());
+        page.setLastScan(lastScan.toString());
         try {
             pagesInterface.updatePage(ID, page);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return page;
     }
 
     public List<Pages> getAllPagesBySite(int siteID) {

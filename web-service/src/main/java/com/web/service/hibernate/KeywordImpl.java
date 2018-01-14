@@ -77,7 +77,7 @@ public class KeywordImpl implements KeywordsInterface {
             Query query = session.createQuery("select k from Keywords k where PersonID = :personID").setParameter("personID", personID);
             keywordsList = (List<Keywords>)query.list();
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при извлечении списка ключевых слов для person" + personID + "!", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при извлечении списка ключевых слов для person " + personID + "!", JOptionPane.OK_OPTION);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

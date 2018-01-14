@@ -29,13 +29,15 @@ public class PersonsDAO implements PersonsDAOInterface{
         else {return false;}
     }
 
-    public Persons updatePerson(int ID, Persons person) {
+    public Persons updatePerson(int ID, String person) {
+        Persons targetPerson = new Persons();
+        targetPerson.setName(person);
         try {
-            personsInterface.updatePerson(ID, person);
+            personsInterface.updatePerson(ID, targetPerson);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return person;
+        return targetPerson;
     }
 
     public List<Persons> getAllPersons(int[] ID) {

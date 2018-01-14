@@ -32,13 +32,16 @@ public class KeywordsDAO implements KeywordsDAOInterface {
         }
     }
 
-    public Keywords updateKeyword(int ID, Keywords keyword) {
+    public Keywords updateKeyword(int ID, String keyword, int personID) {
+        Keywords targetKeyword = new Keywords();
+        targetKeyword.setName(keyword);
+        targetKeyword.setPersonID(personID);
         try {
-            keywordsInterface.updateKeyword(ID, keyword);
+            keywordsInterface.updateKeyword(ID, targetKeyword);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return targetKeyword;
     }
 
     public List<Keywords> getAllKeywordsByPerson(int personID) {

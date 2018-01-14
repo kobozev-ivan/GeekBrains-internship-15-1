@@ -1,10 +1,14 @@
 package com.web.service.rest;
 
+import com.web.service.hibernate.Keywords;
 import com.web.service.rest.dao.KeywordsDAOInterface;
+import com.web.service.rest.exceptions.Error;
+import com.web.service.rest.response.ResponseCreator;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.sql.SQLException;
+import java.util.List;
 
 public class KeywordsServiceJSON implements KeywordsServiceInterface {
     // link to our dao object
@@ -27,19 +31,62 @@ public class KeywordsServiceJSON implements KeywordsServiceInterface {
         return requestHeaders.getRequestHeader("version").get(0);
     }
 
-    public Response createKeyword(String keyword) {
-        return null;
+    @POST
+    @Path(value = "/api/v1/keywords")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createKeyword(@QueryParam("keyword") String keyword, @QueryParam("personID") int personID) {
+        System.out.println("POST");
+        Keywords crKeyword = keywordsDAOInterface.createKeyword(keyword, personID);
+        if (crKeyword != null) {
+            return ResponseCreator.success(getHeaderVersion(), crKeyword);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
     }
 
-    public Response removeKeyword(int ID) {
-        return null;
+    @DELETE
+//    @Path(value = "/api/v1/keywords/{id}")
+    @Path(value = "/api/v1/keywords")
+    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response removeKeyword(@PathParam("id") int id) throws SQLException {
+    public Response removeKeyword(@QueryParam("id") int id) throws SQLException {
+        System.out.println("DELETE");
+        if (keywordsDAOInterface.removeKeyword(id)) {
+            return ResponseCreator.success(getHeaderVersion(), "removed");
+        } else {
+            return ResponseCreator.success(getHeaderVersion(), "no such id");
+        }
     }
 
-    public Response updateKeyword(int ID, String keyword) {
-        return null;
+    @PUT
+    @Path(value = "/api/v1/keywords")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateKeyword(@QueryParam("id") int ID,
+                                  @QueryParam("keyword") String keyword,
+                                  @QueryParam("personID") int personID) {
+        System.out.println("PUT");
+        Keywords udKeyword = keywordsDAOInterface.updateKeyword(ID, keyword, personID);
+        if (udKeyword != null) {
+            return ResponseCreator.success(getHeaderVersion(), udKeyword);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
     }
 
-    public Response getAllKeywords(int[] ID) {
-        return null;
+    @GET
+//    @Path(value = "/api/v1/keywords/{personID}")
+    @Path(value = "/api/v1/keywords")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllKeywordsByPerson(@QueryParam("personID") int personID) {
+//    public Response getAllKeywordsByPerson(@PathParam("personID") int personID) {
+        System.out.println("GET");
+        List<Keywords> keywordsList = keywordsDAOInterface.getAllKeywordsByPerson(personID);
+        if (keywordsList != null) {
+            GenericEntity<List<Keywords>> entity = new GenericEntity<List<Keywords>>(keywordsList) {
+            };
+            return ResponseCreator.success(getHeaderVersion(), entity);
+        } else {
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+        }
     }
 }
