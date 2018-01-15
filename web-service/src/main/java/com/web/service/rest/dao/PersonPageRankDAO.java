@@ -31,7 +31,11 @@ public class PersonPageRankDAO implements PersonPageRankDAOInterface{
         else {return false;}
     }
 
-    public PersonPageRank updatePageRank(int ID, PersonPageRank personPageRank) {
+    public PersonPageRank updatePageRank(int ID, int personID, int pageID, int rank) {
+        PersonPageRank personPageRank = new PersonPageRank();
+        personPageRank.setPersonID(personID);
+        personPageRank.setPageID(pageID);
+        personPageRank.setRank(rank);
         try {
             personPageRankInterface.updateRank(ID, personPageRank);
         } catch (SQLException e) {
