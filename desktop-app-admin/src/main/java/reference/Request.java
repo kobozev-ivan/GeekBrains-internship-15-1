@@ -54,7 +54,7 @@ public class Request implements Requestable {
         WebTarget target = getPath(sheetReference);
         try{
             if (!addWords.isEmpty()){
-                String addRequest =  new Message(title,(new Message("add", addWords))).toJSONString();
+                String addRequest =  new Message(title,(new Message(CUW.ADD, addWords))).toJSONString();
                 Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.entity(addRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
                 if (answer.getStatus() != CREATED_OK) {
@@ -72,7 +72,7 @@ public class Request implements Requestable {
                 }
             }
             if (!delWords.isEmpty()){
-                String delRequest =  new Message(title,(new Message("del", delWords))).toJSONString();
+                String delRequest =  new Message(title,(new Message(CUW.DEL, delWords))).toJSONString();
                 Response answer = target.request(MediaType.APPLICATION_JSON_TYPE)
                         .post(Entity.entity(delRequest, MediaType.APPLICATION_JSON_TYPE),Response.class);
 
@@ -94,7 +94,7 @@ public class Request implements Requestable {
         title = sheetReference.getName();
         if (title.equals(CUW.KEYWORDS)){
             title = ((SheetReferenceKeywords) sheetReference).selectComboBoxModel;
-            return getTarget().path(API_V1_0).path(CUW.KEYWORDS).queryParam("subtable", title);
+            return getTarget().path(API_V1_0).path(CUW.KEYWORDS).queryParam(CUW.SUBTABLE, title);
         }
         return getTarget().path(API_V1_0).path(title);
     }

@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import reference.CUW;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +25,7 @@ public class WebService{
     @GET
     @Path("/{table}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response toUpDate(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam("subtable") String name) {
+    public Response toUpDate(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam(CUW.SUBTABLE) String name) {
         JSONObject jsonAnswer = new JSONObject();
         JSONArray jsonArray = null;
         if (name.isEmpty()){
@@ -55,20 +56,20 @@ public class WebService{
     @POST
     @Path("/{table}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setAdd(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam("subtable") String name, String message) {
+    public Response setAdd(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam(CUW.SUBTABLE) String name, String message) {
         toViewingRequestMessage(message);
         try {
             JSONObject jsonObject = (JSONObject) parser.parse(message);
             if (jsonObject.containsKey(nameTable)){
                 JSONObject jobject = (JSONObject) jsonObject.get(nameTable);
-                if (jobject.containsKey("add")){
-                    JSONArray jsonArray = (JSONArray)jobject.get("add");
+                if (jobject.containsKey(CUW.ADD)){
+                    JSONArray jsonArray = (JSONArray)jobject.get(CUW.ADD);
                     if (fakeData.persons.containsKey(nameTable)) addDataCollection(fakeData.persons, jsonArray, nameTable);
                     if (fakeData.sites.containsKey(nameTable)) addDataCollection(fakeData.sites, jsonArray, nameTable);
                     response = Response.status(CREATE).build();
                 }
-                if (jobject.containsKey("del")){
-                    JSONArray jsonArray = (JSONArray)jobject.get("del");
+                if (jobject.containsKey(CUW.DEL)){
+                    JSONArray jsonArray = (JSONArray)jobject.get(CUW.DEL);
                     if (fakeData.persons.containsKey(nameTable)) delDataCollection(fakeData.persons, jsonArray, nameTable);
                     if (fakeData.sites.containsKey(nameTable)) delDataCollection(fakeData.sites, jsonArray, nameTable);
                     response = Response.status(CREATE).build();
@@ -76,8 +77,8 @@ public class WebService{
             }
             if (jsonObject.containsKey(name)){
                 JSONObject jobject = (JSONObject) jsonObject.get(name);
-                if (jobject.containsKey("add")){
-                    JSONArray jsonArray = (JSONArray)jobject.get("add");
+                if (jobject.containsKey(CUW.ADD)){
+                    JSONArray jsonArray = (JSONArray)jobject.get(CUW.ADD);
                     HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
                     if (hashMapObj.containsKey(name)){
                         addDataCollection(hashMapObj, jsonArray, name);
@@ -89,8 +90,8 @@ public class WebService{
                         response = Response.status(CREATE).build();
                     }
                 }
-                if (jobject.containsKey("del")){
-                    JSONArray jsonArray = (JSONArray)jobject.get("del");
+                if (jobject.containsKey(CUW.DEL)){
+                    JSONArray jsonArray = (JSONArray)jobject.get(CUW.DEL);
                     HashMap<String, ArrayList<String>> hashMapObj = fakeData.keywords.get(nameTable);
                     if (hashMapObj.containsKey(name)){
                         delDataCollection(hashMapObj, jsonArray, name);
@@ -125,7 +126,7 @@ public class WebService{
     @PUT
     @Path("/{table}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response setChange(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam("subtable") String name, String stringChange) {
+    public Response setChange(@PathParam("table") String nameTable, @DefaultValue("")@QueryParam(CUW.SUBTABLE) String name, String stringChange) {
         toViewingRequestMessage(stringChange);
         try {
             if (name.isEmpty()){
