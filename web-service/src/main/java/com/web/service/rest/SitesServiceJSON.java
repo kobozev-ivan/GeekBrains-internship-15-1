@@ -31,6 +31,21 @@ public class SitesServiceJSON implements StiesServiceInterface {
         return requestHeaders.getRequestHeader("version").get(0);
     }
 
+    // create row representing sites and returns created sites as
+    // object->JSON structure
+    @POST
+    @Path(value = "/api/v1/sites")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createSite(@QueryParam("URL") String URL) throws SQLException {
+        System.out.println("POST");
+        Sites crsites = sitesDAOInterface.createSite(URL);
+        if (crsites != null) {
+            return ResponseCreator.success(getHeaderVersion(), crsites);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
+    }
+
     // remove row from the sites table according with passed id and returned
     // status message in body
     @DELETE
@@ -44,21 +59,6 @@ public class SitesServiceJSON implements StiesServiceInterface {
             return ResponseCreator.success(getHeaderVersion(), "removed");
         } else {
             return ResponseCreator.success(getHeaderVersion(), "no such id");
-        }
-    }
-
-    // create row representing sites and returns created sites as
-    // object->JSON structure
-    @POST
-    @Path(value = "/api/v1/sites")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createSite(@QueryParam("URL") String URL) throws SQLException {
-        System.out.println("POST");
-        Sites crsites = sitesDAOInterface.createSite(URL);
-        if (crsites != null) {
-            return ResponseCreator.success(getHeaderVersion(), crsites);
-        } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
         }
     }
 
