@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class SheetReferenceKeywords extends SheetReference{
 
@@ -44,27 +45,37 @@ public class SheetReferenceKeywords extends SheetReference{
     }
 
     private void atDeletingElement(DefaultListModel<String> model){
-        Iterator<String> iterator = dataModelKeywords.keySet().iterator();
-        while (iterator.hasNext()){
-            String key = iterator.next();
+        comboBoxModel.removeAllElements();
+        toAddItem(model);
+        toReconcileData(model);
+    }
+
+    private void toReconcileData(DefaultListModel<String> model) {
+        Iterator<Map.Entry<String, Data<String>>> iterator = dataModelKeywords.entrySet().iterator();
+        pass: while (iterator.hasNext()){
+            Map.Entry<String, Data<String>> entry = iterator.next();
             int count = 0;
+            String oldKey = entry.getKey();
+            if (oldKey == null){
+                iterator.remove();
+                continue;
+            }
             for (int i = 0; i < model.size(); i++) {
-                if (!key.equalsIgnoreCase(model.get(i))){
+                if (!oldKey.equalsIgnoreCase(model.get(i))){
                     count++;
                     if (count == model.getSize()){
                         iterator.remove();
-                        dataModelKeywords.remove((key), dataModelKeywords.get(key));
-                        comboBoxModel.removeElement(key);
                     }
-                }
+                }else continue pass;
             }
         }
     }
 
     private void toAddItem(DefaultListModel<String> model){
-        for (int i = comboBoxModel.getSize(); i < model.getSize(); i++) {
-            comboBoxModel.addElement(model.get(i));
-            if (!dataModelKeywords.containsKey(model.get(i)))  dataModelKeywords.put(model.get(i), new Data<>());
+        for (int i = 0; i < model.getSize(); i++) {
+            if (comboBoxModel.getElementAt(i) == null ||
+                    !model.get(i).equalsIgnoreCase(comboBoxModel.getElementAt(i)))
+                comboBoxModel.insertElementAt(model.get(i), i);
         }
     }
 
@@ -73,9 +84,7 @@ public class SheetReferenceKeywords extends SheetReference{
             if (!model.getElementAt(i).equals(comboBoxModel.getElementAt(j))){
                 String oldKey = comboBoxModel.getElementAt(j);
                 comboBoxModel.removeElementAt(j);
-                String newKey = model.getElementAt(i);
-                comboBoxModel.insertElementAt(newKey, j);
-                dataModelKeywords.put(newKey, dataModelKeywords.get(oldKey));
+                comboBoxModel.insertElementAt(model.getElementAt(i), j);
                 dataModelKeywords.remove(oldKey, dataModelKeywords.get(oldKey));
             }
         }
