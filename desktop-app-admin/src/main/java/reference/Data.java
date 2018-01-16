@@ -18,8 +18,8 @@ public class Data<T> extends DefaultListModel<String> implements Editable, Reque
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (!hashMap.containsKey(key)) hashMap.put(key, new Request());
         ArrayList<String> arrayListData = hashMap.get(key).toUpDate(sheetReference);
+        if (!key.isEmpty())key.clear();
         if (!arrayListData.isEmpty()){
-            key.clear();
             for (String arrayListElement : arrayListData) {
                 key.addElement(arrayListElement);
             }
