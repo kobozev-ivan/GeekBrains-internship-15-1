@@ -8,7 +8,7 @@
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
 
     <!-- Imported bean for dao -->
-    <import resource="classpath:META-INF/spring/dao.xml"></import>
+    <import resource="classpath:/WEB-INF/dao.xml"/>
 
     <bean id="sitesService" class="com.web.service.rest.SitesServiceJSON">
         <property name="sitesInterface" ref="sitesDAO"/>
