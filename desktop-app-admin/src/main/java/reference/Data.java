@@ -1,6 +1,6 @@
 package reference;
 
-import gia.SheetReference;
+import reference.gia.SheetReference;
 
 import javax.swing.*;
 import javax.xml.ws.WebServiceException;
@@ -18,8 +18,8 @@ public class Data<T> extends DefaultListModel<String> implements Editable, Reque
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (!hashMap.containsKey(key)) hashMap.put(key, new Request());
         ArrayList<String> arrayListData = hashMap.get(key).toUpDate(sheetReference);
+        if (!key.isEmpty())key.clear();
         if (!arrayListData.isEmpty()){
-            key.clear();
             for (String arrayListElement : arrayListData) {
                 key.addElement(arrayListElement);
             }
@@ -57,6 +57,4 @@ public class Data<T> extends DefaultListModel<String> implements Editable, Reque
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (hashMap.containsKey(key)) hashMap.get(key).toSave(sheetReference);
     }
-
-
 }

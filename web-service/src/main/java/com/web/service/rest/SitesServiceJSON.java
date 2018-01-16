@@ -3,7 +3,7 @@ package com.web.service.rest;
 import com.web.service.hibernate.Sites;
 import com.web.service.rest.dao.SitesDAOInterface;
 import com.web.service.rest.response.ResponseCreator;
-import com.web.service.rest.Exceptions.Error;
+import com.web.service.rest.exceptions.Error;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -34,10 +34,10 @@ public class SitesServiceJSON implements StiesServiceInterface {
     // remove row from the sites table according with passed id and returned
     // status message in body
     @DELETE
-//    @Path("/{id}")
+//    @Path(value = "/api/v1/sites/{id}")
     @Path(value = "/api/v1/sites")
     @Consumes(MediaType.APPLICATION_JSON)
-//    public Response removeSite(@PathParam("id") int id) {
+//    public Response removeSite(@PathParam("id") int id) throws SQLException {
     public Response removeSite(@QueryParam("id") int id) throws SQLException {
         System.out.println("DELETE");
         if (sitesDAOInterface.removeSite(id)) {
@@ -77,7 +77,7 @@ public class SitesServiceJSON implements StiesServiceInterface {
         }
     }
 
-    // returns list of customers meeting query params
+    // returns list of sites meeting query params
     @GET
     @Path(value = "/api/v1/sites")
     @Produces(MediaType.APPLICATION_JSON)

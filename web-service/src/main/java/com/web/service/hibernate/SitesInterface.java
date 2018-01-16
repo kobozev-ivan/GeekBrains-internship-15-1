@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface SitesInterface {
     Sites addSite(Sites site) throws SQLException;
-    Boolean deleteSite(int ID) throws SQLException;
+    boolean deleteSite(int ID) throws SQLException;
     void updateSite(int ID, Sites site) throws SQLException;
     List<Sites> getAllSites(int[] ID) throws SQLException;
 }

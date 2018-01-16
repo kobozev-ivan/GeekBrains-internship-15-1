@@ -1,0 +1,10 @@
+package com.web.service.rest;
+
+import javax.ws.rs.core.Response;
+
+public interface PersonsServiceInterface {
+    Response createPerson(String name);
+    Response removePerson(int ID);
+    Response updatePerson(int ID, String name);
+    Response getAllPersons(int[] ID);
+}

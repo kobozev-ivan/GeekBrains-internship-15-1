@@ -1,3 +1,8 @@
+/**
+ * Осуществляет загрузку данных из Интернета в виде строки по заданному URL-адресу
+ * @author Anton Lapin, Yury Tweritin
+ * @date 29.12.2017
+ */
 package downloader;
 
 import java.io.BufferedReader;
@@ -7,28 +12,35 @@ import java.net.URL;
 
 public class Downloader {
 
-    private BufferedReader reader = null;
-    private String line = null;
+    private BufferedReader reader;
+    private String line = "";
     private String addonLine;
+    private URL site;
+
+    /**
+     * Собственно метод, осуществляющий загрузку данных из Интернета
+     * @param url
+     * @return
+     */
 
     public String download(String url) {
         try {
-            URL site = new URL(url);
-            reader = new BufferedReader(new InputStreamReader(site.openStream()));
-            while ((addonLine = reader.readLine()) != null) {
-                line += addonLine + " ";
+            this.site = new URL(url);
+            this.reader = new BufferedReader(new InputStreamReader(this.site.openStream()));
+            while ((this.addonLine = this.reader.readLine()) != null) {
+                this.line += this.addonLine + " ";
             }
-            reader.close();
-        } catch (IOException e){
+            this.reader.close();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                reader.close();
-            } catch (IOException e){
+                this.reader.close();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return line;
+        return this.line;
     }
 
 }

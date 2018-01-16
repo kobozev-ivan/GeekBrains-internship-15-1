@@ -1,6 +1,6 @@
 package reference;
 
-import gia.SheetReference;
+import reference.gia.SheetReference;
 
 import java.net.ConnectException;
 import java.util.ArrayList;

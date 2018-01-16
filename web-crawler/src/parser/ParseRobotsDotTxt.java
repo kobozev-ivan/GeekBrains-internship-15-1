@@ -1,62 +1,80 @@
+/**
+ * Получает список ссылок robots.txt, инициирует поиск robots.txt данных сайтов,
+ * просматривает robots.txt в поисках ссылок (sitemap'ов) на новые страницы
+ * @author Anton Lapin, Yury Tweritin
+ * @date 29.12.2017
+ */
 package parser;
 
-import dbworker.SitesTableWorker;
 import downloader.Downloader;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
+public class ParseRobotsDotTxt extends Thread {
 
-public class ParseRobotsDotTxt {
-    //Инициирует запрос в БД через класс dbworker.SitesTableWorker
-    //получает список названий сайтов, у которых нет ссылок на HTML - страницы в БД
-    //инициирует поиск robots.txt данных сайтов
-    //просматривает robots.txt в поисках ссылок на sitemap
+    private TreeMap<String, Integer> pagesList = new TreeMap<>();
+    private TreeMap<String, Integer> unchRobotsList;
 
-    private static String sitemap;
-    private static ArrayList<String> siteNames;
+    /**
+     * Конструктор класса
+     * @param unchRobotsList
+     */
 
-    public static void main(String[] args) {
+    public ParseRobotsDotTxt(TreeMap<String, Integer> unchRobotsList) {
+        this.unchRobotsList = unchRobotsList;
+    }
 
-        siteNames = initDataBaseQuery();
+    /**
+     * Основной алгоритм работы нити
+     */
 
-        for (String siteName: siteNames) {
-            System.out.println(searchSiteMapReference(siteName));
+    public void run(){
+        Set<Map.Entry<String, Integer>> set = this.unchRobotsList.entrySet();
+        for (Map.Entry<String, Integer> item: set) {
+            Integer id = item.getValue();
+            String url = item.getKey();
+            this.pagesList.putAll(searchNewPageReferences(url, id));
         }
     }
 
-    private static ArrayList<String> initDataBaseQuery() {
-        ArrayList<String> list = new ArrayList<>();
-        SitesTableWorker sitesTableWorker = new SitesTableWorker();
-        sitesTableWorker.start();
-        try {
-            sitesTableWorker.join();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
+    /**
+     * Метод, осуществляющий поиск новых ссылок веб-страниц
+     * @param url
+     * @param id
+     * @return список новых ссылок веб-страниц
+     */
 
-        try {
-            list = sitesTableWorker.getNoReferenceSiteNamesList();//возврат списка названий сайтов
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-
-    public static String searchSiteMapReference(String siteName) {
-
-        Downloader downloader = new Downloader();
-
-        String result = downloader.download("http://" + siteName + "/robots.txt");
-
-        String[] splitResult = result.split(" ");
-
-        for(int i = 0; i < splitResult.length; i++){
-            if(splitResult[i].equals("Sitemap:") || splitResult[i].equals("sitemap:")){
-                sitemap = splitResult[i + 1];
+    private TreeMap<String, Integer> searchNewPageReferences(String url, int id) {
+        TreeMap<String, Integer> newPages = new TreeMap<>();
+        String pageContent = new Downloader().download(url);//скачивание страницы по адресу url
+        String[] splitContent = pageContent.split("\n");// делим на строки и кладем в массив строк
+		//ищем строку Sitemap: или sitemap:, после которой идет его адрес
+        String[] urlsitemap=null;        
+	for (String line :splitContent){                    
+            int index=line.indexOf("Sitemap:");
+            if (index!=-1){
+               urlsitemap=line.substring(index+8).split(".xml");
             }
-        }
+            else{
+               index=line.indexOf("sitemap:");
+               if (index!=-1){
+               urlsitemap=line.substring(index+8).split(".xml");
+               }
+               else break;//если не встретится ссылка на sitemap
+            }
+            newPages.put(urlsitemap[0]+".xml",id);           
+	}
+        
+        return newPages;
+    }
 
-        return sitemap;
+    /**
+     * Метод, осуществляющий получение списка ссылок веб-страниц Sitemap'ов
+     * @return список ссылок веб-страниц
+     */
+
+    public TreeMap<String, Integer> getPagesList() {
+        return this.pagesList;
     }
 }
