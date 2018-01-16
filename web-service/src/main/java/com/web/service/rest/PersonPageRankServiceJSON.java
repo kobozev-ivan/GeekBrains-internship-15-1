@@ -1,10 +1,14 @@
 package com.web.service.rest;
 
+import com.web.service.hibernate.PersonPageRank;
 import com.web.service.rest.dao.PersonPageRankDAOInterface;
+import com.web.service.rest.exceptions.Error;
+import com.web.service.rest.response.ResponseCreator;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.sql.SQLException;
+import java.util.List;
 
 public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface {
     // link to our dao object
@@ -27,19 +31,82 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
         return requestHeaders.getRequestHeader("version").get(0);
     }
 
-    public Response createPageRank(int pageID, int personID, int rank) {
-        return null;
+    @POST
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createPageRank(@QueryParam("pageID") int pageID,
+                                   @QueryParam("personID") int personID,
+                                   @QueryParam("rank") int rank) {
+        System.out.println("POST");
+        PersonPageRank crPageRank = personPageRankDAOInterface.createPageRank(pageID, personID, rank);
+        if (crPageRank != null) {
+            return ResponseCreator.success(getHeaderVersion(), crPageRank);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
     }
 
-    public Response removePageRank(int ID) {
-        return null;
+    @DELETE
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response removePageRank(@PathParam("id") int ID) throws SQLException {
+    public Response removePageRank(@QueryParam("id") int ID) throws SQLException {
+        System.out.println("DELETE");
+        if (personPageRankDAOInterface.removePageRank(ID)) {
+            return ResponseCreator.success(getHeaderVersion(), "removed");
+        } else {
+            return ResponseCreator.success(getHeaderVersion(), "no such id");
+        }
     }
 
-    public Response updatePageRank(int ID, int pageID, int personID, int rank) {
-        return null;
+    @PUT
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updatePageRank(@QueryParam("id")int ID,
+                                   @QueryParam("pageID") int pageID,
+                                   @QueryParam("personID") int personID,
+                                   @QueryParam("rank") int rank) {
+        System.out.println("PUT");
+        PersonPageRank udPageRank = personPageRankDAOInterface.updatePageRank(ID, pageID, personID, rank);
+        if (udPageRank != null) {
+            return ResponseCreator.success(getHeaderVersion(), udPageRank);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
     }
 
-    public Response getAllRanks(int[] ID) {
-        return null;
+    @GET
+//    @Path(value = "/api/v1/{personID}")
+    @Path(value = "/api/v1")
+    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getAllRanks(@PathParam("personID") int personID) {
+    public Response getAllRanksByPerson(@QueryParam("personID") int personID) {
+        System.out.println("GET");
+        List<PersonPageRank> personPageRankList = personPageRankDAOInterface.getAllRanksByPerson(personID);
+        if (personPageRankList != null) {
+            GenericEntity<List<PersonPageRank>> entity = new GenericEntity<List<PersonPageRank>>(personPageRankList) {
+            };
+            return ResponseCreator.success(getHeaderVersion(), entity);
+        } else {
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+        }
+    }
+
+    @GET
+//    @Path(value = "/api/v1/{pageID}")
+    @Path(value = "/api/v1")
+    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getAllRanks(@PathParam("pageID") int personID) {
+    public Response getAllRanksByPage(@QueryParam("pageID") int pageID) {
+        System.out.println("GET");
+        List<PersonPageRank> personPageRankList = personPageRankDAOInterface.getAllRanksByPage(pageID);
+        if (personPageRankList != null) {
+            GenericEntity<List<PersonPageRank>> entity = new GenericEntity<List<PersonPageRank>>(personPageRankList) {
+            };
+            return ResponseCreator.success(getHeaderVersion(), entity);
+        } else {
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+        }
     }
 }

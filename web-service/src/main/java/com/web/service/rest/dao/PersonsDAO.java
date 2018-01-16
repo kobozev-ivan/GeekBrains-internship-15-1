@@ -4,6 +4,7 @@ import com.web.service.hibernate.Persons;
 import com.web.service.hibernate.PersonsInterface;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonsDAO implements PersonsDAOInterface{
@@ -22,21 +23,30 @@ public class PersonsDAO implements PersonsDAOInterface{
     }
 
     public boolean removePerson(int ID) throws SQLException {
-        Persons persons = new Persons();
-        persons.setID(ID);
-        if (personsInterface.deletePerson(persons)){
+        if (personsInterface.deletePerson(ID)) {
             return true;
         }
-        else {
-            return false;
-        }
+        else {return false;}
     }
 
-    public Persons updatePerson(int ID, Persons person) {
-        return null;
+    public Persons updatePerson(int ID, String person) {
+        Persons targetPerson = new Persons();
+        targetPerson.setName(person);
+        try {
+            personsInterface.updatePerson(ID, targetPerson);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return targetPerson;
     }
 
     public List<Persons> getAllPersons(int[] ID) {
-        return null;
+        List<Persons> personsList = new ArrayList<Persons>();
+        try{
+            personsList = personsInterface.getAllPersons(ID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return personsList;
     }
 }

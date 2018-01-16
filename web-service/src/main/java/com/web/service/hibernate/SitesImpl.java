@@ -40,6 +40,7 @@ public class SitesImpl implements SitesInterface {
             session.getTransaction().commit();
         } catch (Exception e){
             JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при удалении сайта " + site.getName() + "!", JOptionPane.OK_OPTION);
+            return false;
         } finally {
             if (session != null && session.isOpen()){
                 session.close();
@@ -64,7 +65,6 @@ public class SitesImpl implements SitesInterface {
                 session.close();
             }
         }
-
     }
 
     public List<Sites> getAllSites(int[] ID) throws SQLException {

@@ -31,26 +31,10 @@ public class SitesServiceJSON implements StiesServiceInterface {
         return requestHeaders.getRequestHeader("version").get(0);
     }
 
-    // remove row from the sites table according with passed id and returned
-    // status message in body
-    @DELETE
-//    @Path(value = "/api/v1/sites/{id}")
-    @Path(value = "/api/v1/sites")
-    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response removeSite(@PathParam("id") int id) throws SQLException {
-    public Response removeSite(@QueryParam("id") int id) throws SQLException {
-        System.out.println("DELETE");
-        if (sitesDAOInterface.removeSite(id)) {
-            return ResponseCreator.success(getHeaderVersion(), "removed");
-        } else {
-            return ResponseCreator.success(getHeaderVersion(), "no such id");
-        }
-    }
-
     // create row representing sites and returns created sites as
     // object->JSON structure
     @POST
-    @Path(value = "/api/v1/sites")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createSite(@QueryParam("URL") String URL) throws SQLException {
         System.out.println("POST");
@@ -62,10 +46,26 @@ public class SitesServiceJSON implements StiesServiceInterface {
         }
     }
 
+    // remove row from the sites table according with passed id and returned
+    // status message in body
+    @DELETE
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response removeSite(@PathParam("id") int id) throws SQLException {
+    public Response removeSite(@QueryParam("id") int id) throws SQLException {
+        System.out.println("DELETE");
+        if (sitesDAOInterface.removeSite(id)) {
+            return ResponseCreator.success(getHeaderVersion(), "removed");
+        } else {
+            return ResponseCreator.success(getHeaderVersion(), "no such id");
+        }
+    }
+
     // update row and return previous version of row representing sites as
     // object->JSON structure
     @PUT
-    @Path(value = "/api/v1/sites")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSite(Sites sites, int ID) {
         System.out.println("PUT");
@@ -79,7 +79,7 @@ public class SitesServiceJSON implements StiesServiceInterface {
 
     // returns list of sites meeting query params
     @GET
-    @Path(value = "/api/v1/sites")
+    @Path(value = "/api/v1")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllSites(int[] ID)
     //                                 @QueryParam("pagenum") Integer pageNum,

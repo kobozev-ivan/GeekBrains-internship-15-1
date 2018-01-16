@@ -7,8 +7,8 @@ import java.util.List;
  * Created by DRSPEED-PC on 24.12.2017.
  */
 public interface PersonsInterface {
-    public void addPerson(Persons person) throws SQLException;
-    public boolean deletePerson(Persons person) throws SQLException;
+    public Persons addPerson(Persons person) throws SQLException;
+    public boolean deletePerson(int ID) throws SQLException;
     public void updatePerson(int ID, Persons person) throws SQLException;
-    public List<Persons> getAllPersons() throws SQLException;
+    public List<Persons> getAllPersons(int[] ID) throws SQLException;
 }

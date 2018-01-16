@@ -1,10 +1,15 @@
 package com.web.service.rest;
 
+import com.web.service.hibernate.Pages;
 import com.web.service.rest.dao.PagesDAOInterface;
+import com.web.service.rest.exceptions.Error;
+import com.web.service.rest.response.ResponseCreator;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
 
 public class PagesServiceJSON implements PagesServiceInterface {
     // link to our dao object
@@ -27,19 +32,67 @@ public class PagesServiceJSON implements PagesServiceInterface {
         return requestHeaders.getRequestHeader("version").get(0);
     }
 
-    public Response createPage(String name) {
-        return null;
+    @POST
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createPage(@QueryParam("url") String URL,
+                               @QueryParam("siteID") int siteID,
+                               @QueryParam("dateFound") Date found,
+                               @QueryParam("lastScan") Date lastScan) {
+        System.out.println("POST");
+        Pages crPage = pagesDAOInterface.createPage(URL, siteID, found, lastScan);
+        if (crPage != null) {
+            return ResponseCreator.success(getHeaderVersion(), crPage);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
     }
 
-    public Response removePage(int ID) {
-        return null;
+    @DELETE
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response removePage(@PathParam("id") int ID) throws SQLException {
+    public Response removePage(@QueryParam("id") int ID) throws SQLException {
+        System.out.println("DELETE");
+        if (pagesDAOInterface.removePage(ID)) {
+            return ResponseCreator.success(getHeaderVersion(), "removed");
+        } else {
+            return ResponseCreator.success(getHeaderVersion(), "no such id");
+        }
     }
 
-    public Response updatePage(int ID, String name) {
-        return null;
+    @PUT
+    @Path(value = "/api/v1")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updatePage(@QueryParam("id") int ID,
+                               @QueryParam("url") String URL,
+                               @QueryParam("siteID") int siteID,
+                               @QueryParam("dateFound") Date found,
+                               @QueryParam("lastScan") Date lastScan) {
+        System.out.println("PUT");
+        Pages udPage = pagesDAOInterface.updatePage(ID, URL, siteID, found, lastScan);
+        if (udPage != null) {
+            return ResponseCreator.success(getHeaderVersion(), udPage);
+        } else {
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+        }
     }
 
-    public Response getAllPages(int[] ID) {
-        return null;
+    @GET
+//    @Path(value = "/api/v1/{siteID}")
+    @Path(value = "/api/v1")
+    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getAllPagesBySite(@PathParam("siteID") int siteID) {
+    public Response getAllPagesBySite(@QueryParam("siteID") int siteID) {
+        System.out.println("GET");
+        List<Pages> pagesList = pagesDAOInterface.getAllPagesBySite(siteID);
+        if (pagesList != null) {
+            GenericEntity<List<Pages>> entity = new GenericEntity<List<Pages>>(pagesList) {
+            };
+            return ResponseCreator.success(getHeaderVersion(), entity);
+        } else {
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+        }
     }
 }
