@@ -1,33 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+       <!--xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+       <!--xmlns:jaxrs="http://www.springframework.org/schema/c"-->
+       <!--xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">-->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <!-- Imported resources for cxf -->
-    <import resource="classpath:META-INF/cxf/cxf.xml" />
-    <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" />
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd  http://cxf.apache.org/jaxrs  http://cxf.apache.org/schemas/jaxrs.xsd  http://cxf.apache.org/jaxws  http://cxf.apache.org/schemas/jaxws.xsd">
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-
+    <import resource="classpath:META-INF/cxf/cxf.xml" />
     <!-- Imported bean for dao -->
     <import resource="classpath:/WEB-INF/dao.xml"/>
 
     <bean id="sitesService" class="com.web.service.rest.SitesServiceJSON">
         <property name="sitesInterface" ref="sitesDAO"/>
     </bean>
+    <jaxrs:server id="sites" address="/sites">
+        <jaxrs:serviceBeans>
+            <ref bean="sitesService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
 
     <bean id="personsService" class="com.web.service.rest.PersonsServiceJSON">
         <property name="personsInterface" ref="personsDAO"/>
     </bean>
+    <jaxrs:server id="persons" address="/persons">
+        <jaxrs:serviceBeans>
+            <ref bean="personsService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
 
     <bean id="rankService" class="com.web.service.rest.PersonPageRankServiceJSON">
         <property name="personPageRankInterface" ref="rankDAO"/>
     </bean>
-
+    <jaxrs:server id="personpagerank" address="/personpagerank">
+        <jaxrs:serviceBeans>
+            <ref bean="rankService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+    
     <bean id="pagesService" class="com.web.service.rest.PagesServiceJSON">
         <property name="pagesInterface" ref="pagesDAO"/>
     </bean>
+    <jaxrs:server id="pages" address="/pages">
+        <jaxrs:serviceBeans>
+            <ref bean="pagesService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
 
     <bean id="keywordService" class="com.web.service.rest.KeywordsServiceJSON">
         <property name="keywordsInterface" ref="keywordsDAO"/>
     </bean>
+    <jaxrs:server id="keywords" address="/keywords">
+        <jaxrs:serviceBeans>
+            <ref bean="keywordService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
 
 </beans>
