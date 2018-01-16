@@ -1,6 +1,5 @@
 package com.web.service.hibernate;
 
-import org.apache.abdera.model.Person;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
