@@ -32,7 +32,7 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
     }
 
     @POST
-    @Path(value = "/api/v1/personpagerank")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createPageRank(@QueryParam("pageID") int pageID,
                                    @QueryParam("personID") int personID,
@@ -47,8 +47,8 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
     }
 
     @DELETE
-//    @Path(value = "/api/v1/personpagerank/{id}")
-    @Path(value = "/api/v1/personpagerank")
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
 //    public Response removePageRank(@PathParam("id") int ID) throws SQLException {
     public Response removePageRank(@QueryParam("id") int ID) throws SQLException {
@@ -61,7 +61,7 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
     }
 
     @PUT
-    @Path(value = "/api/v1/personpagerank")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePageRank(@QueryParam("id")int ID,
                                    @QueryParam("pageID") int pageID,
@@ -77,8 +77,8 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
     }
 
     @GET
-//    @Path(value = "/api/v1/personpagerank/{personID}")
-    @Path(value = "/api/v1/personpagerank")
+//    @Path(value = "/api/v1/{personID}")
+    @Path(value = "/api/v1")
     @Produces(MediaType.APPLICATION_JSON)
 //    public Response getAllRanks(@PathParam("personID") int personID) {
     public Response getAllRanksByPerson(@QueryParam("personID") int personID) {
@@ -94,8 +94,8 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
     }
 
     @GET
-//    @Path(value = "/api/v1/personpagerank/{pageID}")
-    @Path(value = "/api/v1/personpagerank")
+//    @Path(value = "/api/v1/{pageID}")
+    @Path(value = "/api/v1")
     @Produces(MediaType.APPLICATION_JSON)
 //    public Response getAllRanks(@PathParam("pageID") int personID) {
     public Response getAllRanksByPage(@QueryParam("pageID") int pageID) {
