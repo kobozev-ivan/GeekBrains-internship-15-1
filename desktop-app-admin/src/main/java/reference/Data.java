@@ -57,6 +57,4 @@ public class Data<T> extends DefaultListModel<String> implements Editable, Reque
         Data<T> key = (Data<T>)sheetReference.list.getModel();
         if (hashMap.containsKey(key)) hashMap.get(key).toSave(sheetReference);
     }
-
-
 }
