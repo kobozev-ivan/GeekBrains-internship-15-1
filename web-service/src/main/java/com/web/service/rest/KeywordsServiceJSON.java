@@ -32,7 +32,7 @@ public class KeywordsServiceJSON implements KeywordsServiceInterface {
     }
 
     @POST
-    @Path(value = "/api/v1/keywords")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createKeyword(@QueryParam("keyword") String keyword, @QueryParam("personID") int personID) {
         System.out.println("POST");
@@ -45,8 +45,8 @@ public class KeywordsServiceJSON implements KeywordsServiceInterface {
     }
 
     @DELETE
-//    @Path(value = "/api/v1/keywords/{id}")
-    @Path(value = "/api/v1/keywords")
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
 //    public Response removeKeyword(@PathParam("id") int id) throws SQLException {
     public Response removeKeyword(@QueryParam("id") int id) throws SQLException {
@@ -59,7 +59,7 @@ public class KeywordsServiceJSON implements KeywordsServiceInterface {
     }
 
     @PUT
-    @Path(value = "/api/v1/keywords")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateKeyword(@QueryParam("id") int ID,
                                   @QueryParam("keyword") String keyword,
@@ -74,8 +74,8 @@ public class KeywordsServiceJSON implements KeywordsServiceInterface {
     }
 
     @GET
-//    @Path(value = "/api/v1/keywords/{personID}")
-    @Path(value = "/api/v1/keywords")
+//    @Path(value = "/api/v1/{personID}")
+    @Path(value = "/api/v1")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllKeywordsByPerson(@QueryParam("personID") int personID) {
 //    public Response getAllKeywordsByPerson(@PathParam("personID") int personID) {

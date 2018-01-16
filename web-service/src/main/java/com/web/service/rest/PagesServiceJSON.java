@@ -33,7 +33,7 @@ public class PagesServiceJSON implements PagesServiceInterface {
     }
 
     @POST
-    @Path(value = "/api/v1/pages")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createPage(@QueryParam("url") String URL,
                                @QueryParam("siteID") int siteID,
@@ -49,8 +49,8 @@ public class PagesServiceJSON implements PagesServiceInterface {
     }
 
     @DELETE
-//    @Path(value = "/api/v1/pages/{id}")
-    @Path(value = "/api/v1/pages")
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
 //    public Response removePage(@PathParam("id") int ID) throws SQLException {
     public Response removePage(@QueryParam("id") int ID) throws SQLException {
@@ -63,7 +63,7 @@ public class PagesServiceJSON implements PagesServiceInterface {
     }
 
     @PUT
-    @Path(value = "/api/v1/pages")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePage(@QueryParam("id") int ID,
                                @QueryParam("url") String URL,
@@ -80,8 +80,8 @@ public class PagesServiceJSON implements PagesServiceInterface {
     }
 
     @GET
-//    @Path(value = "/api/v1/pages/{siteID}")
-    @Path(value = "/api/v1/pages")
+//    @Path(value = "/api/v1/{siteID}")
+    @Path(value = "/api/v1")
     @Produces(MediaType.APPLICATION_JSON)
 //    public Response getAllPagesBySite(@PathParam("siteID") int siteID) {
     public Response getAllPagesBySite(@QueryParam("siteID") int siteID) {

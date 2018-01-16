@@ -32,7 +32,7 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
     }
 
     @POST
-    @Path(value = "/api/v1/persons")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createPerson(@QueryParam("name") String name) {
         System.out.println("POST");
@@ -45,8 +45,8 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
     }
 
     @DELETE
-//    @Path(value = "/api/v1/persons/{id}")
-    @Path(value = "/api/v1/persons")
+//    @Path(value = "/api/v1/{id}")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
 //    public Response removePerson(@PathParam("id") int ID) throws SQLException {
     public Response removePerson(@QueryParam("id") int ID) throws SQLException {
@@ -59,7 +59,7 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
     }
 
     @PUT
-    @Path(value = "/api/v1/persons")
+    @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePerson(@QueryParam("id") int ID,
                                  @QueryParam("name") String name) {
@@ -73,7 +73,7 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
     }
 
     @GET
-    @Path(value = "/api/v1/persons")
+    @Path(value = "/api/v1")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllPersons(int[] ID) {
         System.out.println("GET");
