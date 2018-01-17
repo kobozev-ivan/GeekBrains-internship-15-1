@@ -30,12 +30,12 @@ public class Main {
 
         pages.setFound(currentTime);
         pages.setLastScan(currentTime);
-        try {
-            Factory.getInstance().getSitesInterface().addSite(sites);
-            Factory.getInstance().getPersonsInterface().addPerson(persons);
-            Factory.getInstance().getPagesInterface().addPage(pages);
-        } catch (SQLException e){
-            System.out.println(e.getStackTrace());
-        }
+//        try {
+//            Factory.getInstance().getSitesInterface().addSite(sites);
+//            Factory.getInstance().getPersonsInterface().addPerson(persons);
+//            Factory.getInstance().getPagesInterface().addPage(pages);
+//        } catch (SQLException e){
+//            System.out.println(e.getStackTrace());
+//        }
     }
 }
