@@ -12,14 +12,12 @@ public class SitesDAO implements SitesDAOInterface {
     private SitesInterface sitesInterface;
 
     public Sites createSite(String URL) {
-        Sites sites = new Sites();
-        sites.setName(URL);
         try {
-            sitesInterface.addSite(sites);
+            sitesInterface.addSite(URL);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return sites;
+        return null;
     }
 
     public Boolean removeSite(int ID) throws SQLException {

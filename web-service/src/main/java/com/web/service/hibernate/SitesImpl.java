@@ -12,8 +12,10 @@ import java.util.List;
  * Created by DRSPEED-PC on 24.12.2017.
  */
 public class SitesImpl implements SitesInterface {
-    public Sites addSite(Sites site) throws SQLException {
+    public Sites addSite(String URL) throws SQLException {
         Session session = null;
+        Sites site = new Sites();
+        site.setName(URL);
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();

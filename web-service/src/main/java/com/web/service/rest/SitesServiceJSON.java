@@ -9,8 +9,13 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SitesServiceJSON implements StiesServiceInterface {
+
+    Logger logger = Logger.getLogger(SitesServiceJSON.class.getName());
     // link to our dao object
     private SitesDAOInterface sitesDAOInterface;
 
@@ -35,9 +40,13 @@ public class SitesServiceJSON implements StiesServiceInterface {
     // object->JSON structure
     @POST
     @Path(value = "/api/v1")
-    @Consumes(MediaType.APPLICATION_JSON)
+//    @Consumes({MediaType.APPLICATION_JSON})
+    @Consumes(value={"application/json"})
+//    @Produces(value={"text/xml", "application/json"})
     public Response createSite(@QueryParam("URL") String URL) throws SQLException {
-        System.out.println("POST");
+        logger.addHandler(new ConsoleHandler());
+        logger.setLevel(Level.WARNING);
+        logger.log(Level.WARNING, "POST: " + URL);
         Sites crsites = sitesDAOInterface.createSite(URL);
         if (crsites != null) {
             return ResponseCreator.success(getHeaderVersion(), crsites);
