@@ -9,6 +9,7 @@ import java.util.List;
 public interface StiesServiceInterface {
     Response createSite(String URL) throws SQLException;
     Response removeSite(int ID) throws SQLException;
-    Response updateSite(Sites site, int ID);
+    Response updateSite(String url, int ID);
     Response getAllSites(int[] ID);
+    Response getSite(int id);
 }

@@ -2,10 +2,14 @@ import com.web.service.hibernate.Factory;
 import com.web.service.hibernate.Pages;
 import com.web.service.hibernate.Persons;
 import com.web.service.hibernate.Sites;
+import org.hibernate.mapping.Map;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by DRSPEED-PC on 24.12.2017.
@@ -30,12 +34,20 @@ public class Main {
 
         pages.setFound(currentTime);
         pages.setLastScan(currentTime);
-//        try {
+        ArrayList<Sites> SitesList = new ArrayList<Sites>();
+        try {
 //            Factory.getInstance().getSitesInterface().addSite(sites);
 //            Factory.getInstance().getPersonsInterface().addPerson(persons);
 //            Factory.getInstance().getPagesInterface().addPage(pages);
-//        } catch (SQLException e){
-//            System.out.println(e.getStackTrace());
-//        }
+//            Factory.getInstance().getSitesInterface().addSite("www.mysite.com");
+            SitesList.add(Factory.getInstance().getSitesInterface().getSite(2));
+            System.out.println(SitesList.get(0).getID() + ":" + SitesList.get(0).getName());
+//            Factory.getInstance().getSitesInterface().updateSite(2, "www.list.ru");
+//            System.out.println(sites1.toString());
+
+        } catch (SQLException e){
+            System.out.println(e.getStackTrace());
+        }
+
     }
 }

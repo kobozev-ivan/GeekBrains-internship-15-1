@@ -9,6 +9,7 @@ import java.util.List;
 public interface SitesInterface {
     Sites addSite(String URL) throws SQLException;
     boolean deleteSite(int ID) throws SQLException;
-    void updateSite(int ID, Sites site) throws SQLException;
+    Sites updateSite(int ID, String url) throws SQLException;
     List<Sites> getAllSites(int[] ID) throws SQLException;
+    Sites getSite(int ID) throws SQLException;
 }

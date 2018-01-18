@@ -8,6 +8,7 @@ import java.util.List;
 public interface SitesDAOInterface {
     Sites createSite(String URL);
     Boolean removeSite(int ID) throws SQLException;
-    Sites updateSite(Sites site, int ID);
+    Sites updateSite(String url, int ID);
     List<Sites> getAllSites(int[] ID);
+    Sites getSite(int id);
 }

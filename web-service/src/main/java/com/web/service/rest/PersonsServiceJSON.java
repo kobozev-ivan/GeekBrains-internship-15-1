@@ -38,9 +38,9 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
         System.out.println("POST");
         Persons crPerson = personsDAOInterface.createPerson(name);
         if (crPerson != null) {
-            return ResponseCreator.success(getHeaderVersion(), crPerson);
+            return ResponseCreator.success(crPerson);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode());
         }
     }
 
@@ -52,9 +52,9 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
     public Response removePerson(@QueryParam("id") int ID) throws SQLException {
         System.out.println("DELETE");
         if (personsDAOInterface.removePerson(ID)) {
-            return ResponseCreator.success(getHeaderVersion(), "removed");
+            return ResponseCreator.success("removed");
         } else {
-            return ResponseCreator.success(getHeaderVersion(), "no such id");
+            return ResponseCreator.success("no such id");
         }
     }
 
@@ -66,9 +66,9 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
         System.out.println("PUT");
         Persons udPerson = personsDAOInterface.updatePerson(ID, name);
         if (udPerson != null) {
-            return ResponseCreator.success(getHeaderVersion(), udPerson);
+            return ResponseCreator.success(udPerson);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode());
         }
     }
 
@@ -81,9 +81,9 @@ public class PersonsServiceJSON implements PersonsServiceInterface {
         if (personsList != null) {
             GenericEntity<List<Persons>> entity = new GenericEntity<List<Persons>>(personsList) {
             };
-            return ResponseCreator.success(getHeaderVersion(), entity);
+            return ResponseCreator.success(entity);
         } else {
-            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode());
         }
     }
 }

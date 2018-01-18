@@ -33,7 +33,7 @@ public class SitesServiceJSON implements StiesServiceInterface {
     private HttpHeaders requestHeaders;
 
     private String getHeaderVersion() {
-        return requestHeaders.getRequestHeader("version").get(0);
+        return requestHeaders.getRequestHeader("Date").get(0);
     }
 
     // create row representing sites and returns created sites as
@@ -49,9 +49,9 @@ public class SitesServiceJSON implements StiesServiceInterface {
         logger.log(Level.WARNING, "POST: " + URL);
         Sites crsites = sitesDAOInterface.createSite(URL);
         if (crsites != null) {
-            return ResponseCreator.success(getHeaderVersion(), crsites);
+            return ResponseCreator.success(crsites);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode());
         }
     }
 
@@ -65,9 +65,9 @@ public class SitesServiceJSON implements StiesServiceInterface {
     public Response removeSite(@QueryParam("id") int id) throws SQLException {
         System.out.println("DELETE");
         if (sitesDAOInterface.removeSite(id)) {
-            return ResponseCreator.success(getHeaderVersion(), "removed");
+            return ResponseCreator.success("removed");
         } else {
-            return ResponseCreator.success(getHeaderVersion(), "no such id");
+            return ResponseCreator.success("no such id");
         }
     }
 
@@ -76,13 +76,13 @@ public class SitesServiceJSON implements StiesServiceInterface {
     @PUT
     @Path(value = "/api/v1")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSite(Sites sites, int ID) {
+    public Response updateSite(String url, int ID) {
         System.out.println("PUT");
-        Sites udsite = sitesDAOInterface.updateSite(sites, ID);
+        Sites udsite = sitesDAOInterface.updateSite(url, ID);
         if (udsite != null) {
-            return ResponseCreator.success(getHeaderVersion(), udsite);
+            return ResponseCreator.success(udsite);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode());
         }
     }
 
@@ -99,9 +99,25 @@ public class SitesServiceJSON implements StiesServiceInterface {
         if (listSites != null) {
             GenericEntity<List<Sites>> entity = new GenericEntity<List<Sites>>(listSites) {
             };
-            return ResponseCreator.success(getHeaderVersion(), entity);
+            return ResponseCreator.success(entity);
         } else {
-            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode());
+        }
+    }
+
+    // returns list of sites meeting query params
+    @GET
+    @Path(value = "/api/v1/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSite(@PathParam("id") int ID) {
+        logger.addHandler(new ConsoleHandler());
+        logger.setLevel(Level.WARNING);
+        logger.log(Level.WARNING, "GET: " + ID);
+        Sites site = sitesDAOInterface.getSite(ID);
+        if (site != null) {
+            return ResponseCreator.success(site);
+        } else {
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode());
         }
     }
 }

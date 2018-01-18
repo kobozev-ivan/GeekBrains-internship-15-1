@@ -1,5 +1,6 @@
 package com.web.service.rest.dao;
 
+import com.web.service.hibernate.Factory;
 import com.web.service.hibernate.Pages;
 import com.web.service.hibernate.PagesInterface;
 
@@ -10,8 +11,6 @@ import java.util.Date;
 
 public class PagesDAO implements PagesDAOInterface{
 
-    private PagesInterface pagesInterface;
-
     public Pages createPage(String URL, int siteID, Date found, Date lastScan) {
         Pages page = new Pages();
         page.setURL(URL);
@@ -19,7 +18,7 @@ public class PagesDAO implements PagesDAOInterface{
         page.setFound(found.toString());
         page.setLastScan(lastScan.toString());
         try {
-            pagesInterface.addPage(page);
+            Factory.getInstance().getPagesInterface().addPage(page);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -27,7 +26,7 @@ public class PagesDAO implements PagesDAOInterface{
     }
 
     public boolean removePage(int ID) throws SQLException {
-        if (pagesInterface.deletePage(ID)){
+        if (Factory.getInstance().getPagesInterface().deletePage(ID)){
             return true;
         }
         else {
@@ -42,7 +41,7 @@ public class PagesDAO implements PagesDAOInterface{
         page.setFound(found.toString());
         page.setLastScan(lastScan.toString());
         try {
-            pagesInterface.updatePage(ID, page);
+            Factory.getInstance().getPagesInterface().updatePage(ID, page);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -52,7 +51,7 @@ public class PagesDAO implements PagesDAOInterface{
     public List<Pages> getAllPagesBySite(int siteID) {
         List<Pages> pagesList = new ArrayList<Pages>();
         try {
-            pagesList = pagesInterface.getAllPagesBySite(siteID);
+            pagesList = Factory.getInstance().getPagesInterface().getAllPagesBySite(siteID);
         } catch (SQLException e) {
             e.printStackTrace();
         }

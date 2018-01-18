@@ -1,5 +1,6 @@
 package com.web.service.rest.dao;
 
+import com.web.service.hibernate.Factory;
 import com.web.service.hibernate.Persons;
 import com.web.service.hibernate.PersonsInterface;
 
@@ -9,13 +10,11 @@ import java.util.List;
 
 public class PersonsDAO implements PersonsDAOInterface{
 
-    private PersonsInterface personsInterface;
-
     public Persons createPerson(String name) {
         Persons persons = new Persons();
         persons.setName(name);
         try {
-            personsInterface.addPerson(persons);
+            Factory.getInstance().getPersonsInterface().addPerson(persons);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -23,7 +22,7 @@ public class PersonsDAO implements PersonsDAOInterface{
     }
 
     public boolean removePerson(int ID) throws SQLException {
-        if (personsInterface.deletePerson(ID)) {
+        if (Factory.getInstance().getPersonsInterface().deletePerson(ID)) {
             return true;
         }
         else {return false;}
@@ -33,7 +32,7 @@ public class PersonsDAO implements PersonsDAOInterface{
         Persons targetPerson = new Persons();
         targetPerson.setName(person);
         try {
-            personsInterface.updatePerson(ID, targetPerson);
+            Factory.getInstance().getPersonsInterface().updatePerson(ID, targetPerson);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -43,7 +42,7 @@ public class PersonsDAO implements PersonsDAOInterface{
     public List<Persons> getAllPersons(int[] ID) {
         List<Persons> personsList = new ArrayList<Persons>();
         try{
-            personsList = personsInterface.getAllPersons(ID);
+            personsList = Factory.getInstance().getPersonsInterface().getAllPersons(ID);
         } catch (SQLException e) {
             e.printStackTrace();
         }

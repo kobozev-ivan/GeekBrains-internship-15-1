@@ -1,5 +1,6 @@
 package com.web.service.rest.dao;
 
+import com.web.service.hibernate.Factory;
 import com.web.service.hibernate.PersonPageRank;
 import com.web.service.hibernate.PersonPageRankInterface;
 
@@ -9,15 +10,13 @@ import java.util.List;
 
 public class PersonPageRankDAO implements PersonPageRankDAOInterface{
 
-    private PersonPageRankInterface personPageRankInterface;
-
     public PersonPageRank createPageRank(int pageID, int personID, int rank) {
         PersonPageRank personPageRank = new PersonPageRank();
         personPageRank.setPageID(pageID);
         personPageRank.setPersonID(personID);
         personPageRank.setRank(rank);
         try {
-            personPageRankInterface.addRank(personPageRank);
+            Factory.getInstance().getPersonPageRankInterface().addRank(personPageRank);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -25,7 +24,7 @@ public class PersonPageRankDAO implements PersonPageRankDAOInterface{
     }
 
     public boolean removePageRank(int ID) throws SQLException {
-        if (personPageRankInterface.deleteRank(ID)) {
+        if (Factory.getInstance().getPersonPageRankInterface().deleteRank(ID)) {
             return true;
         }
         else {return false;}
@@ -37,7 +36,7 @@ public class PersonPageRankDAO implements PersonPageRankDAOInterface{
         personPageRank.setPageID(pageID);
         personPageRank.setRank(rank);
         try {
-            personPageRankInterface.updateRank(ID, personPageRank);
+            Factory.getInstance().getPersonPageRankInterface().updateRank(ID, personPageRank);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -47,7 +46,7 @@ public class PersonPageRankDAO implements PersonPageRankDAOInterface{
     public List<PersonPageRank> getAllRanksByPerson(int personID) {
         List<PersonPageRank> personPageRankList = new ArrayList<PersonPageRank>();
         try {
-            personPageRankList = personPageRankInterface.getAllRanksByPersons(personID);
+            personPageRankList = Factory.getInstance().getPersonPageRankInterface().getAllRanksByPersons(personID);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -57,7 +56,7 @@ public class PersonPageRankDAO implements PersonPageRankDAOInterface{
     public List<PersonPageRank> getAllRanksByPage(int pageID) {
         List<PersonPageRank> personPageRankList = new ArrayList<PersonPageRank>();
         try {
-            personPageRankList = personPageRankInterface.getAllRanksByPage(pageID);
+            personPageRankList = Factory.getInstance().getPersonPageRankInterface().getAllRanksByPage(pageID);
         } catch (SQLException e) {
             e.printStackTrace();
         }

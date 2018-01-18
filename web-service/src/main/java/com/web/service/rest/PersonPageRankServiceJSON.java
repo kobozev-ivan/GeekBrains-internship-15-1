@@ -40,9 +40,9 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
         System.out.println("POST");
         PersonPageRank crPageRank = personPageRankDAOInterface.createPageRank(pageID, personID, rank);
         if (crPageRank != null) {
-            return ResponseCreator.success(getHeaderVersion(), crPageRank);
+            return ResponseCreator.success(crPageRank);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode());
         }
     }
 
@@ -54,9 +54,9 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
     public Response removePageRank(@QueryParam("id") int ID) throws SQLException {
         System.out.println("DELETE");
         if (personPageRankDAOInterface.removePageRank(ID)) {
-            return ResponseCreator.success(getHeaderVersion(), "removed");
+            return ResponseCreator.success("removed");
         } else {
-            return ResponseCreator.success(getHeaderVersion(), "no such id");
+            return ResponseCreator.success("no such id");
         }
     }
 
@@ -70,9 +70,9 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
         System.out.println("PUT");
         PersonPageRank udPageRank = personPageRankDAOInterface.updatePageRank(ID, pageID, personID, rank);
         if (udPageRank != null) {
-            return ResponseCreator.success(getHeaderVersion(), udPageRank);
+            return ResponseCreator.success(udPageRank);
         } else {
-            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode(),getHeaderVersion());
+            return ResponseCreator.error(500, Error.SERVER_ERROR.getCode());
         }
     }
 
@@ -87,9 +87,9 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
         if (personPageRankList != null) {
             GenericEntity<List<PersonPageRank>> entity = new GenericEntity<List<PersonPageRank>>(personPageRankList) {
             };
-            return ResponseCreator.success(getHeaderVersion(), entity);
+            return ResponseCreator.success(entity);
         } else {
-            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode());
         }
     }
 
@@ -104,9 +104,9 @@ public class PersonPageRankServiceJSON implements PersonPageRankServiceInterface
         if (personPageRankList != null) {
             GenericEntity<List<PersonPageRank>> entity = new GenericEntity<List<PersonPageRank>>(personPageRankList) {
             };
-            return ResponseCreator.success(getHeaderVersion(), entity);
+            return ResponseCreator.success(entity);
         } else {
-            return ResponseCreator.error(404, Error.NOT_FOUND.getCode(), getHeaderVersion());
+            return ResponseCreator.error(404, Error.NOT_FOUND.getCode());
         }
     }
 }

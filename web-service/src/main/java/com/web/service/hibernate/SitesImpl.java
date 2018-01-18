@@ -51,22 +51,23 @@ public class SitesImpl implements SitesInterface {
         return true;
     }
 
-    public void updateSite(int ID, Sites site) throws SQLException {
+    public Sites updateSite(int ID, String url) throws SQLException {
         Session session = null;
-        Sites sites = null;
+        Sites sites = new Sites();
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
             sites = session.load(Sites.class, ID);
-            session.update(site.getName(), sites);
+            session.update(url, sites);
             session.getTransaction().commit();
         } catch (Exception e){
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при попытке изменения сайта " + site.getName() + "!", JOptionPane.OK_OPTION);
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при попытке изменения сайта " + url + "!", JOptionPane.OK_OPTION);
         } finally {
             if (session != null && session.isOpen()){
                 session.close();
             }
         }
+        return sites;
     }
 
     public List<Sites> getAllSites(int[] ID) throws SQLException {
@@ -88,5 +89,22 @@ public class SitesImpl implements SitesInterface {
             }
         }
         return sitesList;
+    }
+
+    public Sites getSite(int ID) throws SQLException {
+        Session session = null;
+        Sites site = new Sites();
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            site = session.load(Sites.class, ID);
+        } catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка при извлечении сайта " + site.getName() + "!", JOptionPane.OK_OPTION);
+        } finally {
+            if (session != null && session.isOpen()){
+                session.close();
+            }
+        }
+        return site;
     }
 }
