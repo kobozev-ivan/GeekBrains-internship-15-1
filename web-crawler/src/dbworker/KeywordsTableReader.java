@@ -65,9 +65,8 @@ public class KeywordsTableReader extends Thread {
         this.keywordsList = new TreeMap<>();
         this.rs = this.stmt.executeQuery("SELECT NAME, PERSON_ID FROM KEYWORDS;");
         while(this.rs.next()){
-            this.keywordsList.put(this.rs.getString(1), this.rs.getInt(2));
+            this.keywordsList.put(this.rs.getString(1), this.rs.getInt(2));//treemap: ключ=name keyword, значение=person_id
         }
-//        return this.keywordsList;
     }
     /*
     *Метод возвращающий коллекцию ключевых слов
