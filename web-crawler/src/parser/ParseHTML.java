@@ -26,7 +26,7 @@ public class ParseHTML extends Thread {
      */
 
     public ParseHTML(TreeMap<String, Integer> unchHTMLPagesList) {
-        this.unchHTMLPagesList = unchHTMLPagesList;
+        this.unchHTMLPagesList = unchHTMLPagesList;//treemap: ключ=id+url, значение=site_id
     }
 
     /**
@@ -46,29 +46,36 @@ public class ParseHTML extends Thread {
         //TODO: упростить подсчет рейтинга, разбить метод на меньшие
        
         //коллекция url и их id
-        Set<Map.Entry<String, Integer>> urls = this.unchHTMLPagesList.entrySet();
+        Set<Map.Entry<String, Integer>> urls = this.unchHTMLPagesList.entrySet();//treemap: ключ=id+url, значение=site_id
         System.out.println("Подсчет рейтинга начат");
         for (Map.Entry<String, Integer> url: urls) {
-//            String[] splittedKey = url.getKey().line(" ");//делим ссылку на куски
-//            Integer pageId = Integer.parseInt(splittedKey[0]);//берем первый кусок это номер????
-//            String pageName = splittedKey[1];//второй кусок это имя????
+            String[] splittedKey = url.getKey().split(" ");//делим ссылку на куски
+            Integer pageId = Integer.parseInt(splittedKey[0]);//берем первый кусок это id страницы
+            String pageUrl = splittedKey[1];//второй кусок это url страницы
 
-            //коллекция ключевых слов и person_id
+            //коллекция ключевых слов и person_id(treemap: ключ=name keyword, значение=person_id)
             Set<Map.Entry<String, Integer>> keywords = this.keywordsList.entrySet();
             int rank = 0;
+            String content=getContentFromHTML(pageUrl);
             for (Map.Entry<String, Integer> word: keywords) {
                 Integer personId = word.getValue();
                 String keyword = word.getKey();
-                String[] splitContent = getContentFromHTML(url.getKey()).split("\n");
-                for (String line:splitContent) {
-                    String[] splitLine=line.split(" ");
-                    for(String piece :splitLine){
-                        if(piece.equals(keyword)) rank++;                   
+                if(content.contains(keyword)){
+                    String[] splitContent = content.split("\n");
+                    
+                    for (String line:splitContent) {  
+                        if(line.contains(keyword)){
+                            String[] splitLine=line.split(" ");
+                            for(String piece :splitLine){
+                                if(piece.equals(keyword)) rank++;                   
+                            }
+                        }
+                        
                     }
-                }
-//                System.out.println(personId+" "+url.getValue()+" "+rank);
-                
-                this.personsPageRank.put(personId + " " + url.getValue(), rank);                
+                    
+                }                
+                System.out.println(personId+" "+pageId+" "+rank);  
+                this.personsPageRank.put(personId + " " + pageId, rank);                
             }
         }
         System.out.println("Подсчет рейтинга закончен");
@@ -82,7 +89,6 @@ public class ParseHTML extends Thread {
 
     private String getContentFromHTML(String url) {
         this.content = new Downloader().download(url);
-//        System.out.println(this.content);
         return content;
     }
 
@@ -100,9 +106,13 @@ public class ParseHTML extends Thread {
         }
         try {
             //получаем ключевые слова и PERSON_ID 
-            this.keywordsList = this.ktr.getKeywordsList();
+            this.keywordsList = this.ktr.getKeywordsList();//treemap: ключ=name keyword, значение=person_id
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        Set<Map.Entry<String, Integer>> keywords = this.keywordsList.entrySet();
+        for (Map.Entry<String, Integer> word : keywords){
+                System.out.println(word.getKey()+" "+word.getValue());
         }
     }
 
