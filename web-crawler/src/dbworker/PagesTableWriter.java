@@ -98,8 +98,8 @@ public class PagesTableWriter {
          *entrySet(возвращает множество пар) преобразуем в коллекцию Set 
          *(инициализируем её в переменной names) и пробегаемся по коллекции
          */
-        for (Map.Entry<String, Integer> siteName : names) {
-            int id = siteName.getValue();
+        for (Map.Entry<String, Integer> siteName : names) {//коллекция: ключ-url страницы,значение-site_id
+            int siteId = siteName.getValue();
             this.date = new Date();//инициализируем  переменную для хранения даты 
             //обрабатываемого сайта без robots.txt
             this.date.getTime();//присваиваем текущую дату
@@ -109,7 +109,7 @@ public class PagesTableWriter {
             } else {
                 this.url = siteName.getKey();// если формируем ссылку не на robots.txt
             }
-            insertQueryExecutor(this.url, id, this.date); //запрос на добавление данных в БД
+            insertQueryExecutor(this.url, siteId, this.date); //запрос на добавление данных в БД
         }
     }
 
@@ -119,7 +119,7 @@ public class PagesTableWriter {
      */
 
     public void insertIntoPagesTablePagesListFromCollector(TreeMap<String, Integer> newPagesList) {
-        this.sites = newPagesList;
+        this.sites = newPagesList;//коллекция: ключ-url страницы,значение-site_id
         try{
             connect();
             this.connection.setAutoCommit(false);

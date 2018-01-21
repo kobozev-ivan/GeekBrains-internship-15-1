@@ -16,6 +16,7 @@ import java.util.TreeMap;
 public class PersonPageRankTableWriter {
     private Statement stmt;
     private Connection connection;
+    boolean flag; 
 
     /**
      * Метод, отвечающий за подключение к БД
@@ -64,16 +65,20 @@ public class PersonPageRankTableWriter {
     public void insertIntoPPRTablePPRListFromCollector(TreeMap<String, Integer> pprList) {
         try {
             connect();
+            this.flag=false;
+            if(flag=false){
             dropTable();
+            }            
+            this.flag=true;            
             connection.setAutoCommit(false);
             //TODO:сделать перебор списков менее громоздким
-            Set<Map.Entry<String, Integer>> ranks = pprList.entrySet();
+            Set<Map.Entry<String, Integer>> ranks = pprList.entrySet(); //treemap: ключ=personId+pageId, значение=rank
             for (Map.Entry<String, Integer> item : ranks) {
                 String[] splitKey = item.getKey().split(" ");
                 int personId = Integer.valueOf(splitKey[0]);
                 int pageId = Integer.valueOf(splitKey[1]);
                 int rank = item.getValue();
-                insertQueryExecutor(personId, pageId, rank);
+                insertQueryExecutor(personId, pageId, rank);//кладем в БД
             }
             connection.setAutoCommit(true);
             disconnect();

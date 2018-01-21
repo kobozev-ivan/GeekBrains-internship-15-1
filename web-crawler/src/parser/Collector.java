@@ -22,6 +22,7 @@ import java.util.TreeMap;
 public class Collector extends Thread {
     private TreeMap<String, Integer> unchecked;//коллекция страниц всех сайтов,
     //которые еще не сканировали
+    private int count;//количество непросканированных страниц считанных из БД
     private TreeMap<String, Integer> unchRobotsList = new TreeMap<>();
     private TreeMap<String, Integer> unchSiteMapsList = new TreeMap<>();
     private TreeMap<String, Integer> unchHTMLPagesList = new TreeMap<>();
@@ -32,32 +33,47 @@ public class Collector extends Thread {
     private ParseRobotsDotTxt rbts;
     private ParseSiteMaps smps;
     private ParseHTML phtml;
-    private PersonPageRankTableWriter pprtw;
+    private PersonPageRankTableWriter pprtw=new PersonPageRankTableWriter();
 
     /**
      * Основной алгоритм работы
      */
 
     public void run() {
+        int jump=0;
         initUncheckedSitesList();//поиск непроверенных ссылок страниц сайтов из PAGES
+        //в процессе запроса ссылок отбираются из БД таблицы PAGES первые 50 
+        //непроверенных ссылок, т.к. в дальнейшем обработка этих ссылок очень ресурсоъемка
         System.out.println("Сортируем ссылки");
         sortUncheckedPages();// сортируем ссылки (robots,sitemap,html)
-        if(!(this.unchRobotsList.isEmpty())) {//если коллекция не пустая
-            initParseRobotsDotTxt();//анализ ссылок на robots.txt(извлечение 
-            //ссылок на sitemap'ы и добавление их в коллекцию newPagesList)
+        while(true){
+            if(jump!=0){
+                initUncheckedSitesList();//поиск непроверенных ссылок страниц сайтов из PAGES
+                System.out.println("Сортируем ссылки повторно");
+                sortUncheckedPages();// сортируем ссылки (robots,sitemap,html)
+            }
+            jump=1;
+            if(!(this.unchRobotsList.isEmpty())) {//если коллекция( 
+                //treemap: ключ=id+url, значение=site_id) не пустая
+                initParseRobotsDotTxt();//анализ ссылок на robots.txt(извлечение 
+                //ссылок на sitemap'ы и добавление их в коллекцию newPagesList)
+                this.unchRobotsList.clear();
+            }
+            if(!(this.unchSiteMapsList.isEmpty())) { //treemap: ключ=id+url, значение=site_id
+                initParseSiteMaps();
+                this.unchSiteMapsList.clear();
+            }    
+            if(!(this.unchHTMLPagesList.isEmpty())) { //treemap: ключ=id+url, значение=site_id
+                
+                initParseHTML();
+                System.out.println("Парсинг html завершился");
+                this.unchHTMLPagesList.clear();
+            }
+            System.out.println("Вставка всех найденных коллектором ссылок в БД:Начато");
+            this.ptw.insertIntoPagesTablePagesListFromCollector(this.newPagesList);//коллекция: ключ-url страницы,значение-site_id
+            System.out.println("Вставка всех найденных коллектором ссылок в БД:Закончено");
+            this.newPagesList.clear();
         }
-        if(!(this.unchSiteMapsList.isEmpty())) {
-            initParseSiteMaps();
-        }
-//        System.out.println("Проверка списка несканированных ссылок html");
-        if(!(this.unchHTMLPagesList.isEmpty())) {
-            initParseHTML();
-            System.out.println("Парсинг html завершился");
-        }
-        System.out.println("Вставка всех найденных коллектором ссылок в БД:Начато");
-        this.ptw.insertIntoPagesTablePagesListFromCollector(this.newPagesList);
-        System.out.println("Вставка всех найденных коллектором ссылок в БД:Закончено");
-        
     }
 
     /**
@@ -73,7 +89,9 @@ public class Collector extends Thread {
         try {
             System.out.println("Считывание из БД всех непроверенных url:Начало");
             this.unchecked = this.ptr.getUncheckedPages();//считываем из PAGES 
-            //все непросканированные ссылки
+            this.count=this.unchecked.size();//количество загруженных страниц из PAGES
+            Set<Map.Entry<String, Integer>> urls = this.unchecked.entrySet();
+            //все непросканированные ссылки  (treemap: ключ=id+url, значение=site_id)
             System.out.println("Считывание из БД всех непроверенных url:Конец");
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +112,7 @@ public class Collector extends Thread {
                 } else if (item.getKey().contains("sitemap")||item.getKey().contains("Sitemap")) {
                     //кладем в коллекцию ссылок на sitemap
                     this.unchSiteMapsList.put(item.getKey(), item.getValue());
-                } else if(item.getKey().contains(".html")){
+                } else {
                     //кладем в коллекцию ссылок обычных .html
                     this.unchHTMLPagesList.put(item.getKey(), item.getValue());
                 }
@@ -116,7 +134,7 @@ public class Collector extends Thread {
             e.printStackTrace();
         }
         //помещаем коллекцию sitemap'ов в newPageList
-        this.newPagesList.putAll(this.rbts.getPagesList());
+        this.newPagesList.putAll(this.rbts.getPagesList());//коллекция: ключ-url страницы,значение-site_id
     }
 
     /**
@@ -124,14 +142,14 @@ public class Collector extends Thread {
      */
 
     private void initParseSiteMaps() {
-        this.smps = new ParseSiteMaps(this.unchSiteMapsList);
+        this.smps = new ParseSiteMaps(this.unchSiteMapsList);//(treemap: ключ=id+url, значение=site_id)
         this.smps.start();
         try {
             this.smps.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.newPagesList.putAll(this.smps.getPagesList());
+        this.newPagesList.putAll(this.smps.getPagesList());//коллекция: ключ-url страницы,значение-site_id
     }
 
     /**
@@ -139,14 +157,16 @@ public class Collector extends Thread {
      */
 
     private void initParseHTML() {
-        this.phtml = new ParseHTML(this.unchHTMLPagesList);
+        this.phtml = new ParseHTML(this.unchHTMLPagesList);//treemap: ключ=id+url, значение=site_id
         this.phtml.start();
         try {
             this.phtml.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.newPersonPageRankList = this.phtml.getPersonsPageRank();
+        this.newPersonPageRankList = this.phtml.getPersonsPageRank(); //treemap: ключ=personId+pageId, значение=rank
+        //запись статистики в БД        
+        this.pprtw.insertIntoPPRTablePPRListFromCollector(newPersonPageRankList);
     }
 
 }

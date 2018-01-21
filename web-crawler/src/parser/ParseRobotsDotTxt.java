@@ -32,9 +32,9 @@ public class ParseRobotsDotTxt extends Thread {
     public void run(){
         Set<Map.Entry<String, Integer>> set = this.unchRobotsList.entrySet();
         for (Map.Entry<String, Integer> item: set) {
-            Integer id = item.getValue();
-            String url = item.getKey();
-            this.pagesList.putAll(searchNewPageReferences(url, id));
+            Integer site_id = item.getValue();
+            String[] url = item.getKey().split(" ");
+            this.pagesList.putAll(searchNewPageReferences(url[1], site_id));
         }
     }
 
@@ -45,7 +45,7 @@ public class ParseRobotsDotTxt extends Thread {
      * @return список новых ссылок веб-страниц
      */
 
-    private TreeMap<String, Integer> searchNewPageReferences(String url, int id) {
+    private TreeMap<String, Integer> searchNewPageReferences(String url, int site_id) {
         TreeMap<String, Integer> newPages = new TreeMap<>();
         String pageContent = new Downloader().download(url);//скачивание страницы по адресу url
         String[] splitContent = pageContent.split("\n");// делим на строки и кладем в массив строк
@@ -63,7 +63,7 @@ public class ParseRobotsDotTxt extends Thread {
                }
                else break;//если не встретится ссылка на sitemap
             }
-            newPages.put(urlsitemap,id);           
+            newPages.put(urlsitemap,site_id);           
 	}
         
         return newPages;
