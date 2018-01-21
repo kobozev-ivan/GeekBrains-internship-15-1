@@ -106,14 +106,13 @@ public class DBCreator {
                 "   CONSTRAINT fk_persons_rank FOREIGN KEY (PERSON_ID) REFERENCES PERSONS(ID)\n" +
                 ");\n"+
                 //для тестирования заполняю PERSONS и KEYWORDS
-                "INSERT INTO PERSONS (ID,NAME) VALUES ('1','Прохоров');\n"+
-                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('1','дня','1');\n"+
-                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('2','день','1');\n"+
-                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('3','День','1');\n"+
-                //для тестирования заполняю сразу несколько сайтов
+                "INSERT INTO PERSONS (ID,NAME) VALUES ('1','Путин');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('1','Путин','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('2','Путину','1');\n"+
+                "INSERT INTO KEYWORDS (ID,NAME,PERSON_ID) VALUES ('3','Путина','1');\n"+
+                //для тестирования заполняю сразу несколько сайтов               
+                "INSERT INTO SITES (NAME) VALUES ('tass.ru');\n"+
                 "INSERT INTO SITES (NAME) VALUES ('udmapk.ru');\n"+
-//                "INSERT INTO SITES (NAME) VALUES ('ackordofmine.ru');\n"+
-//                "INSERT INTO SITES (NAME) VALUES ('tass.ru');\n"+
                 "INSERT INTO SITES (NAME) VALUES ('aif.ru');\n");
     }
 

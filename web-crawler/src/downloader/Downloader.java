@@ -32,12 +32,12 @@ public class Downloader {
             }
             this.reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("страница "+url+" не существует. Ошибка 404");            
+            this.line="";
         } finally {
             try {
                 this.reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
             }
         }
         return this.line;

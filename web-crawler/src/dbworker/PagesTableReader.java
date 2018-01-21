@@ -48,6 +48,8 @@ public class PagesTableReader {
     /**
      * Метод, осуществляющий запрос на поиск и получение ссылок веб-страниц 
      * всех сайтов, у которых отсутствует время последнего сканирования
+     * Так как обработка данных ссылок в последующем очень ресурсоемка, поэтому
+     * за один раз отбираются первые 50 ссылок.
      * Во время запроса добавляет время последнего сканирования страниц(для 
      * каждой страницы)
      * @return неотсканированные ссылки веб-страниц
@@ -62,11 +64,13 @@ public class PagesTableReader {
         this.unchecked = new TreeMap<>();
         connect();
         this.connection.setAutoCommit(false);
-        this.rs = this.stmt.executeQuery("SELECT URL, ID FROM PAGES" +
-                " WHERE LAST_SCAN IS NULL LIMIT 20;");
+        this.rs = this.stmt.executeQuery("SELECT ID, URL, SITE_ID FROM PAGES" +
+                " WHERE LAST_SCAN IS NULL LIMIT 50;");
         
         while(this.rs.next()){
-            this.unchecked.put(this.rs.getString(1), this.rs.getInt(2));//кладем в коллекцию
+            System.out.println(this.rs.getInt(1)+" "+this.rs.getString(2)+" "+this.rs.getInt(3));
+            this.unchecked.put(this.rs.getInt(1)+" "+this.rs.getString(2), this.rs.getInt(3));//считываем в коллекцию
+                            //treemap: ключ=id+url, значение=site_id
         }
         this.connection.setAutoCommit(true);
         System.out.println((System.currentTimeMillis() - t) / 1000 + "s" + (System.currentTimeMillis() - t) % 1000 + "ms");
@@ -74,7 +78,6 @@ public class PagesTableReader {
         *обновление даты работает очень медленно
         */
         setLastScanDateForEachItem();//добавление времени последнего сканирования
-//        this.connection.setAutoCommit(true);
         disconnect();
         return this.unchecked;
     }
@@ -88,13 +91,13 @@ public class PagesTableReader {
     private void setLastScanDateForEachItem() throws SQLException {
         this.newScanDate = new Date();
         this.newScanDate.getTime();
-//        System.out.println(this.newScanDate);
-//        System.out.println(format1.format(this.newScanDate));
         this.connection.setAutoCommit(false);
-        Set<Map.Entry<String, Integer>> pair = this.unchecked.entrySet();
+        Set<Map.Entry<String, Integer>> pair = this.unchecked.entrySet();  //treemap: ключ=id+url, значение=site_id      
         for (Map.Entry<String, Integer> item : pair) {
+            String[] split=item.getKey().split(" ");
+            String urlPage=split[1];
             this.stmt.executeUpdate("UPDATE PAGES SET LAST_SCAN = '" +
-                    this.newScanDate + "' WHERE URL = '" + item.getKey() + "';");
+                    this.newScanDate + "' WHERE URL = '" +urlPage+ "';");
         }
         this.connection.setAutoCommit(true);
     }
