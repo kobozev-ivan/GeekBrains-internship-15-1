@@ -1,5 +1,7 @@
 package gb_in.mobile_app_admin.model;
 
+import android.content.Intent;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,17 @@ class OfflineDataModel {
     private Map<Integer,String> siteData = new HashMap<>();
     private Map<Integer,String[]> keywordData = new HashMap<>();
 
+
+    public OfflineDataModel() {
+        personData.put(0,"Личность 1");
+        personData.put(1,"Личность 2");
+        siteData.put(0, "site 1");
+        siteData.put(1,"site 2");
+
+        keywordData.put(0,new String[]{"Л1","л1"});
+        keywordData.put(1,new String[]{"Л2","л2"});
+    }
+
     public String[] getPersons(){
         String[] s = new String[personData.size()];
         personData.values().toArray(s);
@@ -20,16 +33,15 @@ class OfflineDataModel {
     }
 
     void addPerson(String name){
-        Integer[] array = new Integer[personData.size()];
-        personData.keySet().toArray(array);
-        if (array.length>0) {
-            int  i = array[array.length - 1] + 1;
-            personData.put(i, name);
-            keywordData.put(i, new String[0]);
-        }else {
-            personData.put(0, name);
-            keywordData.put(0, new String[0]);
+        int id = 0;
+        for (Map.Entry s : personData.entrySet()) {
+            if ((int)s.getKey() >= id) {
+                id = ((int) s.getKey()) + 1;
+            }
         }
+        personData.put(id, name);
+        keywordData.put(id, new String[]{});
+
     }
 
     boolean isPersonPresent(String name){
@@ -52,12 +64,14 @@ class OfflineDataModel {
 
 
     void addSite(String name){
-        Integer[] array = new Integer[siteData.size()];
-        siteData.keySet().toArray(array);
-        if (array.length>0)
-            siteData.put(array[array.length-1]+1,name);
-        else
-            siteData.put(0,name);
+        int id = 0;
+        for (Map.Entry s : siteData.entrySet()) {
+            if ((int)s.getKey() >= id) {
+                id = ((int) s.getKey()) + 1;
+            }
+        }
+
+        siteData.put(id,name);
     }
 
     void removeSite(int id){
@@ -81,7 +95,13 @@ class OfflineDataModel {
 
 
 
-    void addKeyword(int id, String newKeyword){
+    void addKeyword(String personName, String newKeyword){
+        int id = 0;
+        for (Map.Entry s : personData.entrySet()) {
+            if (s.getValue().equals(personName)) {
+                id = (Integer) s.getKey();
+            }
+        }
         String[] keywordsOld = keywordData.remove(id);
         String[] keywordsNew = Arrays.copyOf(keywordsOld, keywordsOld.length+1);
         keywordsNew[keywordsNew.length-1] = newKeyword;
@@ -89,8 +109,15 @@ class OfflineDataModel {
         keywordData.put(id,keywordsNew);
     }
 
-    void removeKeyword(int personId, int keyId){
-        String[] oldKeywords = keywordData.remove(personId);
+    void removeKeyword(String personName, int keyId){
+        int id = 0;
+        for (Map.Entry s : personData.entrySet()) {
+            if (s.getValue().equals(personName)) {
+                id = (Integer) s.getKey();
+            }
+        }
+
+        String[] oldKeywords = keywordData.remove(id);
         String[] newKeywords = new String[oldKeywords.length - 1];
         int index = 0;
         for (int i = 0; i < oldKeywords.length; i++) {
@@ -99,17 +126,30 @@ class OfflineDataModel {
                 index++;
             }
         }
-        keywordData.put(personId,newKeywords);
+        keywordData.put(id,newKeywords);
     }
 
-    void updateKeyword(int personId, int keyId, String keyword) {
-        String[] keywords = keywordData.remove(personId);
+    void updateKeyword(String personName, int keyId, String keyword) {
+        int id = 0;
+        for (Map.Entry s : personData.entrySet()) {
+            if (s.getValue().equals(personName)) {
+                id = (Integer) s.getKey();
+            }
+        }
+
+        String[] keywords = keywordData.remove(id);
         keywords[keyId] = keyword;
-        keywordData.put(personId,keywords);
+        keywordData.put(id,keywords);
     }
 
-    public String[] getKeywords(int personId) {
-        return keywordData.get(personId);
+
+    public String[] getKeywords(String personName) {
+        for (Map.Entry s : personData.entrySet()) {
+            if (s.getValue().equals(personName)) {
+                return keywordData.get(s.getKey());
+            }
+        }
+        return new String[]{};
     }
 
 }

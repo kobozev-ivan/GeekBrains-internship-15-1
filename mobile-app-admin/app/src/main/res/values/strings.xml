@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">mobile-app-admin</string>
+    <string name="app_name">Приложение администратора</string>
+    <string name="PersonListLabel">Список личностей</string>
+
+    <string-array name="references">
+        <item>Личности</item>
+        <item>Страницы</item>
+    </string-array>
 </resources>

@@ -1,19 +1,37 @@
 package gb_in.mobile_app_admin.presenter;
 
+import java.io.Serializable;
+
+import gb_in.mobile_app_admin.AddictionActivity;
+import gb_in.mobile_app_admin.ReferenceFragment;
+import gb_in.mobile_app_admin.StatisticFragment;
 import gb_in.mobile_app_admin.model.Model;
-import gb_in.mobile_app_admin.view.AbstractView;
+import gb_in.mobile_app_admin.view.AbstractReferenceClass;
 
 /**
  * Created by Kuzin on 22.12.2017.
  */
 
-public class Presenter {
+public class Presenter implements Serializable {
     private Model model;
-    private AbstractView view;
+    private AbstractReferenceClass view;
 
-    public Presenter(AbstractView view) {
-        this.model = new Model(this);
+    private ReferenceFragment referenceFragment;
+    private StatisticFragment statisticFragment;
+
+    private AddictionActivity addictionActivity;
+
+    public Presenter(AbstractReferenceClass view,
+                     ReferenceFragment referenceFragment,
+                     StatisticFragment statisticFragment) {
+        this.model = new Model();
         this.view = view;
+        this.referenceFragment = referenceFragment;
+        this.statisticFragment = statisticFragment;
+    }
+
+    public void setAddictionActivity(AddictionActivity addictionActivity) {
+        this.addictionActivity = addictionActivity;
     }
 
     public void proceedError(String msg){
@@ -23,7 +41,8 @@ public class Presenter {
 
 
     public void loadPersonData(){
-        model.loadPersons();
+        String[] data = model.loadPersons();
+        referenceFragment.updateListAdapter(data);
     }
 
     public void updatePersonData(int personId,String newPersonName){
@@ -38,36 +57,10 @@ public class Presenter {
         model.deletePerson(personId);
     }
 
-    public void updateViewPersonData(String[] data){
-        view.updateViewPersonData(data);
-    }
-
-
-
-    public void loadKeywordData(int person_Id){
-        model.loadKeywords(person_Id);
-    }
-
-    public void updateKeywordData(int personId, int keywordId, String newKeywordName){
-        model.updateKeyword(personId, keywordId, newKeywordName);
-    }
-
-    public void addKeywordData(int personId, String keywordName){
-        model.addKeyword(personId,keywordName);
-    }
-
-    public void deleteKeywordData(int personId, int keywordId){
-        model.deleteKeyword(personId ,keywordId);
-    }
-
-    public void updateViewKeywordData(String[] data){
-        view.updateViewKeywordData(data);
-    }
-
-
 
     public void loadSiteData(){
-        model.loadSites();
+        String[] data = model.loadSites();
+        referenceFragment.updateListAdapter(data);
     }
 
     public void updateSiteData(int siteId,String newSiteName){
@@ -82,7 +75,9 @@ public class Presenter {
         model.deleteSite(siteId);
     }
 
-    public void updateViewSiteData(String[] data){
-        view.updateViewSiteData(data);
+
+    public void loadPersonStatistics() {
+        String[] persons = model.getPersonsStatistics();
+        statisticFragment.updateChart(persons);
     }
 }

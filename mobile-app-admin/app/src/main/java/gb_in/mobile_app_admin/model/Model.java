@@ -1,6 +1,11 @@
 package gb_in.mobile_app_admin.model;
 
-import gb_in.mobile_app_admin.presenter.Presenter;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Kuzin on 22.12.2017.
@@ -8,23 +13,23 @@ import gb_in.mobile_app_admin.presenter.Presenter;
 
 public class Model {
     private OfflineDataModel modelData;
-    private Presenter presenter;
 
-    public Model(Presenter presenter) {
-        this.presenter = presenter;
+
+    public Model() {
         modelData = new OfflineDataModel();
+
     }
 
-    public void loadPersons() {
-        presenter.updateViewPersonData(modelData.getPersons());
+    public String[] loadPersons() {
+        return modelData.getPersons();
     }
 
-    public void loadKeywords(int person_id) {
-        presenter.updateViewKeywordData(modelData.getKeywords(person_id));
+    public String[] loadKeywords(String person_name) {
+        return modelData.getKeywords(person_name);
     }
 
-    public void loadSites() {
-        presenter.updateViewSiteData(modelData.getSites());
+    public String[] loadSites() {
+        return modelData.getSites();
     }
 
 
@@ -32,36 +37,30 @@ public class Model {
     public void updatePerson(int personId, String newPersonName) {
         if (modelData.isPersonPresent(personId))
             modelData.updatePerson(personId,newPersonName);
-        else
-            presenter.proceedError("person not exist!");
     }
 
     public void addPerson(String personName) {
         if (!modelData.isPersonPresent(personName))
             modelData.addPerson(personName);
-        else
-            presenter.proceedError("person already exist!");
     }
 
     public void deletePerson(int personId) {
         if (modelData.isPersonPresent(personId))
             modelData.removePerson(personId);
-        else
-            presenter.proceedError("person not exist!");
     }
 
 
 
-    public void updateKeyword( int personId, int keywordId, String newKeywordName) {
-        modelData.updateKeyword(personId,keywordId,newKeywordName);
+    public void updateKeyword( String personName, int keywordId, String newKeywordName) {
+        modelData.updateKeyword(personName,keywordId,newKeywordName);
     }
 
-    public void addKeyword(int personId, String keywordName) {
-        modelData.addKeyword(personId, keywordName);
+    public void addKeyword(String personName, String keywordName) {
+        modelData.addKeyword(personName, keywordName);
     }
 
-    public void deleteKeyword(int personId, int keywordId) {
-        modelData.removeKeyword(personId, keywordId);
+    public void deleteKeyword(String personName, int keywordId) {
+        modelData.removeKeyword(personName, keywordId);
     }
 
 
@@ -69,8 +68,6 @@ public class Model {
     public void updateSite(int siteId, String newSiteName) {
         if (modelData.isSitePresent(siteId))
             modelData.updateSite(siteId, newSiteName);
-        else
-            presenter.proceedError("site not exist!");
     }
 
     public void addSite(String siteName) {
@@ -80,8 +77,10 @@ public class Model {
     public void deleteSite(int siteId) {
         if (modelData.isSitePresent(siteId))
             modelData.removeSite(siteId);
-        else
-            presenter.proceedError("site not exist!");
+    }
+
+    public String[] getPersonsStatistics(){
+        return modelData.getPersons();
     }
 }
 
